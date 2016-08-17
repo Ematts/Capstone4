@@ -1,0 +1,19 @@
+﻿@{
+    if (this.User.IsInRole("Homeowner"))
+    {
+        Layout = "~/Views/Shared/_Homeowner_Layout.cshtml"; //admin layout is my personal choice
+    }
+    else if (this.User.IsInRole("Contractor"))
+    {
+        Layout = "~/Views/Shared/_Contractor_Layout.cshtml"; //admin layout is my personal choice
+    }
+    else if (this.User.IsInRole("Admin"))
+    {
+        Layout = "~/Views/Shared/_Admin_Layout.cshtml"; //admin layout is my personal choice
+    }
+    else
+    {
+
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}

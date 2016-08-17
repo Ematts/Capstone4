@@ -1,0 +1,91 @@
+﻿@model Capstone4.Models.ServiceRequest
+
+@{
+    ViewBag.Title = "Details";
+    
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ServiceRequest</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.Street)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.Street)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Contractor.UserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Contractor.UserId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Homeowner.UserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Homeowner.UserId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PostedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PostedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CompletionDeadline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CompletionDeadline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Service_Number)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Service_Number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Expired)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Expired)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
