@@ -101,15 +101,41 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Address address)
         {
             if (ModelState.IsValid)
             {
+                serviceRequest.Service_Number = serviceRequest.ID;
                 db.Entry(serviceRequest).State = EntityState.Modified;
+                if (serviceRequest.AddressID == null)
+                {
+                    Address newAdd = new Address();
+                    newAdd.Street = address.Street;
+                    newAdd.City = address.City;
+                    newAdd.State = address.State;
+                    newAdd.Street = address.Street;
+                    newAdd.Zip = address.Zip;
+                    db.Addresses.Add(newAdd);
+                    serviceRequest.AddressID = address.ID;
+                    serviceRequest.Service_Number = serviceRequest.ID;
+                    db.Entry(serviceRequest).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                foreach (var i in db.Addresses)
+                {
+                    if (i.ID == serviceRequest.AddressID)
+                    {
+                        i.Street = address.Street;
+                        i.City = address.City;
+                        i.State = address.State;
+                        i.Zip = address.Zip;
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
-            }
 
+            }
             return View(serviceRequest);
         }
 
