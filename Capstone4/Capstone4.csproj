@@ -229,14 +229,20 @@
     <Compile Include="Migrations\201608171723220_d2.Designer.cs">
       <DependentUpon>201608171723220_d2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608172024429_f.cs" />
+    <Compile Include="Migrations\201608172024429_f.Designer.cs">
+      <DependentUpon>201608172024429_f.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Contractor.cs" />
+    <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ServiceRequest.cs" />
+    <Compile Include="Models\ServiceRequestFilePath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -327,6 +333,8 @@
     <Content Include="Views\ServiceRequests\Index.cshtml" />
     <Content Include="Views\Homeowners\Already_Exists.cshtml" />
     <Content Include="Views\Contractors\Already_Exists.cshtml" />
+    <Content Include="Views\ServiceRequests\Date_Issue.cshtml" />
+    <Content Include="Views\ServiceRequests\Must_be_logged_in.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -357,6 +365,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608171723220_d2.resx">
       <DependentUpon>201608171723220_d2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608172024429_f.resx">
+      <DependentUpon>201608172024429_f.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

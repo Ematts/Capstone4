@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Capstone4.Models;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace Capstone4.Controllers
 {
@@ -30,6 +31,7 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
             if (serviceRequest == null)
             {
                 return HttpNotFound();
@@ -40,7 +42,16 @@ namespace Capstone4.Controllers
         // GET: ServiceRequests/Create
         public ActionResult Create()
         {
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (identity == null)
+            {
+                return RedirectToAction("Must_be_logged_in", "ServiceRequests");
+            }
 
+            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            {
+                return RedirectToAction("Must_be_logged_in", "ServiceRequests");
+            }
             return View();
         }
 
@@ -49,10 +60,10 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Address address)
+        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Address address, IEnumerable<HttpPostedFileBase> files)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            
+            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
             if (ModelState.IsValid)
             {
 
@@ -65,10 +76,27 @@ namespace Capstone4.Controllers
                        
                     }
                 }
+                serviceRequest.PostedDate = DateTime.Now;
+                if (serviceRequest.PostedDate > serviceRequest.CompletionDeadline)
+                {
+                    return RedirectToAction("Date_Issue", "ServiceRequests");
+                }
+                foreach (var file in files)
+                {
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+
+
+                        var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                        file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                        serviceRequest.ServiceRequestFilePaths.Add(photo);
+                    }
+
+                }
                 db.Addresses.Add(address);
                 db.SaveChanges();
                 serviceRequest.AddressID = address.ID;
-                serviceRequest.PostedDate = DateTime.Now;
                 db.ServiceRequests.Add(serviceRequest);
                 db.SaveChanges();
                 serviceRequest.Service_Number = serviceRequest.ID;
@@ -176,6 +204,20 @@ namespace Capstone4.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult Date_Issue()
+        {
+            ViewBag.Message = "Completion deadline must be later than posted date";
+
+            return View();
+        }
+
+        public ActionResult Must_be_logged_in()
+        {
+            ViewBag.Message = "You must log in as a registered homeowner to create a service request";
+
+            return View();
         }
     }
 }

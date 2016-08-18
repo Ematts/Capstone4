@@ -11,7 +11,7 @@
     <h4>ServiceRequest</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
+        @*<dt>
             @Html.DisplayNameFor(model => model.Address.Street)
         </dt>
 
@@ -33,8 +33,65 @@
 
         <dd>
             @Html.DisplayFor(model => model.Homeowner.UserId)
+        </dd>*@
+        <dt>
+            @Html.DisplayNameFor(model => model.Homeowner.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Homeowner.Username)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Homeowner.ApplicationUser.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Homeowner.ApplicationUser.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.Street)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.Street)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.City)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.State)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.Zip)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.Zip)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.PostedDate)
         </dt>
@@ -44,27 +101,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.CompletionDeadline)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.CompletionDeadline)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
         </dd>
 
         <dt>
@@ -84,6 +125,17 @@
         </dd>
 
     </dl>
+
+    <strong>Service Request Photos:</strong>
+    <br> <br>
+
+    @foreach (var item in Model.ServiceRequestFilePaths)
+    {
+        <div class="photocontainer">
+            <a href="~/images/@item.FileName"><img class="photo" src="~/images/@item.FileName" alt="" width="200" height="133" /></a>
+        </div>
+
+    }
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |

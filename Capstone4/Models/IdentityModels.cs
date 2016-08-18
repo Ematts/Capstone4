@@ -22,7 +22,7 @@ namespace Capstone4.Models
     {
         public DbSet<Homeowner> Homeowners { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
-
+        public DbSet<ServiceRequestFilePath> ServiceRequestFilePaths { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
 
         public ApplicationDbContext()
