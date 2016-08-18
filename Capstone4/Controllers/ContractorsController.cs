@@ -45,6 +45,10 @@ namespace Capstone4.Controllers
             {
                 return RedirectToAction("Must_be_logged_in", "Contractors");
             }
+            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Contractor")))
+            {
+                return RedirectToAction("Must_be_logged_in", "Contractors");
+            }
 
             foreach (var contractor in db.Contractors)
             {
@@ -195,6 +199,20 @@ namespace Capstone4.Controllers
             ViewBag.Message = "An account for this user already exists";
 
             return View();
+        }
+
+        [AllowAnonymous]
+        
+        public JsonResult doesUserNameExist(string Username)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var homeownerResult = db.Homeowners.Where(x => x.Username == Username);
+            var contractorResult = db.Contractors.Where(x => x.Username == Username);
+            if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1))
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json("Username \"" + Username + "\" is already taken.", JsonRequestBehavior.AllowGet);
         }
     }
 }

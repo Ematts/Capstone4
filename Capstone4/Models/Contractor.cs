@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Capstone4.Models
 {
@@ -19,6 +21,7 @@ namespace Capstone4.Models
         [StringLength(15, MinimumLength = 6)]
         [Required]
         [Display(Name = "Contractor Username")]
+        [Remote("doesUserNameExist", "Contractors", HttpMethod = "POST", ErrorMessage = "User name already exists. Please enter a different user name.")]
         public string Username { get; set; }
         [StringLength(20, MinimumLength = 1)]
         [Required]

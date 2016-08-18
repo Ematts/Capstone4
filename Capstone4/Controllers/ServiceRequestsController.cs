@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Capstone4.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using System.Net.Mail;
 
 namespace Capstone4.Controllers
 {
@@ -71,9 +72,9 @@ namespace Capstone4.Controllers
                 {
                     if (i.UserId == identity)
                     {
-                     
+
                         serviceRequest.HomeownerID = i.ID;
-                       
+
                     }
                 }
                 serviceRequest.PostedDate = DateTime.Now;
@@ -101,6 +102,7 @@ namespace Capstone4.Controllers
                 db.SaveChanges();
                 serviceRequest.Service_Number = serviceRequest.ID;
                 db.SaveChanges();
+                postServiceRequest(serviceRequest);
                 return RedirectToAction("Index");
             }
 
@@ -219,5 +221,29 @@ namespace Capstone4.Controllers
 
             return View();
         }
+
+        public static void postServiceRequest(ServiceRequest serviceRequest)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var contractors = db.Contractors.ToList();
+            foreach (var i in db.Contractors)
+            {
+
+                var myMessage = new SendGrid.SendGridMessage();
+                myMessage.AddTo(i.ApplicationUser.Email);
+                myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+                myMessage.Subject = "New Service Request Posting!!";
+                string url = "men";  //"http://localhost:14703/ServiceRequests/ContractorAcceptance/" + i.ID;
+                string message = "Hello " + i.FirstName + "," + "<br>" + "<br>" + "A new service request has been posted by " + serviceRequest.Homeowner.Username + " for the following job Location: <br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + serviceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + serviceRequest.PostedDate + "<br>" + "<br>" + "To accept job, click on link below: <br><a href =" + url + "> Click Here </a>";
+                myMessage.Html = message;
+                var credentials = new NetworkCredential(name, pass);
+                var transportWeb = new SendGrid.Web(credentials);
+                transportWeb.DeliverAsync(myMessage);
+
+            }
+        }
+
     }
 }

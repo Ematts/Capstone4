@@ -88,3 +88,11 @@ C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d1.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d2.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.f.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\SendGrid.CSharp.HTTP.Client.dll
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\SendGrid.dll
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\SendGrid.SmtpApi.dll
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\SendGridMail.dll
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\System.Net.Http.Formatting.dll
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\System.Net.Http.Formatting.xml
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s2.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d3.resources
