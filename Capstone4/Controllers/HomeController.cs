@@ -26,5 +26,11 @@ namespace Capstone4.Controllers
 
             return View();
         }
+        public ActionResult Unauthorized_Access()
+        {
+            ViewBag.Message = "You are not authorized to view this page.";
+
+            return View();
+        }
     }
 }

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Capstone4.Models.CompletedServiceRequest>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Contractor.Username)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Contractor.ApplicationUser.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Address.FullAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompletionDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AmountDue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContractorPaid)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Contractor.Username)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Contractor.ApplicationUser.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.FullAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompletionDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AmountDue)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContractorPaid)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

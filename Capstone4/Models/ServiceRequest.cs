@@ -41,6 +41,7 @@ namespace Capstone4.Models
         public int Service_Number { get; set; }
         public bool Expired { get; set; }
         public virtual ICollection<ServiceRequestFilePath> ServiceRequestFilePaths { get; set; }
+        public virtual ICollection<CompletedServiceRequestFilePath> CompletedServiceRequestFilePaths { get; set; }
         public virtual ICollection<ContractorAcceptance> ContractorAcceptances { get; set; }
     }
 }

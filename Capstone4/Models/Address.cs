@@ -22,5 +22,11 @@ namespace Capstone4.Models
         [StringLength(5, MinimumLength = 5)]
         [Required]
         public string Zip { get; set; }
+        [Display(Name = "Full Address")]
+        public string FullAddress
+        {
+            get { return Street + ", " + City + ", " + State + " " + Zip; }
+        }
     }
 }
+

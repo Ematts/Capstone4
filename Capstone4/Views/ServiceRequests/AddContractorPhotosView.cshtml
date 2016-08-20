@@ -1,0 +1,48 @@
+﻿@model Capstone4.Models.ServiceRequest
+
+@{
+    ViewBag.Title = "AddContractorPhotosView";
+}
+
+<h2>AddContractorPhotosView</h2>
+@using (Html.BeginForm("AddContractorPhotos", "ServiceRequests", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.ID)
+        <div id="multiple">
+            <input type="file" class="multiple" name="files" multiple />
+        </div>
+        <div id="single">
+            <input type="file" class="single" name="files" /><br />
+            <input type="file" class="single" name="files" /><br />
+            <input type="file" class="single" name="files" /><br />
+        </div>
+        <button class="btn btn-default">Upload</button>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            if(window.FileReader != null){
+                $('#single').hide();
+                $('.single').prop('disabled', true);
+            } else {
+                $('#multiple').hide();
+                $('.multiple').prop('disabled', true);
+            }
+        });
+    </script>
+}

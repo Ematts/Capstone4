@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Capstone4.Models;
 using Microsoft.AspNet.Identity;
+using System.Net.Mail;
 
 namespace Capstone4.Controllers
 {
@@ -122,10 +123,7 @@ namespace Capstone4.Controllers
             ContractorAcceptance contractorAcceptance = db.ContractorAcceptances.Find(id);
             var serviceRequests = db.ServiceRequests.ToList();
             var acceptances = db.ContractorAcceptances.ToList();
-            //if (serviceRequest.Address != null)
-            //{
-            //    db.Addresses.Remove(serviceRequest.Address);
-            //}
+
             foreach (var i in acceptances)
             {
                 if (i.ID == id)
@@ -177,6 +175,7 @@ namespace Capstone4.Controllers
                         if (a.ID == id)
                         {
                             a.ServiceRequest.Contractor = a.Contractor;
+                            SendContractor(a);
                         }
                     }
                 }
@@ -184,37 +183,28 @@ namespace Capstone4.Controllers
             db.SaveChanges();
             return RedirectToAction("Index", "ServiceRequests");
         }
+
+        public void SendContractor(ContractorAcceptance contractorAcceptance)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(contractorAcceptance.ServiceRequest.Contractor.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Homeowner Confirmed Your Service!!";
+            string url = "http://localhost:37234/ContractorAcceptances/NotifyHomeownerView/" + contractorAcceptance.ServiceRequest.ID;
+            string url2 = "http://localhost:37234/Maps/Calculate/" + contractorAcceptance.ServiceRequest.ID;
+            string message = "Hello " + contractorAcceptance.ServiceRequest.Contractor.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Homeowner.Username + " has confirmed your service for the following request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "When the job is complete, please confirm completion by clicking on the link below: <br><a href =" + url + "> Click Here </a>" + "<br>" + "<br>" + "Get directions by clicking on the link below: <br><a href =" + url2 + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+
+
+        }
     }
 }
 
 
-//public ActionResult Accept(int id)
-//{
-
-//    string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
-//    var contractors = db.Contractors.ToList();
-//    var serviceRequests = db.ServiceRequests.ToList();
-//    foreach (var con in contractors)
-//    {
-//        if (con.UserId == identity)
-//        {
-//            ContractorAcceptance acceptance = new ContractorAcceptance();
-//            foreach (var request in serviceRequests)
-//            {
-//                if (request.ID == id)
-//                {
-//                    acceptance.ServiceRequest = request;
-//                }
-//            }
-//            acceptance.ContractorID = con.ID;
-//            acceptance.ServiceRequestID = id;
-//            acceptance.AcceptanceDate = DateTime.Now;
-//            db.ContractorAcceptances.Add(acceptance);
-//            db.SaveChanges();
-//            NotifyAcceptance(acceptance);
-
-//        }
-//    }
-//    db.SaveChanges();
-//    return RedirectToAction("Index", "ContractorAcceptances");
-//}

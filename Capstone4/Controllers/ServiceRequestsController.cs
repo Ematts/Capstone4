@@ -268,6 +268,72 @@ namespace Capstone4.Controllers
             return RedirectToAction("Index", "ContractorAcceptances");
         }
 
+        public ActionResult ConfirmCompletionView(int? id)
+        {
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+            return View(serviceRequest);
+        }
+
+        public ActionResult AddContractorPhotosView(int? ID)
+        {
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+            return View(serviceRequest);
+
+        }
+
+        public ActionResult AddContractorPhotos(int? ID, IEnumerable<HttpPostedFileBase> files)
+        {
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            serviceRequest.CompletedServiceRequestFilePaths = new List<CompletedServiceRequestFilePath>();
+            foreach (var file in files)
+            {
+
+                if (file != null && file.ContentLength > 0)
+                {
+
+
+                    var photo = new CompletedServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                    file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                    serviceRequest.CompletedServiceRequestFilePaths.Add(photo);
+                }
+
+            }
+            db.SaveChanges();
+            return RedirectToAction("ConfirmCompletionView", "ServiceRequests", new { id = serviceRequest.ID }); 
+
+        }
+
         public void postServiceRequest(ServiceRequest serviceRequest)
         {
             
@@ -299,15 +365,13 @@ namespace Capstone4.Controllers
             var myMessage = new SendGrid.SendGridMessage();
             myMessage.AddTo(contractorAcceptance.ServiceRequest.Homeowner.ApplicationUser.Email);
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
-            myMessage.Subject = "New Service Request Posting!!";
+            myMessage.Subject = "Service Request Acceptance!!";
             string url = "http://localhost:37234/ContractorAcceptances/NotifyHomeownerView/" + contractorAcceptance.ID;
-            string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To accept job, click on link below: <br><a href =" + url + "> Click Here </a>";
+            string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To confirm contractor, click on link below: <br><a href =" + url + "> Click Here </a>";
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);
             transportWeb.DeliverAsync(myMessage);
-
-
 
         }
 

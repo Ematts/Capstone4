@@ -231,11 +231,13 @@
     <Compile Include="AuxEmail.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
+    <Compile Include="Controllers\CompletedServiceRequestsController.cs" />
     <Compile Include="Controllers\ContractorAcceptancesController.cs" />
     <Compile Include="Controllers\ContractorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeownersController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MapsController.cs" />
     <Compile Include="Controllers\ServiceRequestsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -284,9 +286,23 @@
     <Compile Include="Migrations\201608191645572_b.Designer.cs">
       <DependentUpon>201608191645572_b.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608201656506_f1.cs" />
+    <Compile Include="Migrations\201608201656506_f1.Designer.cs">
+      <DependentUpon>201608201656506_f1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608201947223_f2.cs" />
+    <Compile Include="Migrations\201608201947223_f2.Designer.cs">
+      <DependentUpon>201608201947223_f2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608202043516_s4.cs" />
+    <Compile Include="Migrations\201608202043516_s4.Designer.cs">
+      <DependentUpon>201608202043516_s4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\CompletedServiceRequest.cs" />
+    <Compile Include="Models\CompletedServiceRequestFilePath.cs" />
     <Compile Include="Models\Contractor.cs" />
     <Compile Include="Models\ContractorAcceptance.cs" />
     <Compile Include="Models\FileType.cs" />
@@ -399,6 +415,17 @@
     <Content Include="Views\ContractorAcceptances\Acceptance.cshtml" />
     <Content Include="Views\ServiceRequests\AcceptView.cshtml" />
     <Content Include="Views\ContractorAcceptances\NotifyHomeownerView.cshtml" />
+    <Content Include="Views\Maps.cshtml" />
+    <Content Include="Views\Home\Unauthorized_Access.cshtml" />
+    <Content Include="Views\Maps\Calculate.cshtml" />
+    <Content Include="Views\CompletedServiceRequests\Create.cshtml" />
+    <Content Include="Views\CompletedServiceRequests\Delete.cshtml" />
+    <Content Include="Views\CompletedServiceRequests\Details.cshtml" />
+    <Content Include="Views\CompletedServiceRequests\Edit.cshtml" />
+    <Content Include="Views\CompletedServiceRequests\Index.cshtml" />
+    <Content Include="Views\CompletedServiceRequests\ConfirmCompletion.cshtml" />
+    <Content Include="Views\ServiceRequests\ConfirmCompletionView.cshtml" />
+    <Content Include="Views\ServiceRequests\AddContractorPhotosView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -444,6 +471,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608191645572_b.resx">
       <DependentUpon>201608191645572_b.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608201656506_f1.resx">
+      <DependentUpon>201608201656506_f1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608201947223_f2.resx">
+      <DependentUpon>201608201947223_f2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608202043516_s4.resx">
+      <DependentUpon>201608202043516_s4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
