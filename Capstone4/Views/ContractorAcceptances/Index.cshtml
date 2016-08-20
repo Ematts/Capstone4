@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Capstone4.Models.ContractorAcceptance>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Contractor.Username)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contractor.ApplicationUser.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Address.Street)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Address.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Address.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Address.Zip)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.PostedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.CompletionDeadline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Service_Number)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AcceptanceDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceRequest.Expired)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contractor.Username)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contractor.ApplicationUser.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.Street)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.City)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.State)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.Zip)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.PostedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.CompletionDeadline)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Service_Number)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AcceptanceDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceRequest.Expired)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        
+    </tr>
+}
+
+</table>

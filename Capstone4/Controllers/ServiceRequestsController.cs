@@ -222,9 +222,55 @@ namespace Capstone4.Controllers
             return View();
         }
 
-        public static void postServiceRequest(ServiceRequest serviceRequest)
+        public ActionResult AcceptView(int? id)
         {
-            ApplicationDbContext db = new ApplicationDbContext();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            return View(serviceRequest);
+        }
+
+        public ActionResult Accept(int id)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var contractors = db.Contractors.ToList();
+            var serviceRequests = db.ServiceRequests.ToList();
+            foreach (var con in contractors)
+            {
+                if (con.UserId == identity)
+                {
+                    ContractorAcceptance acceptance = new ContractorAcceptance();
+                    foreach (var request in serviceRequests)
+                    {
+                        if(request.ID == id)
+                        {
+                            acceptance.ServiceRequest = request;
+                        }
+                    }
+                    acceptance.ContractorID = con.ID;
+                    acceptance.ServiceRequestID = id;
+                    acceptance.AcceptanceDate = DateTime.Now;
+                    db.ContractorAcceptances.Add(acceptance);
+                    db.SaveChanges();
+                    NotifyAcceptance(acceptance);
+
+                }
+            }
+            db.SaveChanges();
+            return RedirectToAction("Index", "ContractorAcceptances");
+        }
+
+        public void postServiceRequest(ServiceRequest serviceRequest)
+        {
+            
             string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
             string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
             var contractors = db.Contractors.ToList();
@@ -235,7 +281,7 @@ namespace Capstone4.Controllers
                 myMessage.AddTo(i.ApplicationUser.Email);
                 myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
                 myMessage.Subject = "New Service Request Posting!!";
-                string url = "men";  //"http://localhost:14703/ServiceRequests/ContractorAcceptance/" + i.ID;
+                string url = "http://localhost:37234/ServiceRequests/AcceptView/" + serviceRequest.ID;
                 string message = "Hello " + i.FirstName + "," + "<br>" + "<br>" + "A new service request has been posted by " + serviceRequest.Homeowner.Username + " for the following job Location: <br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + serviceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + serviceRequest.PostedDate + "<br>" + "<br>" + "To accept job, click on link below: <br><a href =" + url + "> Click Here </a>";
                 myMessage.Html = message;
                 var credentials = new NetworkCredential(name, pass);
@@ -243,6 +289,26 @@ namespace Capstone4.Controllers
                 transportWeb.DeliverAsync(myMessage);
 
             }
+        }
+
+        public void NotifyAcceptance(ContractorAcceptance contractorAcceptance)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(contractorAcceptance.ServiceRequest.Homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "New Service Request Posting!!";
+            string url = "http://localhost:37234/ContractorAcceptances/NotifyHomeownerView/" + contractorAcceptance.ID;
+            string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To accept job, click on link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+
+
         }
 
     }

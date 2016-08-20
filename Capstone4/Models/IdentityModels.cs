@@ -37,6 +37,8 @@ namespace Capstone4.Models
 
         public System.Data.Entity.DbSet<Capstone4.Models.Address> Addresses { get; set; }
 
+        public System.Data.Entity.DbSet<Capstone4.Models.ContractorAcceptance> ContractorAcceptances { get; set; }
+
         //public System.Data.Entity.DbSet<Capstone4.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }
