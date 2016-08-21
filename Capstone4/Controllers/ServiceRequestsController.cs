@@ -357,6 +357,76 @@ namespace Capstone4.Controllers
 
         }
 
+        public ActionResult PaymentSuccess(int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            serviceRequest.ContractorPaid = true;
+            db.SaveChanges();
+
+            var myMessage = new SendGrid.SendGridMessage();
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            string url = "http://localhost:37234/ServiceRequests/AcceptView/" + serviceRequest.ID;
+            myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Payment Confirmed!!";
+            String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>"  + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>"; 
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+            Notify_Contractor_of_Payment(serviceRequest);
+
+            return View(serviceRequest);
+
+        }
+
+        public ActionResult PaymentFailure(int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+
+            return View(serviceRequest);
+
+        }
+
         public ActionResult PaymentView(int? ID)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -377,6 +447,10 @@ namespace Capstone4.Controllers
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
+            string payname = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\payname.txt");
+            string paypass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\paypass.txt");
+            string sig = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\sig.txt");
+            string appid = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\appid.txt");
             ReceiverList receiverList = new ReceiverList();
             receiverList.receiver = new List<Receiver>();
             Receiver receiver = new Receiver(serviceRequest.Price);
@@ -389,10 +463,10 @@ namespace Capstone4.Controllers
             receiverList.receiver.Add(receiver2);
             RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
             string actionType = "PAY";
-            string successUrl = "http://" + System.Web.HttpContext.Current.Request.Url.Authority + "/CompletedBids/SuccessView/{0}";
-            string failureUrl = "http://" + System.Web.HttpContext.Current.Request.Url.Authority + "/CompletedBids/FailureView/{0}";
-            successUrl = String.Format(successUrl, ID);
-            failureUrl = String.Format(failureUrl, ID);
+            //string successUrl = "http://" + System.Web.HttpContext.Current.Request.Url.Authority + "/CompletedBids/SuccessView/{0}";
+            //string failureUrl = "http://" + System.Web.HttpContext.Current.Request.Url.Authority + "/CompletedBids/FailureView/{0}";
+            string successUrl = "http://localhost:37234/ServiceRequests/PaymentSuccess/" + serviceRequest.ID;
+            string failureUrl = "http://localhost:37234/ServiceRequests/PaymentFailure/" + serviceRequest.ID;
             string returnUrl = successUrl;
             string cancelUrl = failureUrl;
             string currencyCode = "USD";
@@ -402,10 +476,10 @@ namespace Capstone4.Controllers
             payRequest.memo = memo;
             Dictionary<string, string> sdkConfig = new Dictionary<string, string>();
             sdkConfig.Add("mode", "sandbox");
-            sdkConfig.Add("account1.apiUsername", "mattjheller-facilitator_api1.yahoo.com"); //PayPal.Account.APIUserName
-            sdkConfig.Add("account1.apiPassword", "DG6GB55TRBWLESWG"); //PayPal.Account.APIPassword
-            sdkConfig.Add("account1.apiSignature", "AFcWxV21C7fd0v3bYYYRCpSSRl31AafAKKwBsAp2EBV9PExGkablGWhj"); //.APISignature
-            sdkConfig.Add("account1.applicationId", "APP-80W284485P519543T"); //.ApplicatonId
+            sdkConfig.Add("account1.apiUsername", payname); //PayPal.Account.APIUserName
+            sdkConfig.Add("account1.apiPassword", paypass); //PayPal.Account.APIPassword
+            sdkConfig.Add("account1.apiSignature", sig); //.APISignature
+            sdkConfig.Add("account1.applicationId", appid); //.ApplicatonId
 
             AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(sdkConfig);
             PayResponse payResponse = adaptivePaymentsService.Pay(payRequest);
@@ -484,9 +558,27 @@ namespace Capstone4.Controllers
             var myMessage = new SendGrid.SendGridMessage();
             myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
-            myMessage.Subject = "Service Request Acceptance!!";
+            myMessage.Subject = "Job Complete!!";
             string url = "http://localhost:37234/ServiceRequests/PaymentView/" + serviceRequest.ID;
             string message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + serviceRequest.Contractor.Username + " has confirmed completion your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "To complete payment, click on link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Contractor_of_Payment(ServiceRequest serviceRequest)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(serviceRequest.Contractor.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "You've been paid!!";
+            string url = "http://localhost:37234/ServiceRequests/PaymentView/" + serviceRequest.ID;
+            string message = "Hello " + serviceRequest.Contractor.FirstName + "," + "<br>" + "<br>" + "$" + serviceRequest.AmountDue + " has been credited to your Paypal account for the following service:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Service Number: <br>" + serviceRequest.Service_Number;
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);

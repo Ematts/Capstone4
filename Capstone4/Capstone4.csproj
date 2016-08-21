@@ -440,6 +440,8 @@
     <Content Include="Views\ServiceRequests\AddContractorPhotosView.cshtml" />
     <Content Include="Views\ServiceRequests\Contractor_Thank_You.cshtml" />
     <Content Include="Views\ServiceRequests\PaymentView.cshtml" />
+    <Content Include="Views\ServiceRequests\PaymentSuccess.cshtml" />
+    <Content Include="Views\ServiceRequests\PaymentFailure.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

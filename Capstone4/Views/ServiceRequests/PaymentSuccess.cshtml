@@ -1,0 +1,34 @@
+﻿@model Capstone4.Models.ServiceRequest
+
+@{
+    ViewBag.Title = "PaymentSuccess";
+}
+
+<h2>Payment Success</h2>
+
+
+@{string name = Model.Homeowner.FirstName; }
+@{decimal amount = Model.Price; }
+@{string mail = Model.Homeowner.ApplicationUser.Email; }
+<strong>
+    Hello @name!
+    <br /><br />
+    Thank you for using Work Warriors!  
+    <br /><br />
+    You have made a payment of $@amount. 
+    <br /><br />
+    A confimation email will be sent to @mail.
+</strong>
+<br /><br />
+
+<button onclick="functionToExec()">Close</button> 
+
+<script>
+    function functionToExec()
+    {
+        dgFlow = top.dgFlow || top.opener.top.dgFlow;
+        dgFlow.closeFlow();
+        top.close();
+    }
+</script>
+

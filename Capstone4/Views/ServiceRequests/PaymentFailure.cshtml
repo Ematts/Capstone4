@@ -1,0 +1,24 @@
+﻿@model Capstone4.Models.ServiceRequest
+
+
+@{
+    ViewBag.Title = "PaymentFailure";
+}
+
+<h2>Payment Failure</h2>
+
+<strong>
+Something went wrong with your payment!
+</strong>
+<br /><br />
+
+<button onclick="functionToExec()">Close</button>
+
+<script>
+    function functionToExec()
+    {
+        dgFlow = top.dgFlow || top.opener.top.dgFlow;
+        dgFlow.closeFlow();
+        top.close();
+    }
+</script>

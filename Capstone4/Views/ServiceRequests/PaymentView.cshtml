@@ -9,6 +9,17 @@
 <div>
     <h4>Service Request</h4>
     <hr />
+    @{string service = Model.Description + " Service# = " + Model.Service_Number; }
+<form action="https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame" class="standard">
+    <input type="image" id="submitBtn" value="Pay with PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif">
+    <input id="type" type="hidden" name="expType" value="light">
+    <input id="paykey" type="hidden" name="paykey" value=@ViewData["paykey"]>
+</form>
+<script src="https://www.paypalobjects.com/js/external/dg.js">
+</script>
+<script>
+  var dgFlow = new PAYPAL.apps.DGFlow({ trigger: 'submitBtn' });
+</script>
     <dl class="dl-horizontal">
         @Html.HiddenFor(model => model.ID)
  
@@ -125,21 +136,21 @@
     <br> <br />
 </div>
 
-<script src="https://www.paypalobjects.com/js/external/dg.js" type="text/javascript"></script>
-<h2>Make Payment</h2>
+@*<h2>Make Payment</h2>*@
 
 
-@{string service = Model.Description + " Service# = " + Model.Service_Number; }
+@*@{string service = Model.Description + " Service# = " + Model.Service_Number; }
 <form action="https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame" class="standard">
-    <label for="buy">Buy Now:</label>
     <input type="image" id="submitBtn" value="Pay with PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif">
     <input id="type" type="hidden" name="expType" value="light">
     <input id="paykey" type="hidden" name="paykey" value=@ViewData["paykey"]>
 </form>
-<script type="text/javascript" charset="utf-8">
-var embeddedPPFlow = new PAYPAL.apps.DGFlow({ trigger: 'submitBtn' });
+<script src="https://www.paypalobjects.com/js/external/dg.js">
 </script>
-@*}*@
+<script>
+  var dgFlow = new PAYPAL.apps.DGFlow({ trigger: 'submitBtn' });
+</script>*@
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
