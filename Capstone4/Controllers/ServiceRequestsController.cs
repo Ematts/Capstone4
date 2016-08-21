@@ -10,6 +10,8 @@ using Capstone4.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
 using System.Net.Mail;
+using PayPal.AdaptivePayments.Model;
+using PayPal.AdaptivePayments;
 
 namespace Capstone4.Controllers
 {
@@ -61,7 +63,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Address address, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
@@ -131,7 +133,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Address address)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Models.Address address)
         {
             if (ModelState.IsValid)
             {
@@ -139,7 +141,7 @@ namespace Capstone4.Controllers
                 db.Entry(serviceRequest).State = EntityState.Modified;
                 if (serviceRequest.AddressID == null)
                 {
-                    Address newAdd = new Address();
+                    Models.Address newAdd = new Models.Address();
                     newAdd.Street = address.Street;
                     newAdd.City = address.City;
                     newAdd.State = address.State;
@@ -312,6 +314,105 @@ namespace Capstone4.Controllers
 
         }
 
+        public ActionResult ConfirmCompletion(int? ID)
+        {
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            serviceRequest.CompletionDate = DateTime.Now;
+            serviceRequest.AmountDue = serviceRequest.Price * .9m;
+            db.SaveChanges();
+            Notify_Homeowner_of_Completion(serviceRequest);
+            return RedirectToAction("Contractor_Thank_You", "ServiceRequests", new { id = serviceRequest.ID });
+
+        }
+        public ActionResult Contractor_Thank_You(int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+
+            return View(serviceRequest);
+
+        }
+
+        public ActionResult PaymentView(int? ID)
+        {
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+            ReceiverList receiverList = new ReceiverList();
+            receiverList.receiver = new List<Receiver>();
+            Receiver receiver = new Receiver(serviceRequest.Price);
+            receiver.email = "workwarriors@gmail.com";
+            receiver.primary = true;
+            receiverList.receiver.Add(receiver);
+            Receiver receiver2 = new Receiver(serviceRequest.AmountDue);
+            receiver2.email = serviceRequest.Contractor.ApplicationUser.Email;
+            receiver2.primary = false;
+            receiverList.receiver.Add(receiver2);
+            RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
+            string actionType = "PAY";
+            string successUrl = "http://" + System.Web.HttpContext.Current.Request.Url.Authority + "/CompletedBids/SuccessView/{0}";
+            string failureUrl = "http://" + System.Web.HttpContext.Current.Request.Url.Authority + "/CompletedBids/FailureView/{0}";
+            successUrl = String.Format(successUrl, ID);
+            failureUrl = String.Format(failureUrl, ID);
+            string returnUrl = successUrl;
+            string cancelUrl = failureUrl;
+            string currencyCode = "USD";
+            PayRequest payRequest = new PayRequest(requestEnvelope, actionType, cancelUrl, currencyCode, receiverList, returnUrl);
+            payRequest.ipnNotificationUrl = "http://replaceIpnUrl.com";
+            string memo = serviceRequest.Description + " Invoice = " + serviceRequest.Service_Number;
+            payRequest.memo = memo;
+            Dictionary<string, string> sdkConfig = new Dictionary<string, string>();
+            sdkConfig.Add("mode", "sandbox");
+            sdkConfig.Add("account1.apiUsername", "mattjheller-facilitator_api1.yahoo.com"); //PayPal.Account.APIUserName
+            sdkConfig.Add("account1.apiPassword", "DG6GB55TRBWLESWG"); //PayPal.Account.APIPassword
+            sdkConfig.Add("account1.apiSignature", "AFcWxV21C7fd0v3bYYYRCpSSRl31AafAKKwBsAp2EBV9PExGkablGWhj"); //.APISignature
+            sdkConfig.Add("account1.applicationId", "APP-80W284485P519543T"); //.ApplicatonId
+
+            AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(sdkConfig);
+            PayResponse payResponse = adaptivePaymentsService.Pay(payRequest);
+            ViewData["paykey"] = payResponse.payKey;
+            return View(serviceRequest);
+
+        }
         public ActionResult AddContractorPhotos(int? ID, IEnumerable<HttpPostedFileBase> files)
         {
             ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
@@ -368,6 +469,24 @@ namespace Capstone4.Controllers
             myMessage.Subject = "Service Request Acceptance!!";
             string url = "http://localhost:37234/ContractorAcceptances/NotifyHomeownerView/" + contractorAcceptance.ID;
             string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To confirm contractor, click on link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Homeowner_of_Completion(ServiceRequest serviceRequest)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Service Request Acceptance!!";
+            string url = "http://localhost:37234/ServiceRequests/PaymentView/" + serviceRequest.ID;
+            string message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + serviceRequest.Contractor.Username + " has confirmed completion your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "To complete payment, click on link below: <br><a href =" + url + "> Click Here </a>";
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);

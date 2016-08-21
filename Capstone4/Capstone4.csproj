@@ -89,6 +89,14 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PayPalAdaptivePaymentsSDK, Version=2.15.117.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PayPalAdaptivePaymentsSDK.2.15.117\lib\net20\PayPalAdaptivePaymentsSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PayPalCoreSDK, Version=1.7.0.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PayPalCoreSDK.1.7.0\lib\net451\PayPalCoreSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Quartz, Version=2.4.0.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Quartz.2.4.0\lib\net40\Quartz.dll</HintPath>
       <Private>True</Private>
@@ -298,6 +306,10 @@
     <Compile Include="Migrations\201608202043516_s4.Designer.cs">
       <DependentUpon>201608202043516_s4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608211659341_b1.cs" />
+    <Compile Include="Migrations\201608211659341_b1.Designer.cs">
+      <DependentUpon>201608211659341_b1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -426,6 +438,8 @@
     <Content Include="Views\CompletedServiceRequests\ConfirmCompletion.cshtml" />
     <Content Include="Views\ServiceRequests\ConfirmCompletionView.cshtml" />
     <Content Include="Views\ServiceRequests\AddContractorPhotosView.cshtml" />
+    <Content Include="Views\ServiceRequests\Contractor_Thank_You.cshtml" />
+    <Content Include="Views\ServiceRequests\PaymentView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -480,6 +494,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608202043516_s4.resx">
       <DependentUpon>201608202043516_s4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608211659341_b1.resx">
+      <DependentUpon>201608211659341_b1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

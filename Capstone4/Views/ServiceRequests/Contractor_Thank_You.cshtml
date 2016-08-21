@@ -1,0 +1,15 @@
+﻿@model Capstone4.Models.ServiceRequest
+    
+@{
+    ViewBag.Title = "Contractor_Thank_You";
+}
+
+<h2>Contractor_Thank_You</h2>
+
+@{string name = Model.Contractor.FirstName; }
+@{decimal amount = Model.AmountDue; }
+
+<strong>
+    Hello, @name
+    <br /><br />
+    Thank you for confirming completion!  Your paypal account will be credited $@amount once homeowner pays.</strong>

@@ -40,6 +40,12 @@ namespace Capstone4.Models
         [Display(Name = "Service Number")]
         public int Service_Number { get; set; }
         public bool Expired { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime? CompletionDate { get; set; }
+        [Display(Name = "Amount to pay contractor")]
+        public decimal AmountDue { get; set; }
+        [Display(Name = "Contractor paid")]
+        public bool ContractorPaid { get; set; }
         public virtual ICollection<ServiceRequestFilePath> ServiceRequestFilePaths { get; set; }
         public virtual ICollection<CompletedServiceRequestFilePath> CompletedServiceRequestFilePaths { get; set; }
         public virtual ICollection<ContractorAcceptance> ContractorAcceptances { get; set; }
