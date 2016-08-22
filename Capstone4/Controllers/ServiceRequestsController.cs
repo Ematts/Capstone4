@@ -196,6 +196,10 @@ namespace Capstone4.Controllers
             {
                 db.Addresses.Remove(serviceRequest.Address);
             }
+            if(serviceRequest.ContractorReview != null)
+            {
+                db.ContractorReviews.Remove(serviceRequest.ContractorReview);
+            }
             db.ServiceRequests.Remove(serviceRequest);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -426,6 +430,52 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
 
         }
+
+        public ActionResult AddReview(int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+
+            return View(serviceRequest);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddReview([Bind(Include = "ID,Review,Rating")] ContractorReview contractorReview, int ID)
+        {
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            if (ModelState.IsValid)
+            {
+                contractorReview.ReviewDate = DateTime.Now;
+                db.ContractorReviews.Add(contractorReview);
+                db.SaveChanges();
+                serviceRequest.ContractorReviewID = contractorReview.ID;
+                db.SaveChanges();
+                return RedirectToAction("Index", "ContractorReviews");
+            }
+            return View(serviceRequest);
+        }
+
+
 
         public ActionResult PaymentView(int? ID)
         {

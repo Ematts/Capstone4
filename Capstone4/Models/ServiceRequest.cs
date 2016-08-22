@@ -19,14 +19,8 @@ namespace Capstone4.Models
         public int HomeownerID { get; set; }
         [ForeignKey("HomeownerID")]
         public virtual Homeowner Homeowner { get; set; }
-        //public int CompletedRequestID { get; set; }
-        //[ForeignKey("CompletedRequestID")]
-        //public virtual CompletedRequest CompletedRequest { get; set; }
-        //public int ReviewID { get; set; }
-        //[ForeignKey("ReviewID")]
-        //public virtual Review Review { get; set; }
-        //public virtual ICollection<ServiceRequestPhoto> ServiceRequestPhotos { get; set; }
-        //public virtual ICollection<ContractorPhoto> ContractorPhotos { get; set; }
+        public int? ContractorReviewID { get; set; }
+        public virtual ContractorReview ContractorReview { get; set; }
         [Display(Name = "Posted Date")]
         public DateTime PostedDate { get; set; }
         [Required]

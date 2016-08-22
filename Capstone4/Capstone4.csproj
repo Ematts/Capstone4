@@ -241,6 +241,7 @@
     <Compile Include="Controllers\AddressesController.cs" />
     <Compile Include="Controllers\CompletedServiceRequestsController.cs" />
     <Compile Include="Controllers\ContractorAcceptancesController.cs" />
+    <Compile Include="Controllers\ContractorReviewsController.cs" />
     <Compile Include="Controllers\ContractorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeownersController.cs" />
@@ -310,6 +311,30 @@
     <Compile Include="Migrations\201608211659341_b1.Designer.cs">
       <DependentUpon>201608211659341_b1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608221718357_m.cs" />
+    <Compile Include="Migrations\201608221718357_m.Designer.cs">
+      <DependentUpon>201608221718357_m.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221800220_f3.cs" />
+    <Compile Include="Migrations\201608221800220_f3.Designer.cs">
+      <DependentUpon>201608221800220_f3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221807277_f4.cs" />
+    <Compile Include="Migrations\201608221807277_f4.Designer.cs">
+      <DependentUpon>201608221807277_f4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221811196_g.cs" />
+    <Compile Include="Migrations\201608221811196_g.Designer.cs">
+      <DependentUpon>201608221811196_g.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221815178_h.cs" />
+    <Compile Include="Migrations\201608221815178_h.Designer.cs">
+      <DependentUpon>201608221815178_h.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221829506_f5.cs" />
+    <Compile Include="Migrations\201608221829506_f5.Designer.cs">
+      <DependentUpon>201608221829506_f5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -317,6 +342,7 @@
     <Compile Include="Models\CompletedServiceRequestFilePath.cs" />
     <Compile Include="Models\Contractor.cs" />
     <Compile Include="Models\ContractorAcceptance.cs" />
+    <Compile Include="Models\ContractorReview.cs" />
     <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -442,6 +468,12 @@
     <Content Include="Views\ServiceRequests\PaymentView.cshtml" />
     <Content Include="Views\ServiceRequests\PaymentSuccess.cshtml" />
     <Content Include="Views\ServiceRequests\PaymentFailure.cshtml" />
+    <Content Include="Views\ContractorReviews\Create.cshtml" />
+    <Content Include="Views\ContractorReviews\Delete.cshtml" />
+    <Content Include="Views\ContractorReviews\Details.cshtml" />
+    <Content Include="Views\ContractorReviews\Edit.cshtml" />
+    <Content Include="Views\ContractorReviews\Index.cshtml" />
+    <Content Include="Views\ServiceRequests\AddReview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -499,6 +531,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608211659341_b1.resx">
       <DependentUpon>201608211659341_b1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221718357_m.resx">
+      <DependentUpon>201608221718357_m.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221800220_f3.resx">
+      <DependentUpon>201608221800220_f3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221807277_f4.resx">
+      <DependentUpon>201608221807277_f4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221811196_g.resx">
+      <DependentUpon>201608221811196_g.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221815178_h.resx">
+      <DependentUpon>201608221815178_h.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221829506_f5.resx">
+      <DependentUpon>201608221829506_f5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

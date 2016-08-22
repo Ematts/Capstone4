@@ -42,6 +42,6 @@ namespace Capstone4.Models
 
         public System.Data.Entity.DbSet<Capstone4.Models.CompletedServiceRequest> CompletedServiceRequests { get; set; }
 
-
+        public System.Data.Entity.DbSet<Capstone4.Models.ContractorReview> ContractorReviews { get; set; }
     }
 }
