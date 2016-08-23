@@ -133,7 +133,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Models.Address address)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid")] ServiceRequest serviceRequest, Models.Address address)
         {
             if (ModelState.IsValid)
             {

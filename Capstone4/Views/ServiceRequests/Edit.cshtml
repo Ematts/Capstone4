@@ -19,6 +19,12 @@
         @Html.HiddenFor(model => model.PostedDate)
         @Html.HiddenFor(model => model.AddressID)
         @Html.HiddenFor(model => model.HomeownerID)
+        @Html.HiddenFor(model => model.ContractorID)
+        @Html.HiddenFor(model => model.ContractorReviewID)
+        @Html.HiddenFor(model => model.CompletionDate)
+        @Html.HiddenFor(model => model.AmountDue)
+        @Html.HiddenFor(model => model.ContractorPaid)
+
         <div class="form-group">
             @Html.LabelFor(model => model.Address.Street, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
