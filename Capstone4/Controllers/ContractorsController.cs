@@ -172,7 +172,36 @@ namespace Capstone4.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Contractor contractor = db.Contractors.Find(id);
-            db.Addresses.Remove(contractor.Address);
+            if (contractor.AddressID != null)
+            {
+                db.Addresses.Remove(contractor.Address);
+            }
+            foreach(var request in db.ServiceRequests.ToList())
+            {
+                if (request.ContractorReview.ContractorID == id)
+                {
+                    request.ContractorReviewID = null;
+                }
+            }
+            foreach(var review in db.ContractorReviews.ToList())
+            {
+                if(review.ContractorID == id)
+                {
+                    
+                    db.ContractorReviews.Remove(review);
+                    
+                }
+                
+            }
+            foreach(var acceptance in db.ContractorAcceptances)
+            {
+                if(acceptance.ContractorID == id)
+                {
+                    acceptance.ServiceRequest.ContractorID = null;
+                    db.ContractorAcceptances.Remove(acceptance);
+                }
+            }
+           
             db.Contractors.Remove(contractor);
             db.SaveChanges();
             return RedirectToAction("Index");
