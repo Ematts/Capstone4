@@ -214,5 +214,19 @@ namespace Capstone4.Controllers
             }
             return Json("Username \"" + Username + "\" is already taken.", JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult SeeReviews(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Contractor contractor = db.Contractors.Find(id);
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(contractor);
+        }
     }
 }

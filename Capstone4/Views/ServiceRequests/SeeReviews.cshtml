@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Capstone4.Models.ServiceRequest>
+
+@{
+    ViewBag.Title = "SeeReviews";
+}
+
+<h2>SeeReviews</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.Address.Street)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contractor.UserId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContractorReview.Review)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Homeowner.UserId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompletionDeadline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Service_Number)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Expired)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompletionDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AmountDue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContractorPaid)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Address.Street)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contractor.UserId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContractorReview.Review)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Homeowner.UserId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PostedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompletionDeadline)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Service_Number)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Expired)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompletionDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AmountDue)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContractorPaid)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

@@ -389,7 +389,7 @@ namespace Capstone4.Controllers
             var myMessage = new SendGrid.SendGridMessage();
             string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
             string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
-            string url = "http://localhost:37234/ServiceRequests/AcceptView/" + serviceRequest.ID;
+            string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
             myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
             myMessage.Subject = "Payment Confirmed!!";
@@ -466,15 +466,52 @@ namespace Capstone4.Controllers
             if (ModelState.IsValid)
             {
                 contractorReview.ReviewDate = DateTime.Now;
+                contractorReview.ContractorID = serviceRequest.ContractorID;
                 db.ContractorReviews.Add(contractorReview);
                 db.SaveChanges();
                 serviceRequest.ContractorReviewID = contractorReview.ID;
+                db.SaveChanges();
+                foreach (var contractor in db.Contractors)
+                {
+                    if(contractor.ID == contractorReview.ContractorID)
+                    {
+                        UpdateRating(contractor);
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index", "ContractorReviews");
             }
             return View(serviceRequest);
         }
 
+        public void UpdateRating(Contractor contractor)
+        {
+            List<double?> ratings;
+            ratings = (from x in db.ContractorReviews
+                       where x.ContractorID == contractor.ID
+                       select x.Rating).ToList();
+                       contractor.Rating = ratings.Average();
+            
+        }
+
+        public ActionResult SeeReviews(Contractor contractor)
+        {
+            //ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            List<ServiceRequest> reviewList = new List<ServiceRequest>();
+            contractor.ID = 1;
+            foreach (var review in db.ServiceRequests)
+            {
+
+                if (review.ContractorReviewID != null)
+                {
+                    if (review.ContractorReview.ContractorID == contractor.ID)
+                    {
+                        reviewList.Add(review);
+                    }
+                }
+            }
+            return View(reviewList);
+        }
 
 
         public ActionResult PaymentView(int? ID)
@@ -592,7 +629,8 @@ namespace Capstone4.Controllers
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
             myMessage.Subject = "Service Request Acceptance!!";
             string url = "http://localhost:37234/ContractorAcceptances/NotifyHomeownerView/" + contractorAcceptance.ID;
-            string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To confirm contractor, click on link below: <br><a href =" + url + "> Click Here </a>";
+            string url2 = "http://localhost:37234/Contractors/SeeReviews/" + contractorAcceptance.ContractorID;
+            string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To confirm contractor, click on link below: <br><a href =" + url + "> Click Here </a>" + "<br>" + "<br>" + "See " + contractorAcceptance.Contractor.Username + ", reviews by clicking on the link below: <br><a href =" + url2 + "> Click Here </a>";
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);

@@ -107,13 +107,44 @@ namespace Capstone4.Controllers
         // POST: ContractorReviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id, Contractor contractor)
         {
             ContractorReview contractorReview = db.ContractorReviews.Find(id);
+            contractor = contractorReview.Contractor;
+
+            foreach (var request in db.ServiceRequests)
+            {
+                if (request.ContractorReviewID == id)
+                {
+                    request.ContractorReviewID = null;
+                    
+                }
+            }
             db.ContractorReviews.Remove(contractorReview);
+            db.SaveChanges();
+            UpdateRating(contractor);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public void UpdateRating(Contractor contractor)
+        {
+
+            List<double?> ratings;
+            ratings = (from x in db.ContractorReviews
+                       where x.ContractorID == contractor.ID
+                       select x.Rating).ToList();
+            if (ratings.Count > 0)
+            {
+                contractor.Rating = ratings.Average();
+            }
+            else
+            {
+                contractor.Rating = null;
+            }
+            
+         }
+
 
         protected override void Dispose(bool disposing)
         {

@@ -1,0 +1,61 @@
+﻿@model Capstone4.Models.Contractor
+
+@{
+    ViewBag.Title = "SeeReviews";
+}
+
+<h2>SeeReviews</h2>
+
+<div>
+    <h4>Contractor</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @Html.HiddenFor(model => model.ID)
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rating)
+        </dd>
+
+        @foreach (var item in Model.ContractorReviews)
+        {
+            <dt>
+                Review
+            </dt>
+
+            <dd>
+                @item.Review
+            </dd>
+            <dt>
+                Rating
+            </dt>
+
+            <dd>
+                @item.Rating
+            </dd>
+            <dt>
+                Review Date
+            </dt>
+
+            <dd>
+                @item.ReviewDate
+            </dd>
+        }
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

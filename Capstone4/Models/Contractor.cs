@@ -31,5 +31,7 @@ namespace Capstone4.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        public double? Rating { get; set; }
+        public virtual ICollection<ContractorReview> ContractorReviews { get; set; }
     }
 }
