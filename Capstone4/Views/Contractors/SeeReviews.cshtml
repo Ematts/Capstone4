@@ -22,12 +22,40 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Rating)
+            Rating
+        </dt>
+        <dd>
+            @{ 
+
+                if (Model.ContractorReviews.Count > 0)
+                {
+                    double? score;
+                    List<double?> ratings;
+                    ratings = (from x in Model.ContractorReviews
+                               where x.ContractorID == Model.ID
+                               select x.Rating).ToList();
+                    score = ratings.Average();
+                    @score;
+
+                }
+                else
+                {
+                    string score = "Not Rated";
+                    @score
+                }
+            }
+
+            
+        </dd>
+
+        <dt>
+            Total Ratings
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Rating)
+            @Model.ContractorReviews.Count
         </dd>
+
 
         @foreach (var item in Model.ContractorReviews)
         {
