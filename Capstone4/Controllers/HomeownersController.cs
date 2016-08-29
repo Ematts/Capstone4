@@ -77,7 +77,7 @@ namespace Capstone4.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 db.Addresses.Add(address);
                 homeowner.UserId = identity;
                 homeowner.AddressID = address.ID;
@@ -97,7 +97,7 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Homeowner homeowner = db.Homeowners.Find(id);
-     
+
             if (homeowner == null)
             {
                 return HttpNotFound();
@@ -116,9 +116,9 @@ namespace Capstone4.Controllers
         {
             if (ModelState.IsValid)
             {
-               
+
                 db.Entry(homeowner).State = EntityState.Modified;
-                if(homeowner.AddressID == null)
+                if (homeowner.AddressID == null)
                 {
                     Address newAdd = new Address();
                     newAdd.Street = address.Street;
@@ -133,7 +133,7 @@ namespace Capstone4.Controllers
                     return RedirectToAction("Index");
 
                 }
-                foreach(var i in  db.Addresses)
+                foreach (var i in db.Addresses)
                 {
                     if (i.ID == homeowner.AddressID)
                     {
@@ -143,7 +143,7 @@ namespace Capstone4.Controllers
                         i.Zip = address.Zip;
                     }
                 }
-               
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -205,16 +205,19 @@ namespace Capstone4.Controllers
         }
         [AllowAnonymous]
 
-        public JsonResult doesUserNameExist(string Username)
+        public JsonResult doesUserNameExist(string Username)  
         {
-            ApplicationDbContext db = new ApplicationDbContext();
-            var homeownerResult = db.Homeowners.Where(x => x.Username == Username);
-            var contractorResult = db.Contractors.Where(x => x.Username == Username);
-            if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1))
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var homeownerResult = db.Homeowners.Where(x => x.Username == Username && x.UserId != identity);
+            var contractorResult = db.Contractors.Where(x => x.Username == Username && x.UserId != identity);
+            var adminResult = db.Admins.Where(x => x.Username == Username && x.UserId != identity);
+            if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1) && (adminResult.Count() < 1))
             {
-                return Json(true, JsonRequestBehavior.AllowGet);
+                  return Json(true, JsonRequestBehavior.AllowGet);
             }
-            return Json("Username \"" + Username + "\" is already taken.", JsonRequestBehavior.AllowGet);
+              return Json("Username \"" + Username + "\" is already taken.", JsonRequestBehavior.AllowGet);
+
         }
     }
 }
+

@@ -23,7 +23,7 @@
                     double? score;
                     List<double?> ratings;
                     ratings = (from x in Model.ContractorReviews
-                               where x.ContractorID == Model.ID
+                                   //where x.ContractorID == Model.ID
                                select x.Rating).ToList();
                     score = ratings.Average();
                     <input id="input-id" type="number" value="@score" class="rating" data-size="lg" name="Rating" data-readonly="true" data-show-clear="false">

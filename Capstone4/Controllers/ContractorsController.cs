@@ -235,9 +235,11 @@ namespace Capstone4.Controllers
         public JsonResult doesUserNameExist(string Username)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var homeownerResult = db.Homeowners.Where(x => x.Username == Username);
-            var contractorResult = db.Contractors.Where(x => x.Username == Username);
-            if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1))
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var homeownerResult = db.Homeowners.Where(x => x.Username == Username && x.UserId != identity);
+            var contractorResult = db.Contractors.Where(x => x.Username == Username && x.UserId != identity);
+            var adminResult = db.Admins.Where(x => x.Username == Username && x.UserId != identity);
+            if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1) && (adminResult.Count() < 1))
             {
                 return Json(true, JsonRequestBehavior.AllowGet);
             }

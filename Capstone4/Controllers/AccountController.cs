@@ -133,7 +133,164 @@ namespace Capstone4.Controllers
                     return View(model);
             }
         }
+        [AllowAnonymous]
+        public ActionResult ChooseRole()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            ViewBag.roles = new SelectList(db.Roles, "Id", "Name");
+            return View();
+        }
+        [AllowAnonymous]
+        public ActionResult Direct(ChooseRoleViewModel model)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var role = db.Roles.Find(model.roles.ToString());
+            if (role.Id == "0")
+            {
+                return RedirectToAction("RegisterHomeowner", "Account");
+            }
+            else if (role.Id == "1")
+            {
+                return RedirectToAction("RegisterContractor", "Account");
+            }
 
+            else if (role.Id == "2")
+            {
+                return RedirectToAction("RegisterAdmin", "Account");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+        }
+
+        // GET: /Account/RegisterHomeowner
+        [AllowAnonymous]
+        public ActionResult RegisterHomeowner()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            ViewBag.roles = new SelectList(db.Roles, "Id", "Name");
+            return View();
+        }
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterHomeowner(RegisterHomeownerViewModel model)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    
+                    var role = db.Roles.Find("0");
+                    UserManager.AddToRole(user.Id, role.Name);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip };
+                    db.Addresses.Add(address);
+                    var homeowner = new Homeowner { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id };
+                    homeowner.AddressID = address.ID;
+                    db.Homeowners.Add(homeowner);
+                    db.SaveChanges();
+
+
+                    return RedirectToAction("Index", "Homeowners");
+
+                }
+                AddErrors(result);
+            }
+
+            return View(model);
+        }
+
+        // GET: /Account/RegisterContractor
+        [AllowAnonymous]
+        public ActionResult RegisterContractor()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            ViewBag.roles = new SelectList(db.Roles, "Id", "Name");
+            return View();
+        }
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterContractor(RegisterHomeownerViewModel model)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+
+                    var role = db.Roles.Find("1");
+                    UserManager.AddToRole(user.Id, role.Name);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip };
+                    db.Addresses.Add(address);
+                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id };
+                    contractor.AddressID = address.ID;
+                    db.Contractors.Add(contractor);
+                    db.SaveChanges();
+
+
+                    return RedirectToAction("Index", "Contractors");
+
+                }
+                AddErrors(result);
+            }
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public ActionResult RegisterAdmin()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            ViewBag.roles = new SelectList(db.Roles, "Id", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterAdmin(RegisterAdminViewModel model)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+
+                    var role = db.Roles.Find("2");
+                    UserManager.AddToRole(user.Id, role.Name);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    var admin = new Admin { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id };
+                    db.Admins.Add(admin);
+                    db.SaveChanges();
+
+
+                    return RedirectToAction("Index", "Admins");
+
+                }
+                AddErrors(result);
+            }
+
+            return View(model);
+        }
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -445,6 +602,30 @@ namespace Capstone4.Controllers
 
             base.Dispose(disposing);
         }
+        [AllowAnonymous]
+        public JsonResult doesUserNameExist1(string Screen_name)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var homeownerResult = db.Homeowners.Where(x => x.Username == Screen_name);
+            var contractorResult = db.Contractors.Where(x => x.Username == Screen_name);
+            var adminResult = db.Admins.Where(x => x.Username == Screen_name);
+            if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1) && (adminResult.Count() < 1))
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json("Username \"" + Screen_name + "\" is already taken.", JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult adminPass(string Password)
+        {
+            if (Password == "Warrior20!")
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json("You have entered an incorrect admin creation password.", JsonRequestBehavior.AllowGet);
+        }
 
         #region Helpers
         // Used for XSRF protection when adding external logins
@@ -474,6 +655,19 @@ namespace Capstone4.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
+
+        //public JsonResult doesUserNameExist(string Screen_name)
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+        //    var homeownerResult = db.Homeowners.Where(x => x.Username == Screen_name);
+        //    var contractorResult = db.Contractors.Where(x => x.Username == Screen_name);
+        //    if ((homeownerResult.Count() < 1) && (contractorResult.Count() < 1))
+        //    {
+        //        return Json(true, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json("Username \"" + Screen_name + "\" is already taken.", JsonRequestBehavior.AllowGet);
+        //}
 
         internal class ChallengeResult : HttpUnauthorizedResult
         {

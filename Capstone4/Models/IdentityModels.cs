@@ -22,6 +22,7 @@ namespace Capstone4.Models
     {
         public DbSet<Homeowner> Homeowners { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<ServiceRequestFilePath> ServiceRequestFilePaths { get; set; }
         public DbSet<CompletedServiceRequestFilePath> CompletedServiceRequestFilePaths { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
@@ -43,5 +44,7 @@ namespace Capstone4.Models
         public System.Data.Entity.DbSet<Capstone4.Models.CompletedServiceRequest> CompletedServiceRequests { get; set; }
 
         public System.Data.Entity.DbSet<Capstone4.Models.ContractorReview> ContractorReviews { get; set; }
+
+        
     }
 }

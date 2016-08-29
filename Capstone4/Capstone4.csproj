@@ -239,6 +239,7 @@
     <Compile Include="AuxEmail.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
+    <Compile Include="Controllers\AdminsController.cs" />
     <Compile Include="Controllers\CompletedServiceRequestsController.cs" />
     <Compile Include="Controllers\ContractorAcceptancesController.cs" />
     <Compile Include="Controllers\ContractorReviewsController.cs" />
@@ -279,9 +280,34 @@
     <Compile Include="Migrations\201608230237493_h.Designer.cs">
       <DependentUpon>201608230237493_h.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608271740361_f2.cs" />
+    <Compile Include="Migrations\201608271740361_f2.Designer.cs">
+      <DependentUpon>201608271740361_f2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608271920019_d1.cs" />
+    <Compile Include="Migrations\201608271920019_d1.Designer.cs">
+      <DependentUpon>201608271920019_d1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608271936520_d2.cs" />
+    <Compile Include="Migrations\201608271936520_d2.Designer.cs">
+      <DependentUpon>201608271936520_d2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608282256595_d3.cs" />
+    <Compile Include="Migrations\201608282256595_d3.Designer.cs">
+      <DependentUpon>201608282256595_d3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608282345391_admin.cs" />
+    <Compile Include="Migrations\201608282345391_admin.Designer.cs">
+      <DependentUpon>201608282345391_admin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608290023345_d4.cs" />
+    <Compile Include="Migrations\201608290023345_d4.Designer.cs">
+      <DependentUpon>201608290023345_d4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\CompletedServiceRequest.cs" />
     <Compile Include="Models\CompletedServiceRequestFilePath.cs" />
     <Compile Include="Models\Contractor.cs" />
@@ -424,6 +450,15 @@
     <Content Include="Views\ServiceRequests\AddReview.cshtml" />
     <Content Include="Views\ServiceRequests\SeeReviews.cshtml" />
     <Content Include="Views\Contractors\SeeReviews.cshtml" />
+    <Content Include="Views\Account\ChooseRole.cshtml" />
+    <Content Include="Views\Account\RegisterHomeowner.cshtml" />
+    <Content Include="Views\Account\RegisterContractor.cshtml" />
+    <Content Include="Views\Admins\Create.cshtml" />
+    <Content Include="Views\Admins\Delete.cshtml" />
+    <Content Include="Views\Admins\Details.cshtml" />
+    <Content Include="Views\Admins\Edit.cshtml" />
+    <Content Include="Views\Admins\Index.cshtml" />
+    <Content Include="Views\Account\RegisterAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -457,6 +492,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608230237493_h.resx">
       <DependentUpon>201608230237493_h.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608271740361_f2.resx">
+      <DependentUpon>201608271740361_f2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608271920019_d1.resx">
+      <DependentUpon>201608271920019_d1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608271936520_d2.resx">
+      <DependentUpon>201608271936520_d2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608282256595_d3.resx">
+      <DependentUpon>201608282256595_d3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608282345391_admin.resx">
+      <DependentUpon>201608282345391_admin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608290023345_d4.resx">
+      <DependentUpon>201608290023345_d4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
