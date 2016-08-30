@@ -488,7 +488,7 @@ namespace Capstone4.Controllers
 
         public void UpdateRating(Contractor contractor)
         {
-            List<double?> ratings;
+            List<double> ratings;
             ratings = (from x in db.ContractorReviews
                        where x.ContractorID == contractor.ID
                        select x.Rating).ToList();
@@ -618,7 +618,7 @@ namespace Capstone4.Controllers
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
             myMessage.Subject = "Service Request Acceptance!!";
             string url = "http://localhost:37234/ContractorAcceptances/NotifyHomeownerView/" + contractorAcceptance.ID;
-            string url2 = "http://localhost:37234/Contractors/SeeReviews/" + contractorAcceptance.ContractorID;
+            string url2 = "http://localhost:37234/Contractors/SeeContractorReviews/" + contractorAcceptance.ContractorID;
             string message = "Hello " + contractorAcceptance.ServiceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + contractorAcceptance.Contractor.Username + " has offered to perform your following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + contractorAcceptance.ServiceRequest.Address.Street + "<br>" + contractorAcceptance.ServiceRequest.Address.City + "<br>" + contractorAcceptance.ServiceRequest.Address.State + "<br>" + contractorAcceptance.ServiceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + contractorAcceptance.ServiceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + contractorAcceptance.ServiceRequest.Price + "<br>" + "<br>" + "Must be completed by: <br>" + contractorAcceptance.ServiceRequest.CompletionDeadline + "<br>" + "<br>" + "Date Posted: <br>" + contractorAcceptance.ServiceRequest.PostedDate + "<br>" + "<br>" + "To confirm contractor, click on link below: <br><a href =" + url + "> Click Here </a>" + "<br>" + "<br>" + "See " + contractorAcceptance.Contractor.Username + "'s reviews by clicking on the link below: <br><a href =" + url2 + "> Click Here </a>";
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);

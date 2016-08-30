@@ -78,7 +78,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Review,Rating,ReviewDate")] ContractorReview contractorReview)
+        public ActionResult Edit([Bind(Include = "ID,Review,Rating,ReviewDate,ContractorID")] ContractorReview contractorReview)
         {
             if (ModelState.IsValid)
             {
@@ -130,7 +130,7 @@ namespace Capstone4.Controllers
         public void UpdateRating(Contractor contractor)
         {
 
-            List<double?> ratings;
+            List<double> ratings;
             ratings = (from x in db.ContractorReviews
                        where x.ContractorID == contractor.ID
                        select x.Rating).ToList();

@@ -12,8 +12,9 @@ namespace Capstone4.Models
         public int ID { get; set; }
         [DataType(DataType.MultilineText)]
         public string Review { get; set; }
-        [Range(0, 5)]
-        public double? Rating { get; set; }
+        [Required]
+        [Range(0.1, 5)]
+        public double Rating { get; set; }
         [Column(TypeName = "datetime2")]
         [Display(Name = "Review Date")]
         public DateTime? ReviewDate { get; set; }

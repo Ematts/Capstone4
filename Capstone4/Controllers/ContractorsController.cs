@@ -36,6 +36,42 @@ namespace Capstone4.Controllers
             }
             return View(contractor);
         }
+        public ActionResult SeeContractorReviews(SeeContractorReviewViewModel model, int? id)
+        {
+            Contractor contractor = db.Contractors.Find(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+            if (contractor.ContractorReviews.Count > 0)
+            {
+                List<double> ratings;
+                ratings = (from x in contractor.ContractorReviews
+                           select x.Rating).ToList();
+                model.OverallRating = ratings.Average();
+            }
+            else
+            {
+                model.OverallRating = 0;
+            }
+            model.ContractorUsername = contractor.Username;
+            model.TotalRatings = contractor.ContractorReviews.Count();
+            model.ServiceRequests = new List<ServiceRequest>();
+            foreach(var request in db.ServiceRequests)
+            {
+                if(request.ContractorID == id && request.ContractorReviewID != null)
+                {
+                    model.ServiceRequests.Add(request);
+                }
+            }
+
+            
+            return View(model);
+        }
 
         // GET: Contractors/Create
         public ActionResult Create()
@@ -112,7 +148,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street")] Contractor contractor, Address address)
+        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,Rating")] Contractor contractor, Address address)
         {
             if (ModelState.IsValid)
             {

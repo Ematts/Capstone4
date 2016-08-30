@@ -20,8 +20,8 @@
 
                 if (Model.ContractorReviews.Count > 0)
                 {
-                    double? score;
-                    List<double?> ratings;
+                    double score;
+                    List<double> ratings;
                     ratings = (from x in Model.ContractorReviews
                                    //where x.ContractorID == Model.ID
                                select x.Rating).ToList();
@@ -79,6 +79,7 @@
             <dd>
                 @item.ReviewDate
             </dd>
+
         }
     </dl>
 </div>
