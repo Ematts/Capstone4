@@ -4,10 +4,10 @@
     ViewBag.Title = "SeeContractorReviews";
 }
 
-<h2>SeeContractorReviews</h2>
+<h2>Contractor Reviews</h2>
 
-<div>
-    <h4>SeeContractorReviewViewModel</h4>
+<dl>
+    
     <hr />
     <dl class="dl-horizontal">
         @*@Html.HiddenFor(model => model.ID)*@
@@ -35,43 +35,49 @@
         <dd>
             @Html.DisplayFor(model => model.TotalRatings)
         </dd>
-        @foreach (var item in Model.ServiceRequests)
-        {
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Review)
-        </dt>
-
-        <dd>
-            @item.ContractorReview.Review
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-
-        <dd>
-            <input id="input-id" type="number" value="@item.ContractorReview.Rating" class="rating" data-size="xs" name="Rating" data-readonly="true" data-show-clear="false">     
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ReviewDate)
-        </dt>
-
-        <dd>
-            @item.ContractorReview.ReviewDate
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HomeownerUsername)
-        </dt>
-
-        <dd>
-            @item.Homeowner.Username
-        </dd>
-        }
-
     </dl>
+    <hr />
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Rating)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Review)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReviewDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HomeownerUsername)
+                </th>
+
+                <th></th>
+            </tr>
+            @foreach (var item in Model.ServiceRequests)
+            {
+           <tr>
+
+                <td>
+                    <input id="input-id" type="number" value="@item.ContractorReview.Rating" class="rating" data-size="xs" name="Rating" data-readonly="true" data-show-clear="false">
+                </td>
+
+               <td>
+                   @item.ContractorReview.Review
+               </td>
+
+                <td>
+                    @item.ContractorReview.ReviewDate
+                </td>
+
+                <td>
+                    @item.Homeowner.Username
+                </td>
+                
+        </tr>
+            }
+
+</dl>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
