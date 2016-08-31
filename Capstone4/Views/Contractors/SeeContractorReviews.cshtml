@@ -4,21 +4,13 @@
     ViewBag.Title = "SeeContractorReviews";
 }
 
-<h2>Contractor Reviews</h2>
+<h2>@Html.DisplayFor(model => model.ContractorUsername)'s Reviews</h2>
 
 <dl>
     
     <hr />
     <dl class="dl-horizontal">
-        @*@Html.HiddenFor(model => model.ID)*@
-        <dt>
-            @Html.DisplayNameFor(model => model.ContractorUsername)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ContractorUsername)
-        </dd>
-
+       
         <dt>
             @Html.DisplayNameFor(model => model.OverallRating)
         </dt>
@@ -36,7 +28,7 @@
             @Html.DisplayFor(model => model.TotalRatings)
         </dd>
     </dl>
-    <hr />
+   
         <table class="table">
             <tr>
                 <th>
@@ -74,15 +66,17 @@
                     @item.Homeowner.Username
                 </td>
                 
-        </tr>
+           </tr>
             }
-
+         </table>
+    <hr>
 </dl>
-</div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+</div>
+
 <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
 <link href="~/Content/star-rating.css" media="all" rel="stylesheet" type="text/css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
