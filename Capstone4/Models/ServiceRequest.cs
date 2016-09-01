@@ -27,6 +27,7 @@ namespace Capstone4.Models
         public decimal Price { get; set; }
         [Required]
         [Display(Name = "Completion Deadline")]
+        [System.Web.Mvc.Remote("DateCheck", "ServiceRequests", HttpMethod = "POST", ErrorMessage = "The completion deadline must be later than the current time.")]
         public DateTime CompletionDeadline { get; set; }
         [StringLength(100, MinimumLength = 6)]
         [Required]
@@ -35,6 +36,7 @@ namespace Capstone4.Models
         public int Service_Number { get; set; }
         public bool Expired { get; set; }
         [Column(TypeName = "datetime2")]
+        [Display(Name = "Completion Date")]
         public DateTime? CompletionDate { get; set; }
         [Display(Name = "Amount to pay contractor")]
         public decimal AmountDue { get; set; }

@@ -36,6 +36,59 @@ namespace Capstone4.Controllers
             }
             return View(contractor);
         }
+
+        public ActionResult ReviewsIndex(string searchString, string clientUsername)
+        {
+            var contractors = db.Contractors.ToList();
+            List<ContractorReviewsIndexViewModel> models = new List<ContractorReviewsIndexViewModel>();
+            foreach(var contractor in contractors)
+            {
+                ContractorReviewsIndexViewModel model = new ContractorReviewsIndexViewModel { Username = contractor.Username, ID = contractor.ID };
+                if (contractor.ContractorReviews.Count > 0)
+                {
+                    List<double> ratings;
+                    ratings = (from x in contractor.ContractorReviews
+                               select x.Rating).ToList();
+                    model.OverallRating = ratings.Average();
+                }
+                else
+                {
+                    model.OverallRating = 0;
+                }
+                model.TotalRatings = contractor.ContractorReviews.Count();
+                models.Add(model);
+
+            }
+            var UsernameLst = new List<string>();
+            var UsernameQry = from d in db.Contractors
+                              orderby d.Username
+                              select d.Username;
+            UsernameLst.AddRange(UsernameQry.Distinct());
+            ViewBag.clientUsername = new SelectList(UsernameLst);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                foreach (var model in models.ToList())
+                {
+                    if(!model.Username.StartsWith(searchString))
+                    {
+                        models.Remove(model);
+                    }
+                    
+                }                       
+            }
+            if (!String.IsNullOrEmpty(clientUsername))
+            {
+                foreach (var model in models.ToList())
+                {
+                    if (model.Username != clientUsername)
+                    {
+                        models.Remove(model);
+                    }
+
+                }
+            }
+            return View(models);
+        }
         public ActionResult SeeContractorReviews(SeeContractorReviewViewModel model, int? id)
         {
             Contractor contractor = db.Contractors.Find(id);

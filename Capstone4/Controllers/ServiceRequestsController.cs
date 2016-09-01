@@ -662,6 +662,15 @@ namespace Capstone4.Controllers
             transportWeb.DeliverAsync(myMessage);
 
         }
+        [AllowAnonymous]
+        public JsonResult DateCheck(DateTime? CompletionDeadline)
+        {
+            if (CompletionDeadline > DateTime.Now)
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json("The completion deadline must be later than the current time.", JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

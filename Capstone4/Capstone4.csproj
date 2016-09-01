@@ -312,6 +312,18 @@
     <Compile Include="Migrations\201608301925387_s1.Designer.cs">
       <DependentUpon>201608301925387_s1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609011706566_d5.cs" />
+    <Compile Include="Migrations\201609011706566_d5.Designer.cs">
+      <DependentUpon>201609011706566_d5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609011715373_d6.cs" />
+    <Compile Include="Migrations\201609011715373_d6.Designer.cs">
+      <DependentUpon>201609011715373_d6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609011943144_s2.cs" />
+    <Compile Include="Migrations\201609011943144_s2.Designer.cs">
+      <DependentUpon>201609011943144_s2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -321,6 +333,7 @@
     <Compile Include="Models\Contractor.cs" />
     <Compile Include="Models\ContractorAcceptance.cs" />
     <Compile Include="Models\ContractorReview.cs" />
+    <Compile Include="Models\ContractorReviewsIndexViewModel.cs" />
     <Compile Include="Models\SeeContractorReviewViewModel.cs" />
     <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
@@ -470,6 +483,7 @@
     <Content Include="Views\Admins\Index.cshtml" />
     <Content Include="Views\Account\RegisterAdmin.cshtml" />
     <Content Include="Views\Contractors\SeeContractorReviews.cshtml" />
+    <Content Include="Views\Contractors\ReviewsIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -527,6 +541,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608301925387_s1.resx">
       <DependentUpon>201608301925387_s1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609011706566_d5.resx">
+      <DependentUpon>201609011706566_d5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609011715373_d6.resx">
+      <DependentUpon>201609011715373_d6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609011943144_s2.resx">
+      <DependentUpon>201609011943144_s2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

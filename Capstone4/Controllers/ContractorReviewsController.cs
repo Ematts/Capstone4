@@ -82,15 +82,14 @@ namespace Capstone4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(contractorReview).State = EntityState.Modified;
-                Contractor contractorToUpdate;    
+                db.Entry(contractorReview).State = EntityState.Modified;   
                 db.SaveChanges();
                 foreach (var contractor in db.Contractors.ToList())
                 {
                     if (contractor.ID == contractorReview.ContractorID)
                     {
-                        contractorToUpdate = contractor;
-                        UpdateRating(contractorToUpdate);
+                       
+                        UpdateRating(contractor);
                         
                     }
                     db.SaveChanges();

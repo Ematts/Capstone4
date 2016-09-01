@@ -222,7 +222,7 @@ namespace Capstone4.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterContractor(RegisterHomeownerViewModel model)
+        public async Task<ActionResult> RegisterContractor(RegisterContractorViewModel model)
         {
             ApplicationDbContext db = new ApplicationDbContext();
 
