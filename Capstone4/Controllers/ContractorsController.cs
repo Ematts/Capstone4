@@ -156,7 +156,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName")] Contractor contractor, Address address)
+        public ActionResult Create([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,travelDistance")] Contractor contractor, Address address)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             if (identity == null)
@@ -168,6 +168,8 @@ namespace Capstone4.Controllers
             {
 
                 db.Addresses.Add(address);
+                AddressesController c = new AddressesController();
+                c.getGoogleAddress(address);
                 contractor.UserId = identity;
                 contractor.AddressID = address.ID;
                 db.Contractors.Add(contractor);
@@ -201,7 +203,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,Rating")] Contractor contractor, Address address)
+        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,Rating,travelDistance")] Contractor contractor, Address address)
         {
             if (ModelState.IsValid)
             {
@@ -215,6 +217,8 @@ namespace Capstone4.Controllers
                     newAdd.State = address.State;
                     newAdd.Street = address.Street;
                     newAdd.Zip = address.Zip;
+                    AddressesController c = new AddressesController();
+                    c.getGoogleAddress(newAdd);
                     db.Addresses.Add(newAdd);
                     contractor.AddressID = address.ID;
                     db.Entry(contractor).State = EntityState.Modified;
@@ -230,6 +234,8 @@ namespace Capstone4.Controllers
                         i.City = address.City;
                         i.State = address.State;
                         i.Zip = address.Zip;
+                        AddressesController c = new AddressesController();
+                        c.getGoogleAddress(i);
                     }
                 }
 

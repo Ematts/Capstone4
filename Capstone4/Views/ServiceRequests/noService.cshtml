@@ -1,0 +1,13 @@
+﻿@model Capstone4.Models.Address
+
+@{
+    ViewBag.Title = "noService";
+}
+
+<h2>No Contractors found in your area.</h2>
+@{string address = Model.googleAddress; }
+
+<strong>We're sorry, there are currently no contractors serving the @address area.</strong> 
+
+<br><br />
+<a class="bottomNav" onclick="history.go(-1); return false;" href="#">Back</a>

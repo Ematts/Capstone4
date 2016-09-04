@@ -35,6 +35,9 @@
     <th>
         @Html.DisplayNameFor(model => model.Address.Zip)
     </th>
+    <th>
+        @Html.DisplayNameFor(model => model.travelDistance)
+    </th>
     <th></th>
 </tr>
 
@@ -64,6 +67,9 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Address.Zip)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.travelDistance)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |

@@ -238,7 +238,7 @@ namespace Capstone4.Controllers
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip };
                     db.Addresses.Add(address);
-                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id };
+                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, travelDistance = model.travelDistance, UserId = user.Id };
                     contractor.AddressID = address.ID;
                     db.Contractors.Add(contractor);
                     db.SaveChanges();

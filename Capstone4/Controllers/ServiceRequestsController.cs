@@ -12,6 +12,7 @@ using System.IO;
 using System.Net.Mail;
 using PayPal.AdaptivePayments.Model;
 using PayPal.AdaptivePayments;
+using Newtonsoft.Json;
 
 namespace Capstone4.Controllers
 {
@@ -67,6 +68,7 @@ namespace Capstone4.Controllers
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+            List<Contractor> emailList;
             if (ModelState.IsValid)
             {
 
@@ -103,8 +105,17 @@ namespace Capstone4.Controllers
                 db.ServiceRequests.Add(serviceRequest);
                 db.SaveChanges();
                 serviceRequest.Service_Number = serviceRequest.ID;
+                emailList=GetDistance(serviceRequest);
+                if(emailList.Count == 0)
+                {
+                    db.ServiceRequests.Remove(serviceRequest);
+                    db.Addresses.Remove(address);
+                    TempData["address"] = address;
+                    db.SaveChanges();
+                    return RedirectToAction("noService", "ServiceRequests", new {address = TempData["address"] });
+                }
                 db.SaveChanges();
-                postServiceRequest(serviceRequest);
+                postServiceRequest(serviceRequest, emailList);
                 return RedirectToAction("Index");
             }
 
@@ -228,6 +239,18 @@ namespace Capstone4.Controllers
             ViewBag.Message = "You must log in as a registered homeowner to create a service request";
 
             return View();
+        }
+
+        public ActionResult noService(Models.Address address)
+        {
+            
+            address = (Models.Address)TempData["address"];
+            if (address == null)
+            {
+                return HttpNotFound();
+            }
+            TempData["address"] = address;
+            return View(address);
         }
 
         public ActionResult AcceptView(int? id)
@@ -585,13 +608,12 @@ namespace Capstone4.Controllers
 
         }
 
-        public void postServiceRequest(ServiceRequest serviceRequest)
+        public void postServiceRequest(ServiceRequest serviceRequest, List<Contractor> emailList)
         {
             
             string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
             string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
-            var contractors = db.Contractors.ToList();
-            foreach (var i in db.Contractors)
+            foreach (var i in emailList)
             {
 
                 var myMessage = new SendGrid.SendGridMessage();
@@ -672,5 +694,48 @@ namespace Capstone4.Controllers
             return Json("The completion deadline must be later than the current time.", JsonRequestBehavior.AllowGet);
         }
 
+        public List<Contractor> GetDistance(ServiceRequest serviceRequest)
+        {
+
+            string jobLocation = serviceRequest.Address.FullAddress;
+            List<Pair> addresses = new List<Pair>();
+            List<Contractor> contactorsToMail = new List<Contractor>();
+            foreach (var contractor in db.Contractors.ToList())
+            {
+                string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + jobLocation + "&destinations=" + contractor.Address.FullAddress + "&key=AIzaSyAZN5FYYDCim12U0c6Emy-MoRr6AGbmO9E";
+                WebRequest request = WebRequest.Create(url);
+                request.Credentials = CredentialCache.DefaultCredentials;
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
+                reader.Close();
+                response.Close();
+                Pair pair = new Pair() { contractorAddress = result.destination_addresses[0], distance = (result.rows[0].elements[0].distance.value) * 0.000621371 };
+                addresses.Add(pair);
+                contractor.Address.googleAddress = pair.contractorAddress;
+                serviceRequest.Address.googleAddress = result.origin_addresses[0];
+                db.SaveChanges();
+               
+            }
+            foreach (var address in addresses)
+            {
+                foreach (var con in db.Contractors.ToList())
+                {
+
+                    if ((address.contractorAddress == con.Address.googleAddress) && (address.distance <= con.travelDistance))
+                    {
+                        contactorsToMail.Add(con);
+                    }
+
+                }
+            }
+
+            return (contactorsToMail);
+        }
     }
 }
+
+
+

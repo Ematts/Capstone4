@@ -324,6 +324,34 @@
     <Compile Include="Migrations\201609011943144_s2.Designer.cs">
       <DependentUpon>201609011943144_s2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609031736362_s3.cs" />
+    <Compile Include="Migrations\201609031736362_s3.Designer.cs">
+      <DependentUpon>201609031736362_s3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609032030015_s4.cs" />
+    <Compile Include="Migrations\201609032030015_s4.Designer.cs">
+      <DependentUpon>201609032030015_s4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609032259030_s5.cs" />
+    <Compile Include="Migrations\201609032259030_s5.Designer.cs">
+      <DependentUpon>201609032259030_s5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609041705425_s6.cs" />
+    <Compile Include="Migrations\201609041705425_s6.Designer.cs">
+      <DependentUpon>201609041705425_s6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609041953460_s7.cs" />
+    <Compile Include="Migrations\201609041953460_s7.Designer.cs">
+      <DependentUpon>201609041953460_s7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609041956107_h1.cs" />
+    <Compile Include="Migrations\201609041956107_h1.Designer.cs">
+      <DependentUpon>201609041956107_h1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609041956421_s8.cs" />
+    <Compile Include="Migrations\201609041956421_s8.Designer.cs">
+      <DependentUpon>201609041956421_s8.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -334,6 +362,7 @@
     <Compile Include="Models\ContractorAcceptance.cs" />
     <Compile Include="Models\ContractorReview.cs" />
     <Compile Include="Models\ContractorReviewsIndexViewModel.cs" />
+    <Compile Include="Models\DistanceMatrix.cs" />
     <Compile Include="Models\SeeContractorReviewViewModel.cs" />
     <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
@@ -484,6 +513,7 @@
     <Content Include="Views\Account\RegisterAdmin.cshtml" />
     <Content Include="Views\Contractors\SeeContractorReviews.cshtml" />
     <Content Include="Views\Contractors\ReviewsIndex.cshtml" />
+    <Content Include="Views\ServiceRequests\noService.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -550,6 +580,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609011943144_s2.resx">
       <DependentUpon>201609011943144_s2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609031736362_s3.resx">
+      <DependentUpon>201609031736362_s3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609032030015_s4.resx">
+      <DependentUpon>201609032030015_s4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609032259030_s5.resx">
+      <DependentUpon>201609032259030_s5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609041705425_s6.resx">
+      <DependentUpon>201609041705425_s6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609041953460_s7.resx">
+      <DependentUpon>201609041953460_s7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609041956107_h1.resx">
+      <DependentUpon>201609041956107_h1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609041956421_s8.resx">
+      <DependentUpon>201609041956421_s8.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

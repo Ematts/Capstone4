@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Capstone4.Models;
+using System.IO;
 
 namespace Capstone4.Controllers
 {
@@ -123,5 +124,26 @@ namespace Capstone4.Controllers
             }
             base.Dispose(disposing);
         }
-    }
-}
+
+        public void getGoogleAddress(Address address)
+        {
+            string addressToCheck = address.FullAddress;
+            string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + addressToCheck + "&destinations=" + addressToCheck + "&key=AIzaSyAZN5FYYDCim12U0c6Emy-MoRr6AGbmO9E";
+            WebRequest request = WebRequest.Create(url);
+            request.Credentials = CredentialCache.DefaultCredentials;
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string responseFromServer = reader.ReadToEnd();
+            Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
+            reader.Close();
+            response.Close();
+            address.googleAddress = result.destination_addresses[0];
+            db.SaveChanges();
+
+            }
+        }
+
+ }
+
+

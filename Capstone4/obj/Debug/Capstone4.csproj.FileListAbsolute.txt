@@ -77,7 +77,6 @@ c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone
 c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone4\bin\Microsoft.Owin.Security.Google.xml
 c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone4\bin\Microsoft.Owin.Security.Twitter.xml
 c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone4\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.csprojResolveAssemblyReference.cache
 c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.dll
 c:\users\erick\onedrive\documents\visual studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.pdb
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\SendGrid.CSharp.HTTP.Client.dll
@@ -117,3 +116,11 @@ C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d5.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d6.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s2.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.csprojResolveAssemblyReference.cache
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s3.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s4.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s5.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s6.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s7.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.h1.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s8.resources

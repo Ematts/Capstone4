@@ -33,5 +33,9 @@ namespace Capstone4.Models
         public string LastName { get; set; }
         public double? Rating { get; set; }
         public virtual ICollection<ContractorReview> ContractorReviews { get; set; }
+        [Required]
+        [Display(Name = "Miles willing to travel:")]
+        public double travelDistance { get; set; }
+        
     }
 }

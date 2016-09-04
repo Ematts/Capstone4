@@ -144,6 +144,9 @@ namespace Capstone4.Models
         [StringLength(5, MinimumLength = 5)]
         [Required]
         public string Zip { get; set; }
+        [Required]
+        [Display(Name = "Miles willing to travel:")]
+        public double travelDistance { get; set; }
     }
 
     public class RegisterAdminViewModel
