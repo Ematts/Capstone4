@@ -698,11 +698,12 @@ namespace Capstone4.Controllers
         {
 
             string jobLocation = serviceRequest.Address.FullAddress;
-            List<Pair> addresses = new List<Pair>();
-            List<Contractor> contactorsToMail = new List<Contractor>();
+            List<Contractor> contractorsToMail = new List<Contractor>();
+            string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\distance.txt");
             foreach (var contractor in db.Contractors.ToList())
             {
-                string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + jobLocation + "&destinations=" + contractor.Address.FullAddress + "&key=AIzaSyAZN5FYYDCim12U0c6Emy-MoRr6AGbmO9E";
+
+                string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + jobLocation + "&destinations=" + contractor.Address.FullAddress + "&key=" + source;
                 WebRequest request = WebRequest.Create(url);
                 request.Credentials = CredentialCache.DefaultCredentials;
                 WebResponse response = request.GetResponse();
@@ -712,27 +713,15 @@ namespace Capstone4.Controllers
                 Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
                 reader.Close();
                 response.Close();
-                Pair pair = new Pair() { contractorAddress = result.destination_addresses[0], distance = (result.rows[0].elements[0].distance.value) * 0.000621371 };
-                addresses.Add(pair);
-                contractor.Address.googleAddress = pair.contractorAddress;
                 serviceRequest.Address.googleAddress = result.origin_addresses[0];
                 db.SaveChanges();
-               
-            }
-            foreach (var address in addresses)
-            {
-                foreach (var con in db.Contractors.ToList())
+                if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
                 {
-
-                    if ((address.contractorAddress == con.Address.googleAddress) && (address.distance <= con.travelDistance))
-                    {
-                        contactorsToMail.Add(con);
-                    }
-
+                    contractorsToMail.Add(contractor);
                 }
-            }
 
-            return (contactorsToMail);
+            }
+            return (contractorsToMail);
         }
     }
 }
