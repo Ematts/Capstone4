@@ -31,6 +31,7 @@ namespace Capstone4.Models
         public DateTime CompletionDeadline { get; set; }
         [StringLength(100, MinimumLength = 6)]
         [Required]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
         [Display(Name = "Service Number")]
         public int Service_Number { get; set; }
