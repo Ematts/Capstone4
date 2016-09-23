@@ -28,6 +28,8 @@ namespace Capstone4.Models
             get { return Street + ", " + City + ", " + State + " " + Zip; }
         }
         public string googleAddress { get; set; }
+        public bool vacant { get; set; }
+        public bool validated { get; set; }
     }
 }
 

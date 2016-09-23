@@ -1,0 +1,11 @@
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\EasyPostTest.dll
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\EasyPostTest.pdb
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\EasyPost.dll
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\Newtonsoft.Json.dll
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\RestSharp.dll
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\EasyPost.pdb
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\Newtonsoft.Json.xml
+C:\Users\tribone\easypost-csharp\EasyPostTest\bin\Release\RestSharp.xml
+C:\Users\tribone\easypost-csharp\EasyPostTest\obj\Release\EasyPostTest.csprojResolveAssemblyReference.cache
+C:\Users\tribone\easypost-csharp\EasyPostTest\obj\Release\EasyPostTest.dll
+C:\Users\tribone\easypost-csharp\EasyPostTest\obj\Release\EasyPostTest.pdb

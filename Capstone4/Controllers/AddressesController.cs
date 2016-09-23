@@ -47,7 +47,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Street,City,State,Zip")] Address address)
+        public ActionResult Create([Bind(Include = "ID,Street,City,State,Zip,vacant,validated")] Address address)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Street,City,State,Zip")] Address address)
+        public ActionResult Edit([Bind(Include = "ID,Street,City,State,Zip,vacant,validated")] Address address)
         {
             if (ModelState.IsValid)
             {

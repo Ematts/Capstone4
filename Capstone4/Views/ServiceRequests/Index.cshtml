@@ -51,6 +51,15 @@
         <th>
             @Html.DisplayNameFor(model => model.Contractor.Username)
         </th> 
+        <th>
+            @Html.DisplayNameFor(model => model.Address.vacant)
+        </th> 
+        <th>
+            @Html.DisplayNameFor(model => model.Address.validated)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Inactive)
+        </th>  
         <th></th>
     </tr>
 
@@ -94,6 +103,15 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Contractor.Username)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Address.vacant)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Address.validated)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Inactive)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

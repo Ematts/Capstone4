@@ -97,7 +97,8 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Homeowner homeowner = db.Homeowners.Find(id);
-
+            //homeowner = db.Homeowners.Include(x => x.Address).Where(x => x.ID == homeowner.ID).First();
+            //Address address = db.Addresses.Where(x => x.ID == homeowner.AddressID).First();
             if (homeowner == null)
             {
                 return HttpNotFound();
@@ -114,6 +115,9 @@ namespace Capstone4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street")] Homeowner homeowner, Address address)
         {
+            var formInfo = address;
+            address = db.Addresses.Where(x => x.ID == homeowner.AddressID).SingleOrDefault();
+            var addressToCheck = address; 
             if (ModelState.IsValid)
             {
 
@@ -121,29 +125,81 @@ namespace Capstone4.Controllers
                 if (homeowner.AddressID == null)
                 {
                     Address newAdd = new Address();
-                    newAdd.Street = address.Street;
-                    newAdd.City = address.City;
-                    newAdd.State = address.State;
-                    newAdd.Street = address.Street;
-                    newAdd.Zip = address.Zip;
+                    newAdd.Street = formInfo.Street;
+                    newAdd.City = formInfo.City;
+                    newAdd.State = formInfo.State;
+                    newAdd.Street = formInfo.Street;
+                    newAdd.Zip = formInfo.Zip;
+                    foreach(var i in db.Addresses.ToList())
+                    {
+                        if(newAdd.FullAddress == i.FullAddress)
+                        {
+                            homeowner.AddressID = i.ID;
+                            db.SaveChanges();
+                            return RedirectToAction("Index");
+                        }
+                    }
+
                     db.Addresses.Add(newAdd);
-                    homeowner.AddressID = address.ID;
-                    db.Entry(homeowner).State = EntityState.Modified;
+                    homeowner.AddressID = newAdd.ID;
                     db.SaveChanges();
                     return RedirectToAction("Index");
 
                 }
-                foreach (var i in db.Addresses)
+                List<Address> ids = new List<Address>();
+                foreach (var i in db.Addresses.ToList())
                 {
-                    if (i.ID == homeowner.AddressID)
-                    {
-                        i.Street = address.Street;
-                        i.City = address.City;
-                        i.State = address.State;
-                        i.Zip = address.Zip;
+                    if (formInfo.FullAddress == i.FullAddress)
+                    { 
+                        homeowner.AddressID = i.ID;
+                        db.SaveChanges();
+                        
+                        foreach (var x in db.Contractors.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.Homeowners.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.ServiceRequests.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        if (!ids.Contains(addressToCheck))
+                        {
+                            db.Addresses.Remove(addressToCheck);
+                        }
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
                     }
                 }
 
+                Address newAdd1 = new Address();
+                newAdd1.Street = formInfo.Street;
+                newAdd1.City = formInfo.City;
+                newAdd1.State = formInfo.State;
+                newAdd1.Street = formInfo.Street;
+                newAdd1.Zip = formInfo.Zip;
+                db.Addresses.Add(newAdd1);
+                homeowner.AddressID = newAdd1.ID;
+                db.SaveChanges();
+                foreach (var x in db.Contractors.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                foreach (var x in db.Homeowners.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                foreach (var x in db.ServiceRequests.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                if (!ids.Contains(addressToCheck))
+                {
+                    db.Addresses.Remove(addressToCheck);
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

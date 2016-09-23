@@ -43,6 +43,7 @@ namespace Capstone4.Models
         public decimal AmountDue { get; set; }
         [Display(Name = "Contractor paid")]
         public bool ContractorPaid { get; set; }
+        public bool Inactive { get; set; }
         public virtual ICollection<ServiceRequestFilePath> ServiceRequestFilePaths { get; set; }
         public virtual ICollection<CompletedServiceRequestFilePath> CompletedServiceRequestFilePaths { get; set; }
         public virtual ICollection<ContractorAcceptance> ContractorAcceptances { get; set; }

@@ -64,7 +64,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,Inactive")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
@@ -99,9 +99,19 @@ namespace Capstone4.Controllers
                     }
 
                 }
-                db.Addresses.Add(address);
-                db.SaveChanges();
-                serviceRequest.AddressID = address.ID;
+                foreach(var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        serviceRequest.AddressID = i.ID;
+                    }
+                }
+                if (serviceRequest.AddressID == null)
+                {
+                    db.Addresses.Add(address);
+                    db.SaveChanges();
+                    serviceRequest.AddressID = address.ID;
+                }
                 db.ServiceRequests.Add(serviceRequest);
                 db.SaveChanges();
                 serviceRequest.Service_Number = serviceRequest.ID;
@@ -144,7 +154,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid")] ServiceRequest serviceRequest, Models.Address address)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive")] ServiceRequest serviceRequest, Models.Address address)
         {
             if (ModelState.IsValid)
             {

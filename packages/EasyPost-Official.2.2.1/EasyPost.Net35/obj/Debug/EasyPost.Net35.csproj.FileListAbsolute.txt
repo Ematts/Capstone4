@@ -1,0 +1,9 @@
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\obj\Debug\EasyPost.Net35.csprojResolveAssemblyReference.cache
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\bin\Debug\EasyPost.Net35.dll
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\bin\Debug\EasyPost.Net35.pdb
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\bin\Debug\Newtonsoft.Json.dll
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\bin\Debug\RestSharp.dll
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\bin\Debug\Newtonsoft.Json.xml
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\bin\Debug\RestSharp.xml
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\obj\Debug\EasyPost.Net35.dll
+C:\Users\tribone\easypost-csharp\EasyPost.Net35\obj\Debug\EasyPost.Net35.pdb

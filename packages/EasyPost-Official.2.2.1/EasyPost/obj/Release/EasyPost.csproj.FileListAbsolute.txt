@@ -1,0 +1,5 @@
+C:\Users\tribone\easypost-csharp\lib\net45\EasyPost.dll
+C:\Users\tribone\easypost-csharp\lib\net45\EasyPost.pdb
+C:\Users\tribone\easypost-csharp\EasyPost\obj\Release\EasyPost.csprojResolveAssemblyReference.cache
+C:\Users\tribone\easypost-csharp\EasyPost\obj\Release\EasyPost.dll
+C:\Users\tribone\easypost-csharp\EasyPost\obj\Release\EasyPost.pdb
