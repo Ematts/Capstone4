@@ -172,8 +172,9 @@
                                                                                     "CLOSE":
                                                                                 function () {
                                                                                     $(this).dialog('close');
+                                                                                    window.location = "http://localhost:37234/ServiceRequests/Details/" + response.id;
                                                                                 }
-                                                                                }
+                                                                              }
                                                                             })
                                                                         },
                                                                         error: function (jqXHR, textStatus, errorThrown) {

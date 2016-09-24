@@ -263,6 +263,21 @@ namespace Capstone4.Controllers
             return View(address);
         }
 
+        public ActionResult Manual_Validate_Thank_You(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            return View(serviceRequest);
+        }
+
         public ActionResult AcceptView(int? id)
         {
             if (id == null)

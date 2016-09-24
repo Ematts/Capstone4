@@ -538,6 +538,7 @@
     <Content Include="Views\Contractors\SeeContractorReviews.cshtml" />
     <Content Include="Views\Contractors\ReviewsIndex.cshtml" />
     <Content Include="Views\ServiceRequests\noService.cshtml" />
+    <Content Include="Views\ServiceRequests\Manual_Validate_Thank_You.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

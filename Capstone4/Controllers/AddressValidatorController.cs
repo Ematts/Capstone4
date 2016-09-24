@@ -116,102 +116,84 @@ namespace Capstone4.Controllers
         [HttpPost]
         public ActionResult ManualValidation()
         {
-            var files = Request.Files;
+            var files = Enumerable.Range(0, Request.Files.Count).Select(i => Request.Files[i]);            
             var form = Request.Form;
             string city = (form["Address.City"]);
             string state = (form["Address.State"]);
             string zip = (form["Address.Zip"]);
             string street = (form["Address.Street"]);
-            string description = (form[8]);
-            string priceString = (form[9]);
+            string description = (form["Description"]);
+            string priceString = (form["Price"]);
             decimal price = Convert.ToDecimal(priceString);
-            string dateString = (form[10]);
+            string dateString = (form["CompletionDeadline"]);
             DateTime completionDeadline = Convert.ToDateTime(dateString);
-            //string vacString = (form[11]);
-            bool vacant = form[11].Contains("true");
-            bool validated = form[12].Contains("true");
-            bool inactive = form[13].Contains("true");
+            bool vacant = form["Address.vacant"].Contains("true");
+            bool validated = form["Address.validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
 
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
-            return Json(new { success = true },
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Inactive = inactive };
+            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+
+            foreach (var i in db.Homeowners)
+            {
+                if (i.UserId == identity)
+                {
+
+                    serviceRequest.HomeownerID = i.ID;
+
+                }
+            }
+
+            foreach (var i in db.Addresses.ToList())
+            {
+                if (i.FullAddress == address.FullAddress)
+                {
+                    serviceRequest.AddressID = i.ID;
+                }
+            }
+
+            if (serviceRequest.AddressID == null)
+            {
+                serviceRequest.AddressID = address.ID;
+                db.Addresses.Add(address);
+            }
+
+            foreach (var file in files)
+            {
+
+                if (file != null && file.ContentLength > 0)
+                {
+
+                    var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                    file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                    serviceRequest.ServiceRequestFilePaths.Add(photo);
+                }
+
+            }
+
+            serviceRequest.PostedDate = DateTime.Now;
+            db.ServiceRequests.Add(serviceRequest);
+            db.SaveChanges();
+            serviceRequest.Service_Number = serviceRequest.ID;
+            db.SaveChanges();
+
+            return Json(new { success = true, id = serviceRequest.ID },
                  JsonRequestBehavior.AllowGet);
         }
     
-
-
-
-        //[HttpGet]
-        //public ActionResult ManualValidation(string street, string city, string state, string zip, bool vacant, bool validated, string description, decimal price, DateTime completionDeadline, bool inactive, IEnumerable<HttpPostedFileBase> files)
-        //{
-        //    Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
-        //    string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
-        //    if (identity == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-
-        //    //if (TryValidateModel(address) == false)
-        //    //{
-        //    //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    //}
-
-        //    //db.Addresses.Add(address);
-        //    //db.SaveChanges();
-
-        //    ServiceRequest serviceRequest = new ServiceRequest() {  Description = description, Price = price, CompletionDeadline = completionDeadline, Inactive = inactive };
-        //    serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
-
-        //    foreach (var i in db.Homeowners)
-        //    {
-        //        if (i.UserId == identity)
-        //        {
-
-        //            serviceRequest.HomeownerID = i.ID;
-
-        //        }
-        //    }
-
-        //    foreach (var i in db.Addresses.ToList())
-        //    {
-        //        if(i.FullAddress == address.FullAddress)
-        //        {
-        //            serviceRequest.AddressID = i.ID;
-        //        }
-        //    }
-
-        //    if(serviceRequest.AddressID == null)
-        //    {
-        //        serviceRequest.AddressID = address.ID;
-        //    }
-
-        //    serviceRequest.PostedDate = DateTime.Now;
-        //    serviceRequest.Service_Number = serviceRequest.ID;
-        //    //if (TryValidateModel(serviceRequest) == false)
-        //    //{
-        //    //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    //}
-        //    foreach (var file in files)
-        //    {
-
-        //        if (file != null && file.ContentLength > 0)
-        //        {
-
-
-        //            var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
-        //            file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
-        //            serviceRequest.ServiceRequestFilePaths.Add(photo);
-        //        }
-
-        //    }
-
-        //    db.Addresses.Add(address);
-        //    db.ServiceRequests.Add(serviceRequest);
-        //    db.SaveChanges();
-
-
-        //    return Json(new { success = true, street = street },
-        //      JsonRequestBehavior.AllowGet);
-        //}
         protected override void Dispose(bool disposing)
         {
             if (disposing)

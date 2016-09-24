@@ -57,6 +57,20 @@
             @Html.DisplayFor(model => model.Address.Zip)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.Address.vacant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.vacant)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.validated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.validated)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
 
@@ -100,6 +114,13 @@
 
         <dd>
             @Html.DisplayFor(model => model.Expired)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Inactive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Inactive)
         </dd>
 
     </dl>
