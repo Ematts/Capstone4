@@ -172,7 +172,7 @@
                                                                                     "CLOSE":
                                                                                 function () {
                                                                                     $(this).dialog('close');
-                                                                                    window.location = "http://localhost:37234/ServiceRequests/Details/" + response.id;
+                                                                                    window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                                 }
                                                                               }
                                                                             })
@@ -212,40 +212,54 @@
                                             buttons: {
                                                 "YES":
                                                 function () {
-                                                    $(this).dialog('close');
-                                                    $("#Inactive").prop("checked", true);
-                                                    $.ajax({
-                                                        type: "GET",
-                                                        url: "http://localhost:37234/AddressValidator/ManualValidation",
-                                                        contentType: "application/json; charset=utf-8",
-                                                        data: { street: '' + $('#Street').val() + '', City: '' + $('#locality').val() + '', state: '' + $('#administrative_area_level_1').val() + '', zip: '' + $('#postal_code').val() + '', vacant: '' + $('#vacant').prop("checked") + '', validated: '' + $('#validated').prop("checked") + '' },
-                                                        dataType: "json",
-                                                        success: function (response, textStatus, jqXHR) {
-                                                            var titleMsg = "Request sent.";
-                                                            var div = $('<div></div>');
-                                                            var outputMsg = "Your request has been submitted. We will get back to you shortly.";
-                                                            div.html(outputMsg).dialog({
-                                                                title: titleMsg,
-                                                                height: 300,
-                                                                width: 600,
-                                                                autoOpen: true,
-                                                                resizable: true,
-                                                                modal: true,
-                                                                buttons: {
-                                                                    "CLOSE":
-                                                                function () {
-                                                                    $(this).dialog('close');
-                                                                }
-                                                                }
-                                                            })
-                                                        },
-                                                        error: function (jqXHR, textStatus, errorThrown) {
-                                                            alert('Error - ' + errorThrown);
-                                                        },
-                                                    })
-                                                    $("#requestForm").submit();
                                                     if ($("#requestForm").valid()) {
-                                                        $("#divProcessing").show();
+                                                        $(this).dialog('close');
+                                                        $("#Inactive").prop("checked", true);
+                                                        var formdata = new FormData();
+                                                        var fileInput = document.getElementById('fileInput');
+                                                        for (i = 0; i < fileInput.files.length; i++) {
+                                                            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                                                        }
+                                                        var other_data = $('form').serializeArray();
+                                                        $.each(other_data, function (key, input) {
+                                                            formdata.append(input.name, input.value);
+                                                        });
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            dataType: 'json',
+                                                            cache: false,
+                                                            url: "http://localhost:37234/AddressValidator/ManualValidation",
+                                                            processData: false,
+                                                            contentType: false,
+                                                            data: formdata,
+                                                            success: function (response, textStatus, jqXHR) {
+                                                                var titleMsg = "Request sent.";
+                                                                var div = $('<div></div>');
+                                                                var outputMsg = "Your request has been submitted. We will get back to you shortly.";
+                                                                div.html(outputMsg).dialog({
+                                                                    title: titleMsg,
+                                                                    height: 300,
+                                                                    width: 600,
+                                                                    autoOpen: true,
+                                                                    resizable: true,
+                                                                    modal: true,
+                                                                    buttons: {
+                                                                        "CLOSE":
+                                                                    function () {
+                                                                        $(this).dialog('close');
+                                                                        window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                    }
+                                                                  }
+                                                                })
+                                                            },
+                                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                                alert('Error - ' + errorThrown);
+                                                            },
+                                                        })
+
+                                                    }
+                                                    else {
+                                                        $(this).dialog('close');
                                                     }
                                                 },
                                                 "NO":
@@ -282,41 +296,54 @@
                                 buttons: {
                                     "YES":
                                     function () {
-                                        $(this).dialog('close');
-                                        $("#Inactive").prop("checked", true);
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "http://localhost:37234/AddressValidator/ManualValidation",
-                                            contentType: "application/json; charset=utf-8",
-                                            data: { street: '' + $('#Street').val() + '', City: '' + $('#locality').val() + '', state: '' + $('#administrative_area_level_1').val() + '', zip: '' + $('#postal_code').val() + '', vacant: '' + $('#vacant').prop("checked") + '', validated: '' + $('#validated').prop("checked") + '' },
-                                            dataType: "json",
-                                            success: function (response, textStatus, jqXHR) {
-                                                var titleMsg = "Request sent.";
-                                                var div = $('<div></div>');
-                                                var outputMsg = "Your request has been submitted. We will get back to you shortly.";
-                                                div.html(outputMsg).dialog({
-                                                    title: titleMsg,
-                                                    height: 300,
-                                                    width: 600,
-                                                    autoOpen: true,
-                                                    resizable: true,
-                                                    modal: true,
-                                                    buttons: {
-                                                        "CLOSE":
-                                                    function () {
-                                                        $(this).dialog('close');
-                                                    }
-                                                    }
-                                                })
-
-                                            },
-                                            error: function (jqXHR, textStatus, errorThrown) {
-                                                alert('Error - ' + errorThrown);
-                                            },
-                                        })
-                                        $("#requestForm").submit();
                                         if ($("#requestForm").valid()) {
-                                            $("#divProcessing").show();
+                                            $(this).dialog('close');
+                                            $("#Inactive").prop("checked", true);
+                                            var formdata = new FormData();
+                                            var fileInput = document.getElementById('fileInput');
+                                            for (i = 0; i < fileInput.files.length; i++) {
+                                                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                                            }
+                                            var other_data = $('form').serializeArray();
+                                            $.each(other_data, function (key, input) {
+                                                formdata.append(input.name, input.value);
+                                            });
+                                            $.ajax({
+                                                type: 'POST',
+                                                dataType: 'json',
+                                                cache: false,
+                                                url: "http://localhost:37234/AddressValidator/ManualValidation",
+                                                processData: false,
+                                                contentType: false,
+                                                data: formdata,
+                                                success: function (response, textStatus, jqXHR) {
+                                                    var titleMsg = "Request sent.";
+                                                    var div = $('<div></div>');
+                                                    var outputMsg = "Your request has been submitted. We will get back to you shortly.";
+                                                    div.html(outputMsg).dialog({
+                                                        title: titleMsg,
+                                                        height: 300,
+                                                        width: 600,
+                                                        autoOpen: true,
+                                                        resizable: true,
+                                                        modal: true,
+                                                        buttons: {
+                                                            "CLOSE":
+                                                        function () {
+                                                            $(this).dialog('close');
+                                                            window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                        }
+                                                      }
+                                                    })
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    alert('Error - ' + errorThrown);
+                                                },
+                                            })
+
+                                        }
+                                        else {
+                                            $(this).dialog('close');
                                         }
                                     },
                                     "NO":
