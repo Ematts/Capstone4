@@ -417,6 +417,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\EditServiceRequestAuto.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -428,6 +429,7 @@
     <Content Include="Scripts\picBig.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\ServiceEditValidator.js" />
     <Content Include="Scripts\star-rating.js" />
     <Content Include="Scripts\theme-krajee-svg.js" />
     <Content Include="Scripts\Validator.js" />

@@ -104,6 +104,7 @@ namespace Capstone4.Controllers
                     if (i.FullAddress == address.FullAddress)
                     {
                         serviceRequest.AddressID = i.ID;
+                        db.SaveChanges();
                     }
                 }
                 if (serviceRequest.AddressID == null)
@@ -112,15 +113,38 @@ namespace Capstone4.Controllers
                     db.SaveChanges();
                     serviceRequest.AddressID = address.ID;
                 }
+
                 db.ServiceRequests.Add(serviceRequest);
                 db.SaveChanges();
                 serviceRequest.Service_Number = serviceRequest.ID;
                 emailList=GetDistance(serviceRequest);
-                if(emailList.Count == 0)
+
+                if (emailList.Count == 0)
                 {
+                    List<Models.Address> ids = new List<Models.Address>();
+                    Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
                     db.ServiceRequests.Remove(serviceRequest);
-                    db.Addresses.Remove(address);
-                    TempData["address"] = address;
+                    foreach (var i in db.Addresses.ToList())
+                    {
+                        foreach (var x in db.Contractors.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.Homeowners.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.ServiceRequests.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        if (!ids.Contains(addressToCheck))
+                        {
+                            db.Addresses.Remove(addressToCheck);
+                        }
+
+                    }
+                    TempData["address"] = addressToCheck;
                     db.SaveChanges();
                     return RedirectToAction("noService", "ServiceRequests", new {address = TempData["address"] });
                 }
@@ -154,12 +178,29 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive")] ServiceRequest serviceRequest, Models.Address address)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
-                serviceRequest.Service_Number = serviceRequest.ID;
+                var formInfo = address;
+                var addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+                //serviceRequest.Service_Number = serviceRequest.ID;
                 db.Entry(serviceRequest).State = EntityState.Modified;
+                serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+
+                foreach (var file in files)
+                {
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+
+                        var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                        file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                        serviceRequest.ServiceRequestFilePaths.Add(photo);
+                    }
+
+                }
+
                 if (serviceRequest.AddressID == null)
                 {
                     Models.Address newAdd = new Models.Address();
@@ -168,22 +209,79 @@ namespace Capstone4.Controllers
                     newAdd.State = address.State;
                     newAdd.Street = address.Street;
                     newAdd.Zip = address.Zip;
+                    newAdd.validated = address.validated;
+                    newAdd.vacant = address.vacant;
+                    foreach (var i in db.Addresses.ToList())
+                    {
+                        if (newAdd.FullAddress == i.FullAddress)
+                        {
+                            serviceRequest.AddressID = i.ID;
+                            db.SaveChanges();
+                            return RedirectToAction("Index");
+                        }
+                    }
                     db.Addresses.Add(newAdd);
-                    serviceRequest.AddressID = address.ID;
-                    serviceRequest.Service_Number = serviceRequest.ID;
-                    db.Entry(serviceRequest).State = EntityState.Modified;
+                    serviceRequest.AddressID = newAdd.ID;
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                foreach (var i in db.Addresses)
+                List<Models.Address> ids = new List<Models.Address>();
+                foreach (var i in db.Addresses.ToList())
                 {
-                    if (i.ID == serviceRequest.AddressID)
+                    if (formInfo.FullAddress == i.FullAddress)
                     {
-                        i.Street = address.Street;
-                        i.City = address.City;
-                        i.State = address.State;
-                        i.Zip = address.Zip;
+                        serviceRequest.AddressID = i.ID;
+                        serviceRequest.Address.validated = formInfo.validated;
+                        serviceRequest.Address.vacant = formInfo.vacant;
+                        db.SaveChanges();
+
+                        foreach (var x in db.Contractors.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.Homeowners.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.ServiceRequests.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        if (!ids.Contains(addressToCheck))
+                        {
+                            db.Addresses.Remove(addressToCheck);
+                        }
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
                     }
+                }
+
+                Models.Address newAdd1 = new Models.Address();
+                newAdd1.Street = formInfo.Street;
+                newAdd1.City = formInfo.City;
+                newAdd1.State = formInfo.State;
+                newAdd1.Street = formInfo.Street;
+                newAdd1.Zip = formInfo.Zip;
+                newAdd1.validated = formInfo.validated;
+                newAdd1.vacant = formInfo.vacant;
+                db.Addresses.Add(newAdd1);
+                serviceRequest.AddressID = newAdd1.ID;
+                db.SaveChanges();
+                foreach (var x in db.Contractors.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                foreach (var x in db.Homeowners.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                foreach (var x in db.ServiceRequests.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                if (!ids.Contains(addressToCheck))
+                {
+                    db.Addresses.Remove(addressToCheck);
                 }
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -213,17 +311,39 @@ namespace Capstone4.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
-            if (serviceRequest.Address != null)
-            {
-                db.Addresses.Remove(serviceRequest.Address);
-            }
+
             if(serviceRequest.ContractorReview != null)
             {
                 db.ContractorReviews.Remove(serviceRequest.ContractorReview);
                 db.SaveChanges();
                 UpdateRating(serviceRequest.Contractor);
             }
+            List<Models.Address> ids = new List<Models.Address>();
+            Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
             db.ServiceRequests.Remove(serviceRequest);
+            if (addressToCheck != null)
+            {
+                foreach (var i in db.Addresses.ToList())
+                {
+                    foreach (var x in db.Contractors.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.Homeowners.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.ServiceRequests.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    if (!ids.Contains(addressToCheck))
+                    {
+                        db.Addresses.Remove(addressToCheck);
+                    }
+                    
+                }
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
         }

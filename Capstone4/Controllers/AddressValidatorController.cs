@@ -18,6 +18,16 @@ namespace Capstone4.Controllers
         [HttpGet]
         public ActionResult getAddValStatus(string street, string city, string state, string zip)
         {
+            Address newAdd = new Address() { Street = street, City = city, State = state, Zip = zip };
+
+            foreach(var i in db.Addresses.ToList())
+            {
+                if((newAdd.FullAddress == i.FullAddress) && (i.validated == true))
+                {
+                    return Json(new { success = true, validated = true },
+               JsonRequestBehavior.AllowGet);
+                }
+            }
 
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             EasyPost.ClientManager.SetCurrent("wGW1bI8SYpamubvkDKNkFw");
@@ -193,7 +203,142 @@ namespace Capstone4.Controllers
             return Json(new { success = true, id = serviceRequest.ID },
                  JsonRequestBehavior.AllowGet);
         }
-    
+
+        [HttpPost]
+        public ActionResult ManualValidationEdit()
+        {
+            var files = Enumerable.Range(0, Request.Files.Count).Select(i => Request.Files[i]);
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            string city = (form["Address.City"]);
+            string state = (form["Address.State"]);
+            string zip = (form["Address.Zip"]);
+            string street = (form["Address.Street"]);
+            string description = (form["Description"]);
+            string priceString = (form["Price"]);
+            decimal price = Convert.ToDecimal(priceString);
+            string dateString = (form["CompletionDeadline"]);
+            DateTime completionDeadline = Convert.ToDateTime(dateString);
+            bool vacant = form["Address.vacant"].Contains("true");
+            bool validated = form["Address.validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            serviceRequest.Service_Number = serviceRequest.ID;
+            var addressToCheck = serviceRequest.Address;
+            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+            bool addressAssigned = false;
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (serviceRequest.AddressID == null)
+            {
+                
+                foreach(var i in db.Addresses.ToList())
+                {
+                    if(i.FullAddress == address.FullAddress)
+                    {
+                        serviceRequest.AddressID = i.ID;
+                        db.SaveChanges();
+                        addressAssigned = true;
+                    }
+
+                }
+
+            }
+
+            if (serviceRequest.AddressID == null)
+            {
+                db.Addresses.Add(address);
+                serviceRequest.AddressID = address.ID;
+                db.SaveChanges();
+                addressAssigned = true;
+            }
+
+            
+
+            if (serviceRequest.AddressID != null && addressAssigned == false)
+            {
+                
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        serviceRequest.AddressID = i.ID;
+                        db.SaveChanges();
+                        addressAssigned = true;
+                    }
+                }
+
+                if (addressAssigned == false)
+                {
+                    db.Addresses.Add(address);
+                    serviceRequest.AddressID = address.ID;
+                    db.SaveChanges();
+                }
+                if (addressToCheck != null)
+                {
+                    List<Models.Address> ids = new List<Models.Address>();
+                    foreach (var x in db.Contractors.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.Homeowners.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.ServiceRequests.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    if (!ids.Contains(addressToCheck))
+                    {
+                        db.Addresses.Remove(addressToCheck);
+                    }
+                    db.SaveChanges();
+                }
+
+            }
+
+            foreach (var file in files)
+            {
+
+                if (file != null && file.ContentLength > 0)
+                {
+
+                    var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                    file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                    serviceRequest.ServiceRequestFilePaths.Add(photo);
+                }
+
+            }
+            serviceRequest.CompletionDeadline = completionDeadline;
+            serviceRequest.Address.vacant = vacant;
+            serviceRequest.Inactive = inactive;
+            serviceRequest.Address.validated = validated;
+            db.SaveChanges();
+
+            return Json(new { success = true, id = serviceRequest.ID },
+                 JsonRequestBehavior.AllowGet);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

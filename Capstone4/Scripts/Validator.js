@@ -11,7 +11,7 @@
         type: "GET",
         url: "http://localhost:37234/AddressValidator/getAddValStatus",
         contentType: "application/json; charset=utf-8",
-        data: { street: '' + $('#Street').val() + '', City: '' + $('#locality').val() + '', state: '' + $('#administrative_area_level_1').val() + '', zip: '' + $('#postal_code').val() + '"' },
+        data: { street: '' + $('#Street').val() + '', City: '' + $('#locality').val() + '', state: '' + $('#administrative_area_level_1').val() + '', zip: '' + $('#postal_code').val() + '' },
         dataType: "json",
         success: function (response, textStatus, jqXHR) {
             $("#divProcessing").hide();
