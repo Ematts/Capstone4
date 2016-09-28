@@ -11,12 +11,13 @@
         type: "GET",
         url: "http://localhost:37234/AddressValidator/getAddValStatus",
         contentType: "application/json; charset=utf-8",
-        data: { street: '' + $('#Street').val() + '', City: '' + $('#locality').val() + '', state: '' + $('#administrative_area_level_1').val() + '', zip: '' + $('#postal_code').val() + '' },
+        data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
         dataType: "json",
         success: function (response, textStatus, jqXHR) {
             $("#divProcessing").hide();
             if (response.validated == true) {
                 $("#Address_validated").prop("checked", true);
+                $("#Address_vacant").prop("checked", response.vacant);
                 var titleMsg = "Your address has been validated!"
                 var div = $('<div></div>');
                 var outputMsg = "Are you ready to submit your service request?";
@@ -66,7 +67,7 @@
                                 type: "GET",
                                 url: "http://localhost:37234/AddressValidator/RunStreetLevelValidation",
                                 contentType: "application/json; charset=utf-8",
-                                data: { street: '' + $('#Street').val() + '', City: '' + $('#locality').val() + '', state: '' + $('#administrative_area_level_1').val() + '', zip: '' + $('#postal_code').val() + '' },
+                                data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
                                 dataType: "json",
                                 success: function (response, textStatus, jqXHR) {
                                     $("#divProcessing").hide();

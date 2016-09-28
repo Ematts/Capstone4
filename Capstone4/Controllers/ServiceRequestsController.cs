@@ -104,6 +104,9 @@ namespace Capstone4.Controllers
                     if (i.FullAddress == address.FullAddress)
                     {
                         serviceRequest.AddressID = i.ID;
+                        serviceRequest.Address = i;
+                        serviceRequest.Address.validated = address.validated;
+                        serviceRequest.Address.vacant = address.vacant;
                         db.SaveChanges();
                     }
                 }
@@ -216,6 +219,8 @@ namespace Capstone4.Controllers
                         if (newAdd.FullAddress == i.FullAddress)
                         {
                             serviceRequest.AddressID = i.ID;
+                            serviceRequest.Address.validated = formInfo.validated;
+                            serviceRequest.Address.vacant = formInfo.vacant;
                             db.SaveChanges();
                             return RedirectToAction("Index");
                         }

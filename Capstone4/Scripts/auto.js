@@ -11,12 +11,15 @@ var componentForm = {
 function initAutocomplete() {
     // Create the autocomplete object, restricting the search to geographical
     // location types.
-    autocomplete = new google.maps.places.Autocomplete(
-        /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-        { types: ['geocode'] });
+    var options = {
+        componentRestrictions: { country: 'us' }
+    };
+    var input = document.getElementById('autocomplete');
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    for (var component in componentForm) {
 
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
+        document.getElementById(component).disabled = false;
+    }
     autocomplete.addListener('place_changed', fillInAddress);
 }
 
@@ -39,6 +42,10 @@ function fillInAddress() {
         }
         if (i == place.address_components.length - 1) {
             document.getElementById("Street").value = document.getElementById("street_number").value + " " + document.getElementById("route").value;
+            document.getElementById("Address_Street").value = document.getElementById("street_number").value + " " + document.getElementById("route").value;
+            document.getElementById("Address_City").value = document.getElementById("locality").value;
+            document.getElementById("Address_State").value = document.getElementById("administrative_area_level_1").value;
+            document.getElementById("Address_Zip").value = document.getElementById("postal_code").value;
         }
     }
 

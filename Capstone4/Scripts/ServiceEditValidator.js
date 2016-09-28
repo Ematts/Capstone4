@@ -2,9 +2,6 @@
     $("#vac").hide();
     $("#valid").hide();
     $("#inactive").hide();
-    $("#Address_vacant").prop("checked", false);
-    $("#Address_validated").prop("checked", false);
-    $("#Inactive").prop("checked", false);
     event.preventDefault();
     $("#divProcessing").show();
     $.ajax({
@@ -125,6 +122,7 @@
                                                 },
                                                 "NO":
                                                 function () {
+                                                    $("#Address_validated").prop("checked", false);
                                                     $(this).dialog("close");
                                                     var titleMsg = "We're sorry, but we were unable to validate your address.";
                                                     var div = $('<div></div>');
@@ -201,6 +199,7 @@
                                         });
                                     }
                                     else {
+                                        $("#Address_validated").prop("checked", false);
                                         var titleMsg = "We're sorry, but we were unable to validate your address.";
                                         var div = $('<div></div>');
                                         var outputMsg = "Would you like to request manual address validation?";
@@ -279,6 +278,8 @@
                             });
                         },
                         "NO": function () {
+                            $("#Address_validated").prop("checked", false);
+                            $("#Address_vacant").prop("checked", false);
                             $(this).dialog("close");
                             var titleMsg = "We're sorry, but we were unable to validate your address.";
                             var div = $('<div></div>');

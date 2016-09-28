@@ -20,12 +20,9 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Homeowner.Username)
 
-        <div id="locationField">
-            <input id="autocomplete" placeholder="Enter your address"
-                   onFocus="geolocate()" type="text"></input>
-        </div>
+
         <br />
-        <table id="address">
+        <table id="address" style="display:none">
             <tr>
                 <td class="label">Street address</td>
                 <td class="slimField">
@@ -40,7 +37,7 @@
             <tr>
                 <td class="label">City</td>
                 <td class="wideField" colspan="3">
-                    <input class="field" id="locality" name="Address.City"
+                    <input class="field" id="locality" name="Address.City1"
                            disabled="true"></input>
                 </td>
             </tr>
@@ -48,11 +45,11 @@
                 <td class="label">State</td>
                 <td class="slimField">
                     <input class="field"
-                           id="administrative_area_level_1" name="Address.State" disabled="true"></input>
+                           id="administrative_area_level_1" name="Address.State1" disabled="true"></input>
                 </td>
                 <td class="label">Zip code</td>
                 <td class="wideField">
-                    <input class="field" id="postal_code" name="Address.Zip"
+                    <input class="field" id="postal_code" name="Address.Zip1"
                            disabled="true"></input>
                 </td>
             </tr>
@@ -64,15 +61,52 @@
                 </td>
             </tr>
         </table>
-        @Html.ValidationMessageFor(model => model.Address.Street, "", new { @class = "text-danger" })
-        @Html.ValidationMessageFor(model => model.Address.City, "", new { @class = "text-danger" })
-        @Html.ValidationMessageFor(model => model.Address.State, "", new { @class = "text-danger" })
-        @Html.ValidationMessageFor(model => model.Address.Zip, "", new { @class = "text-danger" })
-        <input type="hidden" name="Address.Street" id="Street">
+
+        <input type="hidden" id="Street">
         <br />
 
         <div id="divProcessing">
             <p>Processing, please wait . . . <img src="../../Content/ajax-loader.gif"></p>
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="autocomplete">Address locator</label>
+            <div id="locationField" class="col-md-10">
+                @Html.TextBox("autocomplete", "", new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address.Street, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address.Street, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address.Street, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address.City, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address.City, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address.City, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address.State, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address.State, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address.State, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address.Zip, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address.Zip, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address.Zip, "", new { @class = "text-danger" })
+            </div>
         </div>
 
         <div class="form-group">
@@ -179,9 +213,21 @@
 
      })
     </script>
+    <script>
+        $(document).ready(function(){
+
+        $("#street_number").change(function(){
+        $("#Address_Street").val($("#street_number").val() + " " + $("#route").val());
+        })
+            $("#route").change(function(){
+            $("#Address_Street").val($("#street_number").val() + " " + $("#route").val());
+        })
+
+     })
+     </script>
     @{string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\auto.txt");}
-<script src="@source"
-        async defer></script>
-<script src="~/Scripts/auto.js"></script> 
+    <script src="@source"
+            async defer></script>
+    <script src="~/Scripts/auto.js"></script> 
 
 }

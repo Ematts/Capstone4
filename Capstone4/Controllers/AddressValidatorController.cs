@@ -24,7 +24,7 @@ namespace Capstone4.Controllers
             {
                 if((newAdd.FullAddress == i.FullAddress) && (i.validated == true))
                 {
-                    return Json(new { success = true, validated = true },
+                    return Json(new { success = true, validated = true, vacant = i.vacant },
                JsonRequestBehavior.AllowGet);
                 }
             }
@@ -172,6 +172,8 @@ namespace Capstone4.Controllers
                 if (i.FullAddress == address.FullAddress)
                 {
                     serviceRequest.AddressID = i.ID;
+                    serviceRequest.Address.validated = address.validated;
+                    serviceRequest.Address.vacant = address.vacant;
                 }
             }
 
@@ -282,6 +284,8 @@ namespace Capstone4.Controllers
                     if (i.FullAddress == address.FullAddress)
                     {
                         serviceRequest.AddressID = i.ID;
+                        serviceRequest.Address.validated = address.validated;
+                        serviceRequest.Address.vacant = address.vacant;
                         db.SaveChanges();
                         addressAssigned = true;
                     }
