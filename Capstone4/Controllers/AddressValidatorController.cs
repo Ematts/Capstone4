@@ -172,6 +172,7 @@ namespace Capstone4.Controllers
                 if (i.FullAddress == address.FullAddress)
                 {
                     serviceRequest.AddressID = i.ID;
+                    serviceRequest.Address = i;
                     serviceRequest.Address.validated = address.validated;
                     serviceRequest.Address.vacant = address.vacant;
                 }

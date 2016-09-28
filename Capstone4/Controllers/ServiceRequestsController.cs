@@ -219,6 +219,7 @@ namespace Capstone4.Controllers
                         if (newAdd.FullAddress == i.FullAddress)
                         {
                             serviceRequest.AddressID = i.ID;
+                            serviceRequest.Address = i;
                             serviceRequest.Address.validated = formInfo.validated;
                             serviceRequest.Address.vacant = formInfo.vacant;
                             db.SaveChanges();
