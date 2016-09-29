@@ -373,6 +373,10 @@
     <Compile Include="Migrations\201609221938152_s9.Designer.cs">
       <DependentUpon>201609221938152_s9.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609291602319_d8.cs" />
+    <Compile Include="Migrations\201609291602319_d8.Designer.cs">
+      <DependentUpon>201609291602319_d8.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -384,6 +388,7 @@
     <Compile Include="Models\ContractorReview.cs" />
     <Compile Include="Models\ContractorReviewsIndexViewModel.cs" />
     <Compile Include="Models\DistanceMatrix.cs" />
+    <Compile Include="Models\ManualValidateViewModel.cs" />
     <Compile Include="Models\SeeContractorReviewViewModel.cs" />
     <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
@@ -541,6 +546,7 @@
     <Content Include="Views\Contractors\ReviewsIndex.cshtml" />
     <Content Include="Views\ServiceRequests\noService.cshtml" />
     <Content Include="Views\ServiceRequests\Manual_Validate_Thank_You.cshtml" />
+    <Content Include="Views\Admins\ManualValidate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -635,6 +641,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609221938152_s9.resx">
       <DependentUpon>201609221938152_s9.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609291602319_d8.resx">
+      <DependentUpon>201609291602319_d8.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

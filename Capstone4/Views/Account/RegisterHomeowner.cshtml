@@ -94,6 +94,27 @@
                 @Html.ValidationMessageFor(model => model.Zip, "", new { @class = "text-danger" })
             </div>
         </div>
+        <div class="form-group" id="vac">
+            @Html.LabelFor(model => model.vacant, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.vacant, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.vacant, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group" id="valid">
+            @Html.LabelFor(model => model.validated, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.validated, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.validated, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group" id="inactive">
+            @Html.LabelFor(model => model.Inactive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.Inactive, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Inactive, "", new { @class = "text-danger" })
+            </div>
+        </div>
         
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

@@ -30,5 +30,6 @@ namespace Capstone4.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        public bool Inactive { get; set; }
     }
 }

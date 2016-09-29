@@ -192,9 +192,9 @@ namespace Capstone4.Controllers
                     var role = db.Roles.Find("0");
                     UserManager.AddToRole(user.Id, role.Name);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip };
+                    var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip, vacant = model.vacant, validated = model.validated };
                     db.Addresses.Add(address);
-                    var homeowner = new Homeowner { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id };
+                    var homeowner = new Homeowner { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id, Inactive = model.Inactive };
                     homeowner.AddressID = address.ID;
                     db.Homeowners.Add(homeowner);
                     db.SaveChanges();
@@ -236,9 +236,9 @@ namespace Capstone4.Controllers
                     var role = db.Roles.Find("1");
                     UserManager.AddToRole(user.Id, role.Name);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip };
+                    var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip, vacant = model.vacant, validated = model.validated };
                     db.Addresses.Add(address);
-                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, travelDistance = model.travelDistance, UserId = user.Id };
+                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, travelDistance = model.travelDistance, UserId = user.Id, Inactive = model.Inactive };
                     contractor.AddressID = address.ID;
                     db.Contractors.Add(contractor);
                     db.SaveChanges();

@@ -22,6 +22,45 @@ namespace Capstone4.Controllers
             return View(admins.ToList());
         }
 
+        public ActionResult ManualValidate(ManualValidateViewModel model)
+        {
+            
+            if (!this.User.IsInRole("Admin"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            model.Homeowners = new List<Homeowner>();
+            model.Contractors = new List<Contractor>();
+            model.ServiceRequests = new List<ServiceRequest>();
+
+            foreach(var i in db.Homeowners.ToList())
+            {
+                if(i.Inactive == true)
+                {
+                    model.Homeowners.Add(i);
+                }
+            }
+
+            foreach (var i in db.Contractors.ToList())
+            {
+                if (i.Inactive == true)
+                {
+                    model.Contractors.Add(i);
+                }
+            }
+
+            foreach (var i in db.ServiceRequests.ToList())
+            {
+                if (i.Inactive == true)
+                {
+                    model.ServiceRequests.Add(i);
+                }
+            }
+
+            return View(model);
+        }
+
         // GET: Admins/Details/5
         public ActionResult Details(int? id)
         {

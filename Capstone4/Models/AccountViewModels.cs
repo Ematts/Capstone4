@@ -103,6 +103,9 @@ namespace Capstone4.Models
         [StringLength(5, MinimumLength = 5)]
         [Required]
         public string Zip { get; set; }
+        public bool vacant { get; set; }
+        public bool validated { get; set; }
+        public bool Inactive { get; set; }
     }
     public class RegisterContractorViewModel
     {
@@ -147,6 +150,9 @@ namespace Capstone4.Models
         [Required]
         [Display(Name = "Miles willing to travel:")]
         public double travelDistance { get; set; }
+        public bool vacant { get; set; }
+        public bool validated { get; set; }
+        public bool Inactive { get; set; }
     }
 
     public class RegisterAdminViewModel
