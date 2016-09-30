@@ -193,13 +193,27 @@ namespace Capstone4.Controllers
                     UserManager.AddToRole(user.Id, role.Name);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip, vacant = model.vacant, validated = model.validated };
-                    db.Addresses.Add(address);
                     var homeowner = new Homeowner { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id, Inactive = model.Inactive };
-                    homeowner.AddressID = address.ID;
                     db.Homeowners.Add(homeowner);
+
+                    foreach (var i in db.Addresses.ToList())
+                    {
+                        if (i.FullAddress == address.FullAddress)
+                        {
+                            homeowner.AddressID = i.ID;
+                            homeowner.Address = i;
+                            homeowner.Address.validated = address.validated;
+                            homeowner.Address.vacant = address.vacant;
+                        }
+                    }
+
+                    if (homeowner.AddressID == null)
+                    {
+                        homeowner.AddressID = address.ID;
+                        db.Addresses.Add(address);
+                    }
+
                     db.SaveChanges();
-
-
                     return RedirectToAction("Index", "Homeowners");
 
                 }
