@@ -618,6 +618,19 @@ namespace Capstone4.Controllers
         }
 
         [AllowAnonymous]
+        public JsonResult doesEmailExist1(string email)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var result = db.Users.Where(x => x.Email == email);
+            if (result.Count() < 1)
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            return Json("The email address \"" + email + "\" is already taken.", JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
         public JsonResult adminPass(string Password)
         {
             if (Password == "Warrior20!")

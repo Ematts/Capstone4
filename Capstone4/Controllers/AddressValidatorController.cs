@@ -1,11 +1,13 @@
 ﻿using Capstone4.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using SharpShip.UPS;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,6 +16,32 @@ namespace Capstone4.Controllers
     public class AddressValidatorController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
+        private ApplicationSignInManager _signInManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
 
         [HttpGet]
         public ActionResult getAddValStatus(string street, string city, string state, string zip)
@@ -343,6 +371,61 @@ namespace Capstone4.Controllers
             return Json(new { success = true, id = serviceRequest.ID },
                  JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> ManualValidationHomeownerCreate()
+        {
+
+            var form = Request.Form;
+            string username = (form["Screen_name"]);
+            string firstname = (form["FirstName"]);
+            string lastname = (form["LastName"]);
+            string email = (form["Email"]);
+            string password = (form["Password"]);
+            string city = (form["City"]);
+            string state = (form["State"]);
+            string zip = (form["Zip"]);
+            string street = (form["Street"]);
+            bool vacant = form["vacant"].Contains("true");
+            bool validated = form["validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
+            var user = new ApplicationUser() { Email = email, UserName = email };
+            var result = await UserManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                var role = db.Roles.Find("0");
+                UserManager.AddToRole(user.Id, role.Name);
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+                Homeowner homeowner = new Homeowner() { Username = username, FirstName = firstname, LastName = lastname, UserId = user.Id, Inactive = inactive };
+                db.Homeowners.Add(homeowner);
+
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        homeowner.AddressID = i.ID;
+                        homeowner.Address = i;
+                        homeowner.Address.validated = address.validated;
+                        homeowner.Address.vacant = address.vacant;
+                    }
+                }
+
+                if (homeowner.AddressID == null)
+                {
+                    homeowner.AddressID = address.ID;
+                    db.Addresses.Add(address);
+                }
+
+                db.SaveChanges();
+
+                return Json(new { success = true, id = homeowner.ID },
+                     JsonRequestBehavior.AllowGet);
+            }
+            return HttpNotFound();
+        }
+
 
         protected override void Dispose(bool disposing)
         {

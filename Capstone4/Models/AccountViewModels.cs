@@ -68,6 +68,7 @@ namespace Capstone4.Models
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
+        [Remote("doesEmailExist1", "Account", HttpMethod = "POST", ErrorMessage = "This email address is already taken.")]
         public string Email { get; set; }
 
         [Required]
@@ -93,6 +94,7 @@ namespace Capstone4.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [Required]
         public string Street { get; set; }
         [StringLength(40, MinimumLength = 1)]
         [Required]
@@ -112,6 +114,7 @@ namespace Capstone4.Models
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
+        [Remote("doesEmailExist1", "Account", HttpMethod = "POST", ErrorMessage = "This email address is already taken.")]
         public string Email { get; set; }
 
         [Required]
@@ -137,6 +140,7 @@ namespace Capstone4.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [Required]
         public string Street { get; set; }
         [StringLength(40, MinimumLength = 1)]
         [Required]

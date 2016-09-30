@@ -77,6 +77,20 @@ namespace Capstone4.Controllers
 
             if (ModelState.IsValid)
             {
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        homeowner.AddressID = i.ID;
+                        homeowner.Address = i;
+                        homeowner.Address.validated = address.validated;
+                        homeowner.Address.vacant = address.vacant;
+                        homeowner.UserId = identity;
+                        db.Homeowners.Add(homeowner);
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                }
 
                 db.Addresses.Add(address);
                 homeowner.UserId = identity;
@@ -130,11 +144,16 @@ namespace Capstone4.Controllers
                     newAdd.State = formInfo.State;
                     newAdd.Street = formInfo.Street;
                     newAdd.Zip = formInfo.Zip;
-                    foreach(var i in db.Addresses.ToList())
+                    newAdd.validated = address.validated;
+                    newAdd.vacant = address.vacant;
+                    foreach (var i in db.Addresses.ToList())
                     {
                         if(newAdd.FullAddress == i.FullAddress)
                         {
                             homeowner.AddressID = i.ID;
+                            homeowner.Address = i;
+                            homeowner.Address.validated = formInfo.validated;
+                            homeowner.Address.vacant = formInfo.vacant;
                             db.SaveChanges();
                             return RedirectToAction("Index");
                         }
@@ -152,6 +171,8 @@ namespace Capstone4.Controllers
                     if (formInfo.FullAddress == i.FullAddress)
                     { 
                         homeowner.AddressID = i.ID;
+                        homeowner.Address.validated = formInfo.validated;
+                        homeowner.Address.vacant = formInfo.vacant;
                         db.SaveChanges();
                         
                         foreach (var x in db.Contractors.ToList())
@@ -181,6 +202,8 @@ namespace Capstone4.Controllers
                 newAdd1.State = formInfo.State;
                 newAdd1.Street = formInfo.Street;
                 newAdd1.Zip = formInfo.Zip;
+                newAdd1.validated = formInfo.validated;
+                newAdd1.vacant = formInfo.vacant;
                 db.Addresses.Add(newAdd1);
                 homeowner.AddressID = newAdd1.ID;
                 db.SaveChanges();
@@ -251,6 +274,22 @@ namespace Capstone4.Controllers
             ViewBag.Message = "You must log in as a registered user to create a homeowner profile";
 
             return View();
+        }
+
+        public ActionResult Manual_Validate_Thank_You(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Homeowner homeowner = db.Homeowners.Find(id);
+
+            if (homeowner == null)
+            {
+                return HttpNotFound();
+            }
+            return View(homeowner);
         }
 
         public ActionResult Already_Exists()

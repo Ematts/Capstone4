@@ -377,6 +377,14 @@
     <Compile Include="Migrations\201609291602319_d8.Designer.cs">
       <DependentUpon>201609291602319_d8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609291849142_f3.cs" />
+    <Compile Include="Migrations\201609291849142_f3.Designer.cs">
+      <DependentUpon>201609291849142_f3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609300039399_m.cs" />
+    <Compile Include="Migrations\201609300039399_m.Designer.cs">
+      <DependentUpon>201609300039399_m.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -423,6 +431,8 @@
     </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\EditServiceRequestAuto.js" />
+    <Content Include="Scripts\HomeownerCreateAuto.js" />
+    <Content Include="Scripts\HomeownerCreateValidator.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -547,6 +557,7 @@
     <Content Include="Views\ServiceRequests\noService.cshtml" />
     <Content Include="Views\ServiceRequests\Manual_Validate_Thank_You.cshtml" />
     <Content Include="Views\Admins\ManualValidate.cshtml" />
+    <Content Include="Views\Homeowners\Manual_Validate_Thank_You.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -644,6 +655,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609291602319_d8.resx">
       <DependentUpon>201609291602319_d8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609291849142_f3.resx">
+      <DependentUpon>201609291849142_f3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609300039399_m.resx">
+      <DependentUpon>201609300039399_m.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

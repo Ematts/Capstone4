@@ -1,0 +1,84 @@
+﻿@model Capstone4.Models.Homeowner
+
+@{
+    ViewBag.Title = "Manual_Validate_Thank_You";
+}
+
+<h2>Thank You!</h2>
+
+<div>
+    <h4>We will notify you when your address has been validated so that you can activate this account.</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.Street)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.Street)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.City)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.State)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.Zip)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.Zip)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.vacant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.vacant)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.validated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.validated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Inactive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Inactive)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
