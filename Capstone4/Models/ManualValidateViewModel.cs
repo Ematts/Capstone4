@@ -10,6 +10,7 @@ namespace Capstone4.Models
     {
         [Display(Name = "Username")]
         public string Screen_name { get; set; }
+        public string Email { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
