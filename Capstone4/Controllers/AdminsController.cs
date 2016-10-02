@@ -27,7 +27,7 @@ namespace Capstone4.Controllers
             
             if (!this.User.IsInRole("Admin"))
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Unauthorized_Access", "Home");
             }
 
             model.Homeowners = new List<Homeowner>();

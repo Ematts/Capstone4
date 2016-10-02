@@ -9,67 +9,116 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Username)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LastName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ApplicationUser.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address.Street)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address.City)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address.State)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address.Zip)
-        </th>
-        <th></th>
-    </tr>
+<table class="table table-striped" id="homeTable" >
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.vacant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.validated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Inactive)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.Street)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.State)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.Zip)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.Street)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.Zip)
+                </td>
+                <td>
+                    @item.Address.vacant
+                </td>
+                <td>
+                    @item.Address.validated
+                </td>
+                <td>
+                    @item.Inactive
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </tbody>
 
 </table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+    
+    <script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 11 }
+            ]
+        });
+       
+
+            $(document).ready(function () {
+                $('#homeTable').DataTable();
+            });
+            $('#homeTable').DataTable({
+                scrollY: 500
+
+            });
+    </script>
+
+}
+

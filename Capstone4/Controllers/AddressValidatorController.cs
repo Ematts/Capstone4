@@ -426,6 +426,127 @@ namespace Capstone4.Controllers
             return HttpNotFound();
         }
 
+        [HttpPost]
+        public ActionResult ManualValidationHomeownerEdit()
+        {
+            
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            string username = (form["Username"]);
+            string firstname = (form["FirstName"]);
+            string lastname = (form["LastName"]);
+            string city = (form["Address.City"]);
+            string state = (form["Address.State"]);
+            string zip = (form["Address.Zip"]);
+            string street = (form["Address.Street"]);
+            bool vacant = form["Address.vacant"].Contains("true");
+            bool validated = form["Address.validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+
+            Homeowner homeowner = db.Homeowners.Find(id);
+            var addressToCheck = homeowner.Address;
+            bool addressAssigned = false;
+
+            if (homeowner == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (homeowner.AddressID == null)
+            {
+
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        homeowner.AddressID = i.ID;
+                        db.SaveChanges();
+                        addressAssigned = true;
+                    }
+
+                }
+
+            }
+
+            if (homeowner.AddressID == null)
+            {
+                db.Addresses.Add(address);
+                homeowner.AddressID = address.ID;
+                db.SaveChanges();
+                addressAssigned = true;
+            }
+
+
+
+            if (homeowner.AddressID != null && addressAssigned == false)
+            {
+
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        homeowner.AddressID = i.ID;
+                        homeowner.Address.validated = address.validated;
+                        homeowner.Address.vacant = address.vacant;
+                        db.SaveChanges();
+                        addressAssigned = true;
+                    }
+                }
+
+                if (addressAssigned == false)
+                {
+                    db.Addresses.Add(address);
+                    homeowner.AddressID = address.ID;
+                    db.SaveChanges();
+                }
+
+                if (addressToCheck != null)
+                {
+                    List<Models.Address> ids = new List<Models.Address>();
+                    foreach (var x in db.Contractors.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.Homeowners.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.ServiceRequests.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    if (!ids.Contains(addressToCheck))
+                    {
+                        db.Addresses.Remove(addressToCheck);
+                    }
+                    db.SaveChanges();
+                }
+
+            }
+
+            homeowner.Address.vacant = vacant;
+            homeowner.Inactive = inactive;
+            homeowner.Address.validated = validated;
+            db.SaveChanges();
+
+            return Json(new { success = true, id = homeowner.ID },
+                 JsonRequestBehavior.AllowGet);
+        }
+
 
         protected override void Dispose(bool disposing)
         {

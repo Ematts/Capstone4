@@ -111,13 +111,17 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Homeowner homeowner = db.Homeowners.Find(id);
-            //homeowner = db.Homeowners.Include(x => x.Address).Where(x => x.ID == homeowner.ID).First();
-            //Address address = db.Addresses.Where(x => x.ID == homeowner.AddressID).First();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
             if (homeowner == null)
             {
                 return HttpNotFound();
             }
 
+            if((homeowner.UserId != identity) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
 
             return View(homeowner);
         }

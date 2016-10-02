@@ -7,158 +7,189 @@
 <h2>Manual Validate</h2>
 
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Screen_name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Street)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.City)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.State)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Zip)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.vacant)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.validated)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Inactive)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Type)
-        </th>
-        <th></th>
-    </tr>
+<table class="table table-striped" id="manualTable" >
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Screen_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.vacant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.validated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Inactive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th></th>
+        </tr>
 
-@foreach (var item in Model.Homeowners) {
-    <tr>
-        <td>
-            @item.Username
-        </td>
-        <td>
-            @item.ApplicationUser.Email
-        </td>
-        <td>
-            @item.Address.Street
-        </td>
-        <td>
-            @item.Address.City
-        </td>
-        <td>
-            @item.Address.State
-        </td>
-        <td>
-            @item.Address.Zip
-        </td>
-        <td>
-            @item.Address.vacant
-        </td>
-        <td>
-            @item.Address.validated
-        </td>
-        <td>
-            @item.Inactive
-        </td>
-        <td>
-            Homeowner
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", "Homeowners", new { id=item.ID }, null) |
-            @Html.ActionLink("Details", "Details", "Homeowners", new { id=item.ID }, null) |
-            @Html.ActionLink("Delete", "Delete", "Homeowners", new { id=item.ID }, null)
-        </td>
-    </tr>
-}
-@foreach (var item in Model.Contractors)
-{
-    <tr>
-        <td>
-            @item.Username
-        </td>
-        <td>
-            @item.ApplicationUser.Email
-        </td>
-        <td>
-            @item.Address.Street
-        </td>
-        <td>
-            @item.Address.City
-        </td>
-        <td>
-            @item.Address.State
-        </td>
-        <td>
-            @item.Address.Zip
-        </td>
-        <td>
-            @item.Address.vacant
-        </td>
-        <td>
-            @item.Address.validated
-        </td>
-        <td>
-            @item.Inactive
-        </td>
-        <td>
-            Contractor
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", "Contractors", new { id = item.ID }, null) |
-            @Html.ActionLink("Details", "Details", "Contractors", new { id = item.ID }, null) |
-            @Html.ActionLink("Delete", "Delete", "Contractors", new { id = item.ID }, null)
-        </td>
-    </tr>
-}
-@foreach (var item in Model.ServiceRequests)
-{
-    <tr>
-        <td>
-            @item.Homeowner.Username
-        </td>
-        <td>
-            @item.Homeowner.ApplicationUser.Email
-        </td>
-        <td>
-            @item.Address.Street
-        </td>
-        <td>
-            @item.Address.City
-        </td>
-        <td>
-            @item.Address.State
-        </td>
-        <td>
-            @item.Address.Zip
-        </td>
-        <td>
-            @item.Address.vacant
-        </td>
-        <td>
-            @item.Address.validated
-        </td>
-        <td>
-            @item.Inactive
-        </td>
-        <td>
-            Service Request
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", "ServiceRequests", new { id = item.ID }, null) |
-            @Html.ActionLink("Details", "Details", "ServiceRequests", new { id = item.ID }, null) |
-            @Html.ActionLink("Delete", "Delete", "ServiceRequests", new { id = item.ID }, null)
-        </td>
-    </tr>
-}
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.Homeowners)
+        {
+            <tr>
+                <td>
+                    @item.Username
+                </td>
+                <td>
+                    @item.ApplicationUser.Email
+                </td>
+                <td>
+                    @item.Address.Street
+                </td>
+                <td>
+                    @item.Address.City
+                </td>
+                <td>
+                    @item.Address.State
+                </td>
+                <td>
+                    @item.Address.Zip
+                </td>
+                <td>
+                    @item.Address.vacant
+                </td>
+                <td>
+                    @item.Address.validated
+                </td>
+                <td>
+                    @item.Inactive
+                </td>
+                <td>
+                    Homeowner
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Homeowners", new { id = item.ID }, null) |
+                    @Html.ActionLink("Details", "Details", "Homeowners", new { id = item.ID }, null) |
+                    @Html.ActionLink("Delete", "Delete", "Homeowners", new { id = item.ID }, null)
+                </td>
+            </tr>
+        }
+        @foreach (var item in Model.Contractors)
+        {
+            <tr>
+                <td>
+                    @item.Username
+                </td>
+                <td>
+                    @item.ApplicationUser.Email
+                </td>
+                <td>
+                    @item.Address.Street
+                </td>
+                <td>
+                    @item.Address.City
+                </td>
+                <td>
+                    @item.Address.State
+                </td>
+                <td>
+                    @item.Address.Zip
+                </td>
+                <td>
+                    @item.Address.vacant
+                </td>
+                <td>
+                    @item.Address.validated
+                </td>
+                <td>
+                    @item.Inactive
+                </td>
+                <td>
+                    Contractor
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Contractors", new { id = item.ID }, null) |
+                    @Html.ActionLink("Details", "Details", "Contractors", new { id = item.ID }, null) |
+                    @Html.ActionLink("Delete", "Delete", "Contractors", new { id = item.ID }, null)
+                </td>
+            </tr>
+        }
+        @foreach (var item in Model.ServiceRequests)
+        {
+            <tr>
+                <td>
+                    @item.Homeowner.Username
+                </td>
+                <td>
+                    @item.Homeowner.ApplicationUser.Email
+                </td>
+                <td>
+                    @item.Address.Street
+                </td>
+                <td>
+                    @item.Address.City
+                </td>
+                <td>
+                    @item.Address.State
+                </td>
+                <td>
+                    @item.Address.Zip
+                </td>
+                <td>
+                    @item.Address.vacant
+                </td>
+                <td>
+                    @item.Address.validated
+                </td>
+                <td>
+                    @item.Inactive
+                </td>
+                <td>
+                    Service Request
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "ServiceRequests", new { id = item.ID }, null) |
+                    @Html.ActionLink("Details", "Details", "ServiceRequests", new { id = item.ID }, null) |
+                    @Html.ActionLink("Delete", "Delete", "ServiceRequests", new { id = item.ID }, null)
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+
+    <script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 10 }
+            ]
+        });
+
+
+            $(document).ready(function () {
+                $('#manualTable').DataTable();
+            });
+            $('#manualTable').DataTable({
+                scrollY: 500
+
+            });
+    </script>
+
+}

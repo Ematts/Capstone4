@@ -720,6 +720,7 @@ namespace Capstone4.Controllers
             string returnUrl = successUrl;
             string cancelUrl = failureUrl;
             string currencyCode = "USD";
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             PayRequest payRequest = new PayRequest(requestEnvelope, actionType, cancelUrl, currencyCode, receiverList, returnUrl);
             payRequest.ipnNotificationUrl = "http://replaceIpnUrl.com";
             string memo = serviceRequest.Description + " Invoice = " + serviceRequest.Service_Number;

@@ -412,6 +412,7 @@
     <Content Include="Content\auto.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\DataTables.css" />
     <Content Include="Content\star-rating.css" />
     <Content Include="Content\theme-krajee-svg.css" />
     <Content Include="favicon.ico" />
@@ -430,9 +431,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\DataTables.js" />
     <Content Include="Scripts\EditServiceRequestAuto.js" />
     <Content Include="Scripts\HomeownerCreateAuto.js" />
     <Content Include="Scripts\HomeownerCreateValidator.js" />
+    <Content Include="Scripts\HomeownerEditAuto.js" />
+    <Content Include="Scripts\HomeownerEditValidator.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
