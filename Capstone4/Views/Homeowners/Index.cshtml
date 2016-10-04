@@ -91,6 +91,7 @@
                     @Html.ActionLink("Details", "Details", new { id = item.ID }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.ID })
                 </td>
+                
             </tr>
         }
     </tbody>
@@ -111,13 +112,13 @@
         });
        
 
-            $(document).ready(function () {
-                $('#homeTable').DataTable();
-            });
+        $(document).ready(function () {
             $('#homeTable').DataTable({
-                scrollY: 500
-
+                "scrollY": 500,
+                "scrollX": true,
+                "scrollCollapse": true,
             });
+        });
     </script>
 
 }

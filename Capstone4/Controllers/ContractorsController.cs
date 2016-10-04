@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Capstone4.Models;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace Capstone4.Controllers
 {
@@ -37,7 +38,7 @@ namespace Capstone4.Controllers
             return View(contractor);
         }
 
-        public ActionResult ReviewsIndex(string searchString, string clientUsername)
+        public ActionResult ReviewsIndex(string autocomplete)
         {
             var contractors = db.Contractors.ToList();
             List<ContractorReviewsIndexViewModel> models = new List<ContractorReviewsIndexViewModel>();
@@ -59,34 +60,50 @@ namespace Capstone4.Controllers
                 models.Add(model);
 
             }
-            var UsernameLst = new List<string>();
-            var UsernameQry = from d in db.Contractors
-                              orderby d.Username
-                              select d.Username;
-            UsernameLst.AddRange(UsernameQry.Distinct());
-            ViewBag.clientUsername = new SelectList(UsernameLst);
-            if (!String.IsNullOrEmpty(searchString))
+
+            if (!String.IsNullOrEmpty(autocomplete))
             {
+                List<int> displayList = GetList(autocomplete);
+
                 foreach (var model in models.ToList())
                 {
-                    if(!model.Username.StartsWith(searchString))
-                    {
-                        models.Remove(model);
-                    }
-                    
-                }                       
-            }
-            if (!String.IsNullOrEmpty(clientUsername))
-            {
-                foreach (var model in models.ToList())
-                {
-                    if (model.Username != clientUsername)
+
+                    if(!displayList.Contains(model.ID))
                     {
                         models.Remove(model);
                     }
 
                 }
             }
+
+            //var UsernameLst = new List<string>();
+            //var UsernameQry = from d in db.Contractors
+            //                  orderby d.Username
+            //                  select d.Username;
+            //UsernameLst.AddRange(UsernameQry.Distinct());
+            //ViewBag.clientUsername = new SelectList(UsernameLst);
+            //if (!String.IsNullOrEmpty(searchString))
+            //{
+            //    foreach (var model in models.ToList())
+            //    {
+            //        if(!model.Username.StartsWith(searchString))
+            //        {
+            //            models.Remove(model);
+            //        }
+
+            //    }                       
+            //}
+            //if (!String.IsNullOrEmpty(clientUsername))
+            //{
+            //    foreach (var model in models.ToList())
+            //    {
+            //        if (model.Username != clientUsername)
+            //        {
+            //            models.Remove(model);
+            //        }
+
+            //    }
+            //}
             return View(models);
         }
         public ActionResult SeeContractorReviews(SeeContractorReviewViewModel model, int? id)
@@ -353,6 +370,34 @@ namespace Capstone4.Controllers
                 return HttpNotFound();
             }
             return View(contractor);
+        }
+
+        public List<int> GetList(String autocomplete)
+        {
+
+            List<int> contractorsToDisplay = new List<int>();
+            string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\distance.txt");
+            foreach (var contractor in db.Contractors.ToList())
+            {
+
+                string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + autocomplete + "&destinations=" + contractor.Address.FullAddress + "&key=" + source;
+                WebRequest request = WebRequest.Create(url);
+                request.Credentials = CredentialCache.DefaultCredentials;
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
+                reader.Close();
+                response.Close();
+                db.SaveChanges();
+                if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                {
+                    contractorsToDisplay.Add(contractor.ID);
+                }
+
+            }
+            return (contractorsToDisplay);
         }
     }
 }

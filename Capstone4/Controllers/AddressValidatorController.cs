@@ -58,7 +58,8 @@ namespace Capstone4.Controllers
             }
 
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            EasyPost.ClientManager.SetCurrent("wGW1bI8SYpamubvkDKNkFw");
+            string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\easypost.txt");
+            EasyPost.ClientManager.SetCurrent(source);
             EasyPost.Address address = new EasyPost.Address()
             {
                 company = "",
@@ -95,7 +96,10 @@ namespace Capstone4.Controllers
         {
 
 
-            StreetLevelAddressValidator validator = new StreetLevelAddressValidator("7D15274E4E2A07DE", "Honeybump20!", "pennywise79");
+            string source1 = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\ups1.txt");
+            string source2 = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\ups2.txt");
+            string source3 = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\ups3.txt");
+            StreetLevelAddressValidator validator = new StreetLevelAddressValidator(source1, source2, source3);
             SharpShip.Entities.Address myAddress = new SharpShip.Entities.Address()
             {
                 AddressLine1 = street,
