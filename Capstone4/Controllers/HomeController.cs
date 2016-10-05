@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Capstone4.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,8 +9,19 @@ namespace Capstone4.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        private ApplicationDbContext db = new ApplicationDbContext();
+        public ActionResult Index(PayPalCheckoutInfo payPalCheckoutInfo)
         {
+            //ngrok http -host - header = localhost 37234
+            PayPalListenerModel model = new PayPalListenerModel();
+            model._PayPalCheckoutInfo = payPalCheckoutInfo;
+            byte[] parameters = Request.BinaryRead(Request.ContentLength);
+
+            if (parameters != null && parameters.Length > 0)
+            {
+                model.GetStatus(parameters, model);
+                return new EmptyResult();
+            }
             return View();
         }
 

@@ -1,0 +1,26 @@
+﻿@model Capstone4.Models.PayPalListenerModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PayPalListenerModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model._PayPalCheckoutInfo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model._PayPalCheckoutInfo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

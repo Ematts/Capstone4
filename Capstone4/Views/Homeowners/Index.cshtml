@@ -102,7 +102,10 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+    <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
+    
     
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
@@ -116,6 +119,7 @@
             $('#homeTable').DataTable({
                 "scrollY": 500,
                 "scrollX": true,
+                "responsive": true,
                 "scrollCollapse": true,
             });
         });

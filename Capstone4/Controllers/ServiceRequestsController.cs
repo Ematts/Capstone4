@@ -559,7 +559,7 @@ namespace Capstone4.Controllers
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
 
-            serviceRequest.ContractorPaid = true;
+            //serviceRequest.ContractorPaid = true;
             db.SaveChanges();
 
             var myMessage = new SendGrid.SendGridMessage();

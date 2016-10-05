@@ -84,6 +84,7 @@
     @Scripts.Render("~/bundles/jqueryval")
 
 <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
+<link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
 <link href="~/Content/star-rating.css" media="all" rel="stylesheet" type="text/css" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
 <script src="~/Scripts/star-rating.js" type="text/javascript"></script>
@@ -91,6 +92,7 @@
 <script src="~/Scripts/theme-krajee-svg.js"></script>
 <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
 <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+<script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
 <script>
 
         $.extend(true, $.fn.dataTable.defaults, {
@@ -104,6 +106,7 @@
             });
             $('#homeTable').DataTable({
                 scrollY: 500,
+                responsive: true,
                 scrollCollapse: true
 
             });

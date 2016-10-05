@@ -261,6 +261,7 @@
     <Compile Include="Controllers\HomeownersController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapsController.cs" />
+    <Compile Include="Controllers\PayPalListenerModelsController.cs" />
     <Compile Include="Controllers\ServiceRequestsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -385,6 +386,10 @@
     <Compile Include="Migrations\201609300039399_m.Designer.cs">
       <DependentUpon>201609300039399_m.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610052236021_d9.cs" />
+    <Compile Include="Migrations\201610052236021_d9.Designer.cs">
+      <DependentUpon>201610052236021_d9.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -397,6 +402,8 @@
     <Compile Include="Models\ContractorReviewsIndexViewModel.cs" />
     <Compile Include="Models\DistanceMatrix.cs" />
     <Compile Include="Models\ManualValidateViewModel.cs" />
+    <Compile Include="Models\PayPalCheckoutInfo.cs" />
+    <Compile Include="Models\PayPalListenerModel.cs" />
     <Compile Include="Models\SeeContractorReviewViewModel.cs" />
     <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
@@ -414,6 +421,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\DataTables.css" />
     <Content Include="Content\DataTableWhiteSpaceForHeaderScroll.css" />
+    <Content Include="Content\ResponsiveDatatables.css" />
     <Content Include="Content\star-rating.css" />
     <Content Include="Content\theme-krajee-svg.css" />
     <Content Include="favicon.ico" />
@@ -450,6 +458,7 @@
     <Content Include="Scripts\picBig.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\ResponiveDataTables.js" />
     <Content Include="Scripts\ReviewsAuto.js" />
     <Content Include="Scripts\ServiceEditValidator.js" />
     <Content Include="Scripts\star-rating.js" />
@@ -565,6 +574,11 @@
     <Content Include="Views\ServiceRequests\Manual_Validate_Thank_You.cshtml" />
     <Content Include="Views\Admins\ManualValidate.cshtml" />
     <Content Include="Views\Homeowners\Manual_Validate_Thank_You.cshtml" />
+    <Content Include="Views\PayPalListenerModels\Create.cshtml" />
+    <Content Include="Views\PayPalListenerModels\Delete.cshtml" />
+    <Content Include="Views\PayPalListenerModels\Details.cshtml" />
+    <Content Include="Views\PayPalListenerModels\Edit.cshtml" />
+    <Content Include="Views\PayPalListenerModels\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -668,6 +682,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609300039399_m.resx">
       <DependentUpon>201609300039399_m.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610052236021_d9.resx">
+      <DependentUpon>201610052236021_d9.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
