@@ -9,97 +9,185 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Contractor.Username)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Contractor.ApplicationUser.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Address.Street)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Address.City)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Address.State)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Address.Zip)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.PostedDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.CompletionDeadline)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Service_Number)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AcceptanceDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ServiceRequest.Expired)
-        </th>
-        <th></th>
-    </tr>
+<div>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Contractor Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">Street</a> - <a class="toggle-vis" data-column="3">City</a> - <a class="toggle-vis" data-column="4">State</a> - <a class="toggle-vis" data-column="5">Zip</a> - <a class="toggle-vis" data-column="6">Description</a> - <a class="toggle-vis" data-column="7">Price</a> - <a class="toggle-vis" data-column="8">Posted Date</a> - <a class="toggle-vis" data-column="9">Completion Deadline</a> - <a class="toggle-vis" data-column="10">Service Number</a> - <a class="toggle-vis" data-column="11">Acceptance Date</a> - <a class="toggle-vis" data-column="12">Expired</a> 
+</div>
+<br />
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button></div>
+<br />
+<table class="table" id="homeTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Contractor.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contractor.ApplicationUser.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Address.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Address.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Address.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Address.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.PostedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.CompletionDeadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Service_Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AcceptanceDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceRequest.Expired)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Contractor.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Contractor.ApplicationUser.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.Street)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.State)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Address.Zip)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.PostedDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.CompletionDeadline)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Service_Number)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AcceptanceDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ServiceRequest.Expired)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        
-    </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contractor.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contractor.ApplicationUser.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Address.Street)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Address.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Address.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Address.Zip)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.PostedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.CompletionDeadline)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Service_Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AcceptanceDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceRequest.Expired)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+
+            </tr>
+        }
+    </tbody>
 
 </table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+    <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
+
+
+    <script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 13 }
+            ]
+        });
+
+        $(function () {
+            var isMouseDown = false,
+              isSelected;
+            $("#homeTable tr")
+              .mousedown(function () {
+                  isMouseDown = true;
+                  $(this).toggleClass("selected");
+                  isSelected = $(this).hasClass("selected");
+                  return false; // prevent text selection
+              })
+              .mouseover(function () {
+                  if (isMouseDown) {
+                      $(this).toggleClass("selected", isSelected);
+                  }
+              })
+              .bind("selectstart", function () {
+                  return false;
+              })
+
+            $(document)
+              .mouseup(function () {
+                  isMouseDown = false;
+              });
+        });
+
+        $(document).ready(function () {
+            var table = $('#homeTable').DataTable({
+                scrollY: "500px",
+                //scrollX: true,
+                responsive: true,
+                scrollCollapse: true,
+                paging: true,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
+
+            });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+            $('#cutSelectedButton').click(function () {
+                table.rows('.selected').remove().draw();
+            });
+            $('#cropSelectedButton').click(function () {
+                table.$('tr').toggleClass('selected');
+                table.rows('.selected').remove().draw();
+            });
+
+        });
+
+    </script>
+
+
+}

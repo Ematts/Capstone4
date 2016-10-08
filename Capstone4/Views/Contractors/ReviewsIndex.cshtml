@@ -22,8 +22,13 @@
 
 }
 <br /><br />
-
-<table class="table table-striped" id="homeTable" >
+<div>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Contractor</a> - <a class="toggle-vis" data-column="1">Overall Rating</a> - <a class="toggle-vis" data-column="2">Total Rating</a> 
+</div>
+<br />
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button></div>
+<br />
+<table class="table" id="homeTable" >
     <thead>
         <tr>
             <th>
@@ -86,16 +91,61 @@
             ]
         });
 
+        $(function () {
+            var isMouseDown = false,
+              isSelected;
+            $("#homeTable tr")
+              .mousedown(function () {
+                  isMouseDown = true;
+                  $(this).toggleClass("selected");
+                  isSelected = $(this).hasClass("selected");
+                  return false; // prevent text selection
+              })
+              .mouseover(function () {
+                  if (isMouseDown) {
+                      $(this).toggleClass("selected", isSelected);
+                  }
+              })
+              .bind("selectstart", function () {
+                  return false;
+              })
 
-            $(document).ready(function () {
-                $('#homeTable').DataTable();
-            });
-            $('#homeTable').DataTable({
-                scrollY: 500,
+            $(document)
+              .mouseup(function () {
+                  isMouseDown = false;
+              });
+        });
+
+        $(document).ready(function () {
+            var table = $('#homeTable').DataTable({
+                scrollY: "500px",
+                //scrollX: true,
                 responsive: true,
-                scrollCollapse: true
+                scrollCollapse: true,
+                paging: true,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
 
             });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+            $('#cutSelectedButton').click(function () {
+                table.rows('.selected').remove().draw();
+            });
+            $('#cropSelectedButton').click(function () {
+                table.$('tr').toggleClass('selected');
+                table.rows('.selected').remove().draw();
+            });
+
+        });
     </script>
 
 }
