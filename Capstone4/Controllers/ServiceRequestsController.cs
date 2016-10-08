@@ -181,7 +181,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {

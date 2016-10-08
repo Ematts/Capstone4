@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -86,22 +87,8 @@ namespace Capstone4.Models
         public string payment_date { get; set; }
 
         public string memo { get; set; }
-
-        public DateTime TrxnDate
-        {
-            get
-            {
-                DateTime dt = DateTime.Now;
-                if (DateTime.TryParse(payment_date, out dt))
-                {
-                    return dt;
-                }
-                else
-                {
-                    return DateTime.Now;
-                }
-            }
-        }
+        [Column(TypeName = "datetime2")]
+        public DateTime? TrxnDate { get; set; }
 
         /// The status of the payment:
         /// Canceled_Reversal: A reversal has been canceled. For example, you

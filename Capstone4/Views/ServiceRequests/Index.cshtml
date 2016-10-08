@@ -142,13 +142,10 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
-    @*<link href="~/Content/DataTablesSelector.css" media="all" rel="stylesheet" type="text/css" />*@
     <link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
-    @*<link href="~/Content/DataTableWhiteSpaceForHeaderScroll.css" media="all" rel="stylesheet" type="text/css" />*@
     <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
-    @*<script src="~/Scripts/FixedColumnDataTable.js" type="text/javascript"></script>*@
     <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
-    @*<script src="~/Scripts/DataTablesSelector.js" type="text/javascript"></script>*@
+ 
 
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
@@ -179,10 +176,6 @@
                 column.visible(!column.visible());
             });
 
-            //$('#homeTable tbody').on('click', 'tr', function () {
-            //    $(this).toggleClass('selected');
-            //});
-
             $('#cutSelectedButton').click(function () {
                 table.rows('.selected').remove().draw(); 
             });
@@ -199,7 +192,7 @@
                   .mousedown(function () {
                       isMouseDown = true;
                       $(this).toggleClass("selected");
-                      isHighlighted = $(this).hasClass("selected");
+                      isSelected = $(this).hasClass("selected");
                       return false; // prevent text selection
                   })
                   .mouseover(function () {

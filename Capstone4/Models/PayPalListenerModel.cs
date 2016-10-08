@@ -28,7 +28,7 @@ namespace Capstone4.Models
                 if (_PayPalCheckoutInfo.payment_status.ToLower() == "completed")
                 {
 
-
+                    model._PayPalCheckoutInfo.TrxnDate = DateTime.Now;
                     string memo = model._PayPalCheckoutInfo.memo;
                     string[] request = memo.Split(' ');
                     Array.Reverse(request);
