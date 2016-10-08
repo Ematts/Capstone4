@@ -154,6 +154,30 @@
             ]
         });
 
+        $(function () {
+            var isMouseDown = false,
+              isSelected;
+            $("#homeTable tr")
+              .mousedown(function () {
+                  isMouseDown = true;
+                  $(this).toggleClass("selected");
+                  isSelected = $(this).hasClass("selected");
+                  return false; // prevent text selection
+              })
+              .mouseover(function () {
+                  if (isMouseDown) {
+                      $(this).toggleClass("selected", isSelected);
+                  }
+              })
+              .bind("selectstart", function () {
+                  return false;
+              })
+
+            $(document)
+              .mouseup(function () {
+                  isMouseDown = false;
+              });
+        });
 
         $(document).ready(function () {
             var table = $('#homeTable').DataTable({
@@ -166,6 +190,7 @@
 
 
             });
+
             $('a.toggle-vis').on('click', function (e) {
                 e.preventDefault();
 
@@ -175,39 +200,12 @@
                 // Toggle the visibility
                 column.visible(!column.visible());
             });
-
             $('#cutSelectedButton').click(function () {
-                table.rows('.selected').remove().draw(); 
+                table.rows('.selected').remove().draw();
             });
             $('#cropSelectedButton').click(function () {
                 table.$('tr').toggleClass('selected');
                 table.rows('.selected').remove().draw();
-                }
-            );
-
-            $(function () {
-                var isMouseDown = false,
-                  isSelected;
-                $("#homeTable tr")
-                  .mousedown(function () {
-                      isMouseDown = true;
-                      $(this).toggleClass("selected");
-                      isSelected = $(this).hasClass("selected");
-                      return false; // prevent text selection
-                  })
-                  .mouseover(function () {
-                      if (isMouseDown) {
-                          $(this).toggleClass("selected", isSelected);
-                      }
-                  })
-                  .bind("selectstart", function () {
-                      return false;
-                  })
-
-                $(document)
-                  .mouseup(function () {
-                      isMouseDown = false;
-                  });
             });
 
         });
