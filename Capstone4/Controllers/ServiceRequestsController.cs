@@ -324,6 +324,13 @@ namespace Capstone4.Controllers
                 db.SaveChanges();
                 UpdateRating(serviceRequest.Contractor);
             }
+
+            if (serviceRequest.PayPalListenerModel != null)
+            {
+                db.PayPalListenerModels.Remove(serviceRequest.PayPalListenerModel);
+                db.SaveChanges();
+            }
+
             List<Models.Address> ids = new List<Models.Address>();
             Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
             db.ServiceRequests.Remove(serviceRequest);
@@ -562,19 +569,19 @@ namespace Capstone4.Controllers
             //serviceRequest.ContractorPaid = true;
             db.SaveChanges();
 
-            var myMessage = new SendGrid.SendGridMessage();
-            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
-            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
-            string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
-            myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
-            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
-            myMessage.Subject = "Payment Confirmed!!";
-            String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>"  + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>"; 
-            myMessage.Html = message;
-            var credentials = new NetworkCredential(name, pass);
-            var transportWeb = new SendGrid.Web(credentials);
-            transportWeb.DeliverAsync(myMessage);
-            Notify_Contractor_of_Payment(serviceRequest);
+            //var myMessage = new SendGrid.SendGridMessage();
+            //string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            //string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            //string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
+            //myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+            //myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            //myMessage.Subject = "Payment Confirmed!!";
+            //String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>"  + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>"; 
+            //myMessage.Html = message;
+            //var credentials = new NetworkCredential(name, pass);
+            //var transportWeb = new SendGrid.Web(credentials);
+            //transportWeb.DeliverAsync(myMessage);
+            //Notify_Contractor_of_Payment(serviceRequest);
 
             return View(serviceRequest);
 

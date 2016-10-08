@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Web;
 
@@ -44,6 +45,19 @@ namespace Capstone4.Models
                         serviceRequest.PayPalListenerModelID = model.ID;
                         serviceRequest.PayPalListenerModel = model;
                         db.PayPalListenerModels.Add(model);
+                        var myMessage = new SendGrid.SendGridMessage();
+                        string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+                        string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+                        string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
+                        myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+                        myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+                        myMessage.Subject = "Payment Confirmed!!";
+                        String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>" + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>";
+                        myMessage.Html = message;
+                        var credentials = new NetworkCredential(name, pass);
+                        var transportWeb = new SendGrid.Web(credentials);
+                        transportWeb.DeliverAsync(myMessage);
+                        Notify_Contractor_of_Payment(serviceRequest);
                         db.SaveChanges();
                     }
 
@@ -109,6 +123,23 @@ namespace Capstone4.Models
             catch { }
 
             return response;
+
+        }
+        public void Notify_Contractor_of_Payment(ServiceRequest serviceRequest)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(serviceRequest.Contractor.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "You've been paid!!";
+            string url = "http://localhost:37234/ServiceRequests/PaymentView/" + serviceRequest.ID;
+            string message = "Hello " + serviceRequest.Contractor.FirstName + "," + "<br>" + "<br>" + "$" + serviceRequest.AmountDue + " has been credited to your Paypal account for the following service:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Service Number: <br>" + serviceRequest.Service_Number;
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
 
         }
     }
