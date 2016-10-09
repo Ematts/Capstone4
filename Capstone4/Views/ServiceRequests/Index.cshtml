@@ -15,7 +15,7 @@
     <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Homeowner Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">Street</a> - <a class="toggle-vis" data-column="3">City</a> - <a class="toggle-vis" data-column="4">State</a> - <a class="toggle-vis" data-column="5">Zip</a> - <a class="toggle-vis" data-column="6">Description</a> - <a class="toggle-vis" data-column="7">Price</a> - <a class="toggle-vis" data-column="8">Posted Date</a> - <a class="toggle-vis" data-column="9">Completion Deadline</a> - <a class="toggle-vis" data-column="10">Service Number</a> - <a class="toggle-vis" data-column="11">Expired</a> - <a class="toggle-vis" data-column="12">Contractor Username</a> - <a class="toggle-vis" data-column="13">Vacant</a> - <a class="toggle-vis" data-column="14">Validated</a> - <a class="toggle-vis" data-column="15">Inactive</a> 
 </div>
 <br />
-<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button></div>
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
 <br />
 <table class="table" id="homeTable" >
     <thead>
@@ -206,6 +206,10 @@
             $('#cropSelectedButton').click(function () {
                 table.$('tr').toggleClass('selected');
                 table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload();
             });
 
         });

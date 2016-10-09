@@ -13,7 +13,7 @@
     <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Admin Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">First Name</a> - <a class="toggle-vis" data-column="3">Last Name</a>
 </div>
 <br />
-<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button></div>
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
 <br />
 <table class="table" id="homeTable">
     <thead>
@@ -129,6 +129,10 @@
             $('#cropSelectedButton').click(function () {
                 table.$('tr').toggleClass('selected');
                 table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload();
             });
 
         });

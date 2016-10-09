@@ -13,7 +13,7 @@
     <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Homeowner Username</a> - <a class="toggle-vis" data-column="1">First Name</a> - <a class="toggle-vis" data-column="2">Last Name</a> - <a class="toggle-vis" data-column="3">Email</a> - <a class="toggle-vis" data-column="4">Street</a> - <a class="toggle-vis" data-column="5">City</a> - <a class="toggle-vis" data-column="6">State</a> - <a class="toggle-vis" data-column="7">Zip</a> - <a class="toggle-vis" data-column="8">Vacant</a> - <a class="toggle-vis" data-column="9">Validated</a> - <a class="toggle-vis" data-column="10">Inactive</a>
 </div>
 <br />
-<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button></div>
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
 <br />
 <table class="table" id="homeTable" >
     <thead>
@@ -172,6 +172,10 @@
             $('#cropSelectedButton').click(function () {
                 table.$('tr').toggleClass('selected');
                 table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload();
             });
 
         });
