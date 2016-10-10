@@ -30,6 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Zip)
             </th>
+            <th>Remove</th>
             <th></th>
         </tr>
     </thead>
@@ -50,6 +51,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Zip)
                 </td>
+                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
                     @Html.ActionLink("Details", "Details", new { id = item.ID }) |
@@ -131,6 +133,22 @@
 
             $('#refresh').click(function () {
                 location.reload(true);
+            });
+
+            $(document).on("click", ".removeRow", function () {
+                var table = $('#homeTable').DataTable();
+                var row;
+
+                console.log($(this).closest('table'));
+                if ($(this).closest('table').hasClass("collapsed")) {
+                    var child = $(this).parents("tr.child");
+                    row = $(child).prevAll(".parent");
+                } else {
+                    row = $(this).parents('tr');
+                }
+
+                table.row(row).remove().draw();
+
             });
             
 
