@@ -40,6 +40,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalRatings)
             </th>
+            <th>Remove</th>
             <th></th>
         </tr>
     </thead>
@@ -63,6 +64,7 @@
                     @Html.ActionLink("Details", "SeeContractorReviews", new { id = item.ID })
 
                 </td>
+                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
             </tr>
         }
    </tbody>
@@ -114,6 +116,21 @@
               .mouseup(function () {
                   isMouseDown = false;
               });
+        });
+
+        $(document).on("click", ".removeRow", function () {
+            var table = $('#homeTable').DataTable();
+            var row;
+            console.log($(this).closest('table'));
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 0)) {
+                var child = $(this).parents("tr.child");
+                row = $(child).siblings(".parent");
+            } else {
+                row = $(this).parents('tr');
+            }
+
+            table.row(row).remove().draw();
+
         });
 
         $(document).ready(function () {
