@@ -87,6 +87,24 @@ namespace Capstone4.Models
         public string payment_date { get; set; }
 
         public string memo { get; set; }
+
+        //public DateTime TrxnDate
+        //{
+        //    get
+        //    {
+        //        DateTime dt = DateTime.Now;
+        //        if (DateTime.TryParse(payment_date, out dt))
+        //        {
+        //            return dt;
+        //        }
+        //        else
+        //        {
+        //            return DateTime.Now;
+        //        }
+        //    }
+        //}
+
+
         [Column(TypeName = "datetime2")]
         public DateTime? TrxnDate { get; set; }
 
