@@ -46,5 +46,7 @@ namespace Capstone4.Models
         public System.Data.Entity.DbSet<Capstone4.Models.ContractorReview> ContractorReviews { get; set; }
 
         public System.Data.Entity.DbSet<Capstone4.Models.PayPalListenerModel> PayPalListenerModels { get; set; }
+
+        public System.Data.Entity.DbSet<Capstone4.Models.ReviewResponse> ReviewResponses { get; set; }
     }
 }

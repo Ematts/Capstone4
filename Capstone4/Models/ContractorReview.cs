@@ -20,5 +20,7 @@ namespace Capstone4.Models
         public DateTime? ReviewDate { get; set; }
         public int? ContractorID { get; set; }
         public virtual Contractor Contractor { get; set; }
+        public int? ReviewResponseID { get; set; }
+        public virtual ReviewResponse ReviewResponse { get; set; }
     }
 }

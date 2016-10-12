@@ -262,6 +262,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapsController.cs" />
     <Compile Include="Controllers\PayPalListenerModelsController.cs" />
+    <Compile Include="Controllers\ReviewResponsesController.cs" />
     <Compile Include="Controllers\ServiceRequestsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -414,6 +415,14 @@
     <Compile Include="Migrations\201610101635425_f5.Designer.cs">
       <DependentUpon>201610101635425_f5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610121726307_d12.cs" />
+    <Compile Include="Migrations\201610121726307_d12.Designer.cs">
+      <DependentUpon>201610121726307_d12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610121736119_d13.cs" />
+    <Compile Include="Migrations\201610121736119_d13.Designer.cs">
+      <DependentUpon>201610121736119_d13.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -428,6 +437,7 @@
     <Compile Include="Models\ManualValidateViewModel.cs" />
     <Compile Include="Models\PayPalCheckoutInfo.cs" />
     <Compile Include="Models\PayPalListenerModel.cs" />
+    <Compile Include="Models\ReviewResponse.cs" />
     <Compile Include="Models\SeeContractorReviewViewModel.cs" />
     <Compile Include="Models\FileType.cs" />
     <Compile Include="Models\Homeowner.cs" />
@@ -606,6 +616,12 @@
     <Content Include="Views\PayPalListenerModels\Details.cshtml" />
     <Content Include="Views\PayPalListenerModels\Edit.cshtml" />
     <Content Include="Views\PayPalListenerModels\Index.cshtml" />
+    <Content Include="Views\ReviewResponses\Create.cshtml" />
+    <Content Include="Views\ReviewResponses\Delete.cshtml" />
+    <Content Include="Views\ReviewResponses\Details.cshtml" />
+    <Content Include="Views\ReviewResponses\Edit.cshtml" />
+    <Content Include="Views\ReviewResponses\Index.cshtml" />
+    <Content Include="Views\ContractorReviews\AddResponse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -730,6 +746,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610101635425_f5.resx">
       <DependentUpon>201610101635425_f5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610121726307_d12.resx">
+      <DependentUpon>201610121726307_d12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610121736119_d13.resx">
+      <DependentUpon>201610121736119_d13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

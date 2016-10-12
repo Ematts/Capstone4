@@ -131,11 +131,22 @@ namespace Capstone4.Controllers
             model.ContractorUsername = contractor.Username;
             model.TotalRatings = contractor.ContractorReviews.Count();
             model.ServiceRequests = new List<ServiceRequest>();
-            foreach(var request in db.ServiceRequests)
+            foreach (var request in db.ServiceRequests)
             {
                 if(request.ContractorID == id && request.ContractorReviewID != null)
                 {
+                    
                     model.ServiceRequests.Add(request);
+                    
+                    if(request.ContractorReview.ReviewResponseID != null)
+                    {
+                        model.Response = request.ContractorReview.ReviewResponse.Response;
+                    }
+                    else
+                    {
+                        request.ContractorReview.ReviewResponse = new ReviewResponse() { ResponseDate = null, Response = null };
+                    }
+                    
                 }
             }
 

@@ -25,6 +25,7 @@ namespace Capstone4.Models
         public DateTime? ReviewDate { get; set; }
         [Display(Name = "Reviewed by")]
         public string HomeownerUsername { get; set; }
+        public string Response { get; set; }
         public ICollection<ServiceRequest> ServiceRequests { get; set; }
 
     }

@@ -662,6 +662,7 @@ namespace Capstone4.Controllers
                     }
                 }
                 db.SaveChanges();
+                Notify_Contractor_of_Review(contractorReview);
                 return RedirectToAction("Index", "ContractorReviews");
             }
             return View(serviceRequest);
@@ -837,6 +838,23 @@ namespace Capstone4.Controllers
             myMessage.Subject = "You've been paid!!";
             string url = "http://localhost:37234/ServiceRequests/PaymentView/" + serviceRequest.ID;
             string message = "Hello " + serviceRequest.Contractor.FirstName + "," + "<br>" + "<br>" + "$" + serviceRequest.AmountDue + " has been credited to your Paypal account for the following service:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Service Number: <br>" + serviceRequest.Service_Number;
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+        public void Notify_Contractor_of_Review(ContractorReview contractorReview)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(contractorReview.Contractor.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "You've been reviewed!!";
+            string url = "http://localhost:37234/ContractorReviews/AddResponse/" + contractorReview.ID;
+            string message = "Add your reply: " + url;
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);

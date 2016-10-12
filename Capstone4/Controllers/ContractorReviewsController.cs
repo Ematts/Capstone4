@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Capstone4.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Capstone4.Controllers
 {
@@ -154,6 +155,51 @@ namespace Capstone4.Controllers
             }
             
          }
+
+        public ActionResult AddResponse(int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ContractorReview review = db.ContractorReviews.Find(ID);
+
+            if (review == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != review.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+
+            return View(review);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddResponse([Bind(Include = "ID,ResponseDate,Response")] ReviewResponse reviewResponse, int ID)
+        {
+            ContractorReview review = db.ContractorReviews.Find(ID);
+            if (ModelState.IsValid)
+            {
+                reviewResponse.ResponseDate = DateTime.Now;
+                reviewResponse.ContractorID = review.ContractorID;
+                db.ReviewResponses.Add(reviewResponse);
+                db.SaveChanges();
+                review.ReviewResponseID = reviewResponse.ID;
+                db.SaveChanges();
+                return RedirectToAction("Index", "ReviewResponses");
+            }
+            return View(review);
+        }
 
 
         protected override void Dispose(bool disposing)
