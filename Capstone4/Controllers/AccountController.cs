@@ -251,13 +251,27 @@ namespace Capstone4.Controllers
                     UserManager.AddToRole(user.Id, role.Name);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip, vacant = model.vacant, validated = model.validated };
-                    db.Addresses.Add(address);
                     var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, travelDistance = model.travelDistance, UserId = user.Id, Inactive = model.Inactive };
-                    contractor.AddressID = address.ID;
                     db.Contractors.Add(contractor);
+
+
+                    foreach (var i in db.Addresses.ToList())
+                    {
+                        if (i.FullAddress == address.FullAddress)
+                        {
+                            contractor.AddressID = i.ID;
+                            contractor.Address = i;
+                            contractor.Address.validated = address.validated;
+                            contractor.Address.vacant = address.vacant;
+                        }
+                    }
+
+                    if (contractor.AddressID == null)
+                    {
+                        contractor.AddressID = address.ID;
+                        db.Addresses.Add(address);
+                    }
                     db.SaveChanges();
-
-
                     return RedirectToAction("Index", "Contractors");
 
                 }

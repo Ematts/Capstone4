@@ -366,6 +366,8 @@ namespace Capstone4.Controllers
                 }
 
             }
+            serviceRequest.Description = description;
+            serviceRequest.Price = price;
             serviceRequest.CompletionDeadline = completionDeadline;
             serviceRequest.Address.vacant = vacant;
             serviceRequest.Inactive = inactive;
@@ -462,6 +464,9 @@ namespace Capstone4.Controllers
             Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
 
             Homeowner homeowner = db.Homeowners.Find(id);
+            homeowner.Username = username;
+            homeowner.FirstName = firstname;
+            homeowner.LastName = lastname;
             var addressToCheck = homeowner.Address;
             bool addressAssigned = false;
 
@@ -548,6 +553,188 @@ namespace Capstone4.Controllers
             db.SaveChanges();
 
             return Json(new { success = true, id = homeowner.ID },
+                 JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> ManualValidationContractorCreate()
+        {
+
+            var form = Request.Form;
+            string username = (form["Screen_name"]);
+            string firstname = (form["FirstName"]);
+            string lastname = (form["LastName"]);
+            string email = (form["Email"]);
+            string password = (form["Password"]);
+            string city = (form["City"]);
+            string state = (form["State"]);
+            string zip = (form["Zip"]);
+            string street = (form["Street"]);
+            string travelDistanceString = (form["travelDistance"]);
+            double travelDistance = Convert.ToDouble(travelDistanceString);
+            bool vacant = form["vacant"].Contains("true");
+            bool validated = form["validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
+            var user = new ApplicationUser() { Email = email, UserName = email };
+            var result = await UserManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                var role = db.Roles.Find("1");
+                UserManager.AddToRole(user.Id, role.Name);
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+                Contractor contractor = new Contractor() { Username = username, FirstName = firstname, LastName = lastname, UserId = user.Id, travelDistance = travelDistance, Inactive = inactive };
+                db.Contractors.Add(contractor);
+
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        contractor.AddressID = i.ID;
+                        contractor.Address = i;
+                        contractor.Address.validated = address.validated;
+                        contractor.Address.vacant = address.vacant;
+                    }
+                }
+
+                if (contractor.AddressID == null)
+                {
+                    contractor.AddressID = address.ID;
+                    db.Addresses.Add(address);
+                }
+
+                db.SaveChanges();
+
+                return Json(new { success = true, id = contractor.ID },
+                     JsonRequestBehavior.AllowGet);
+            }
+            return HttpNotFound();
+        }
+
+        [HttpPost]
+        public ActionResult ManualValidationContractorEdit()
+        {
+
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            string username = (form["Username"]);
+            string firstname = (form["FirstName"]);
+            string lastname = (form["LastName"]);
+            string city = (form["Address.City"]);
+            string state = (form["Address.State"]);
+            string zip = (form["Address.Zip"]);
+            string street = (form["Address.Street"]);
+            string travelDistanceString = (form["travelDistance"]);
+            double travelDistance = Convert.ToDouble(travelDistanceString);
+            bool vacant = form["Address.vacant"].Contains("true");
+            bool validated = form["Address.validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Contractor")))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+            Contractor contractor = db.Contractors.Find(id);
+            contractor.Username = username;
+            contractor.FirstName = firstname;
+            contractor.LastName = lastname;
+            contractor.travelDistance = travelDistance;
+            var addressToCheck = contractor.Address;
+            bool addressAssigned = false;
+
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (contractor.AddressID == null)
+            {
+
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        contractor.AddressID = i.ID;
+                        db.SaveChanges();
+                        addressAssigned = true;
+                    }
+
+                }
+
+            }
+
+            if (contractor.AddressID == null)
+            {
+                db.Addresses.Add(address);
+                contractor.AddressID = address.ID;
+                db.SaveChanges();
+                addressAssigned = true;
+            }
+
+
+
+            if (contractor.AddressID != null && addressAssigned == false)
+            {
+
+                foreach (var i in db.Addresses.ToList())
+                {
+                    if (i.FullAddress == address.FullAddress)
+                    {
+                        contractor.AddressID = i.ID;
+                        contractor.Address.validated = address.validated;
+                        contractor.Address.vacant = address.vacant;
+                        db.SaveChanges();
+                        addressAssigned = true;
+                    }
+                }
+
+                if (addressAssigned == false)
+                {
+                    db.Addresses.Add(address);
+                    contractor.AddressID = address.ID;
+                    db.SaveChanges();
+                }
+
+                if (addressToCheck != null)
+                {
+                    List<Models.Address> ids = new List<Models.Address>();
+                    foreach (var x in db.Contractors.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.Homeowners.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.ServiceRequests.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    if (!ids.Contains(addressToCheck))
+                    {
+                        db.Addresses.Remove(addressToCheck);
+                    }
+                    db.SaveChanges();
+                }
+
+            }
+
+            contractor.Address.vacant = vacant;
+            contractor.Inactive = inactive;
+            contractor.Address.validated = validated;
+            db.SaveChanges();
+
+            return Json(new { success = true, id = contractor.ID },
                  JsonRequestBehavior.AllowGet);
         }
 

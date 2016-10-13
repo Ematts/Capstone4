@@ -23,7 +23,7 @@
 }
 <br /><br />
 <div>
-    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Contractor</a> - <a class="toggle-vis" data-column="1">Overall Rating</a> - <a class="toggle-vis" data-column="2">Total Rating</a> 
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Contractor</a> - <a class="toggle-vis" data-column="1">Overall Rating</a> - <a class="toggle-vis" data-column="2">Total Rating</a> - <a class="toggle-vis" data-column="3">Remove</a>
 </div>
 <br />
 <div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
@@ -59,12 +59,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalRatings)
                 </td>
+                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
                 <td>
 
                     @Html.ActionLink("Details", "SeeContractorReviews", new { id = item.ID })
 
                 </td>
-                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
             </tr>
         }
    </tbody>
@@ -89,7 +89,8 @@
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
             "columnDefs": [
-                { "orderable": false, "targets": 3 }
+                { "orderable": false, "targets": 3 },
+                { "orderable": false, "targets": 4 }
             ]
         });
 

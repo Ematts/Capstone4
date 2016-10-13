@@ -10,7 +10,7 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 <div>
-    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Admin Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">First Name</a> - <a class="toggle-vis" data-column="3">Last Name</a>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Admin Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">First Name</a> - <a class="toggle-vis" data-column="3">Last Name</a> - <a class="toggle-vis" data-column="4">Remove</a>
 </div>
 <br />
 <div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
@@ -75,7 +75,8 @@
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
             "columnDefs": [
-                { "orderable": false, "targets": 4 }
+                { "orderable": false, "targets": 4 },
+                { "orderable": false, "targets": 5 }
             ]
         });
 

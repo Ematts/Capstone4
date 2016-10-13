@@ -29,7 +29,7 @@
         </dd>
     </dl>
     <div>
-        <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Rating</a> - <a class="toggle-vis" data-column="1">Review</a> - <a class="toggle-vis" data-column="2">Review Date</a> - <a class="toggle-vis" data-column="3">Reviewed by</a> - <a class="toggle-vis" data-column="4">Response</a>
+        <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Rating</a> - <a class="toggle-vis" data-column="1">Review</a> - <a class="toggle-vis" data-column="2">Review Date</a> - <a class="toggle-vis" data-column="3">Reviewed by</a> - <a class="toggle-vis" data-column="4">Response</a> - <a class="toggle-vis" data-column="5">Remove</a>
     </div>
     <br />
     <div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
@@ -131,7 +131,8 @@
     $.extend(true, $.fn.dataTable.defaults, {
             "columnDefs": [
                 { "orderable": false, "targets": 1 },
-                { "orderable": false, "targets": 4 }
+                { "orderable": false, "targets": 4 },
+                { "orderable": false, "targets": 5 }
             ]
         });
 

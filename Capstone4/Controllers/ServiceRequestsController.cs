@@ -320,6 +320,10 @@ namespace Capstone4.Controllers
 
             if(serviceRequest.ContractorReview != null)
             {
+                if (serviceRequest.ContractorReview.ReviewResponse != null)
+                {
+                    db.ReviewResponses.Remove(serviceRequest.ContractorReview.ReviewResponse);
+                }
                 db.ContractorReviews.Remove(serviceRequest.ContractorReview);
                 db.SaveChanges();
                 UpdateRating(serviceRequest.Contractor);
@@ -662,7 +666,7 @@ namespace Capstone4.Controllers
                     }
                 }
                 db.SaveChanges();
-                Notify_Contractor_of_Review(contractorReview);
+                Notify_Contractor_of_Review(contractorReview, serviceRequest);
                 return RedirectToAction("Index", "ContractorReviews");
             }
             return View(serviceRequest);
@@ -844,9 +848,9 @@ namespace Capstone4.Controllers
             transportWeb.DeliverAsync(myMessage);
 
         }
-        public void Notify_Contractor_of_Review(ContractorReview contractorReview)
+        public void Notify_Contractor_of_Review(ContractorReview contractorReview, ServiceRequest serviceRequest)
         {
-
+            http://localhost:37234/ContractorReviews/AddResponse/" + contractorReview.ID;
             string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
             string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
             var myMessage = new SendGrid.SendGridMessage();
@@ -854,8 +858,8 @@ namespace Capstone4.Controllers
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
             myMessage.Subject = "You've been reviewed!!";
             string url = "http://localhost:37234/ContractorReviews/AddResponse/" + contractorReview.ID;
-            string message = "Add your reply: " + url;
-            myMessage.Html = message;
+            string message = "Hello " + contractorReview.Contractor.FirstName + "," + "<br>" + "<br>" + serviceRequest.Homeowner.Username + " has given given your service a " + contractorReview.Rating + " star rating." + "<br>" + "<br>" + "Additionally, the following review has been posted:" + "<br > " + " <br >" + contractorReview.Review + "<br >" + "<br>" + "To respond to this review, please click on the following link: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message; 
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);
             transportWeb.DeliverAsync(myMessage);

@@ -9,74 +9,201 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-    <th>
-        @Html.DisplayNameFor(model => model.Username)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.FirstName)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.LastName)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.ApplicationUser.Email)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Address.Street)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Address.City)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Address.State)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Address.Zip)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.travelDistance)
-    </th>
-    <th></th>
-</tr>
+<div>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Contractor Username</a> - <a class="toggle-vis" data-column="1">First Name</a> - <a class="toggle-vis" data-column="2">Last Name</a> - <a class="toggle-vis" data-column="3">Email</a> - <a class="toggle-vis" data-column="4">Street</a> - <a class="toggle-vis" data-column="5">City</a> - <a class="toggle-vis" data-column="6">State</a> - <a class="toggle-vis" data-column="7">Zip</a> - <a class="toggle-vis" data-column="8">Miles willing to travel</a> - <a class="toggle-vis" data-column="9">Vacant</a> - <a class="toggle-vis" data-column="10">Validated</a> - <a class="toggle-vis" data-column="11">Inactive</a> - <a class="toggle-vis" data-column="12">Remove</a>
+</div>
+<br />
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
+<br />
+<table class="table" id="homeTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.travelDistance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.vacant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address.validated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Inactive)
+            </th>
+            <th>Remove</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
 
-@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.Street)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.State)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address.Zip)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.travelDistance)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-        </td>
-    </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.Street)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address.Zip)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.travelDistance)
+                </td>
+                <td>
+                    @item.Address.vacant
+                </td>
+                <td>
+                    @item.Address.validated
+                </td>
+                <td>
+                    @item.Inactive
+                </td>
+                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </tbody>
 
 </table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+    <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
+
+
+    <script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 12 },
+                { "orderable": false, "targets": 13 }
+            ]
+        });
+
+        $(function () {
+            var isMouseDown = false,
+              isSelected;
+            $("#homeTable tr")
+              .mousedown(function () {
+                  isMouseDown = true;
+                  $(this).toggleClass("selected");
+                  isSelected = $(this).hasClass("selected");
+                  return false; // prevent text selection
+              })
+              .mouseover(function () {
+                  if (isMouseDown) {
+                      $(this).toggleClass("selected", isSelected);
+                  }
+              })
+              .bind("selectstart", function () {
+                  return false;
+              })
+
+            $(document)
+              .mouseup(function () {
+                  isMouseDown = false;
+              });
+        });
+
+
+        $(document).on("click", ".removeRow", function () {
+            var table = $('#homeTable').DataTable();
+            var row;
+            console.log($(this).closest('table'));
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length >0)) {
+                var child = $(this).parents("tr.child");
+                row = $(child).siblings(".parent");
+            } else {
+                row = $(this).parents('tr');
+            }
+
+            table.row(row).remove().draw();
+
+        });
+
+
+        $(document).ready(function () {
+            var table = $('#homeTable').DataTable({
+                scrollY: "500px",
+                //scrollX: true,
+                responsive: true,
+                scrollCollapse: true,
+                paging: true,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
+
+            });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+            $('#cutSelectedButton').click(function () {
+                table.rows('.selected').remove().draw();
+            });
+            $('#cropSelectedButton').click(function () {
+                table.$('tr').toggleClass('selected');
+                table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload(true);
+            });
+
+        });
+    </script>
+
+}

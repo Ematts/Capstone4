@@ -216,10 +216,17 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Contractor contractor = db.Contractors.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
             if (contractor == null)
             {
                 return HttpNotFound();
+            }
+
+
+            if ((contractor.UserId != identity) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
             }
 
 
@@ -233,6 +240,10 @@ namespace Capstone4.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,Rating,travelDistance")] Contractor contractor, Address address)
         {
+            var formInfo = address;
+            address = db.Addresses.Where(x => x.ID == contractor.AddressID).SingleOrDefault();
+            var addressToCheck = address;
+
             if (ModelState.IsValid)
             {
 
@@ -240,35 +251,94 @@ namespace Capstone4.Controllers
                 if (contractor.AddressID == null)
                 {
                     Address newAdd = new Address();
-                    newAdd.Street = address.Street;
-                    newAdd.City = address.City;
-                    newAdd.State = address.State;
-                    newAdd.Street = address.Street;
-                    newAdd.Zip = address.Zip;
-                    AddressesController c = new AddressesController();
-                    c.getGoogleAddress(newAdd);
+                    newAdd.Street = formInfo.Street;
+                    newAdd.City = formInfo.City;
+                    newAdd.State = formInfo.State;
+                    newAdd.Street = formInfo.Street;
+                    newAdd.Zip = formInfo.Zip;
+                    newAdd.validated = address.validated;
+                    newAdd.vacant = address.vacant;
+                    foreach (var i in db.Addresses.ToList())
+                    {
+                        if (newAdd.FullAddress == i.FullAddress)
+                        {
+                            contractor.AddressID = i.ID;
+                            contractor.Address = i;
+                            contractor.Address.validated = formInfo.validated;
+                            contractor.Address.vacant = formInfo.vacant;
+                            db.SaveChanges();
+                            return RedirectToAction("Index");
+                        }
+                    }
+
                     db.Addresses.Add(newAdd);
-                    contractor.AddressID = address.ID;
-                    db.Entry(contractor).State = EntityState.Modified;
+                    contractor.AddressID = newAdd.ID;
                     db.SaveChanges();
                     return RedirectToAction("Index");
 
                 }
-                foreach (var i in db.Addresses)
+
+                List<Address> ids = new List<Address>();
+                foreach (var i in db.Addresses.ToList())
                 {
-                    if (i.ID == contractor.AddressID)
+                    if (formInfo.FullAddress == i.FullAddress)
                     {
-                        i.Street = address.Street;
-                        i.City = address.City;
-                        i.State = address.State;
-                        i.Zip = address.Zip;
-                        AddressesController c = new AddressesController();
-                        c.getGoogleAddress(i);
+                        contractor.AddressID = i.ID;
+                        contractor.Address.validated = formInfo.validated;
+                        contractor.Address.vacant = formInfo.vacant;
+                        db.SaveChanges();
+
+                        foreach (var x in db.Contractors.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.Homeowners.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        foreach (var x in db.ServiceRequests.ToList())
+                        {
+                            ids.Add(x.Address);
+                        }
+                        if (!ids.Contains(addressToCheck))
+                        {
+                            db.Addresses.Remove(addressToCheck);
+                        }
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
                     }
                 }
 
+                Address newAdd1 = new Address();
+                newAdd1.Street = formInfo.Street;
+                newAdd1.City = formInfo.City;
+                newAdd1.State = formInfo.State;
+                newAdd1.Street = formInfo.Street;
+                newAdd1.Zip = formInfo.Zip;
+                newAdd1.validated = formInfo.validated;
+                newAdd1.vacant = formInfo.vacant;
+                db.Addresses.Add(newAdd1);
+                contractor.AddressID = newAdd1.ID;
+                db.SaveChanges();
+                foreach (var x in db.Contractors.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                foreach (var x in db.Homeowners.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                foreach (var x in db.ServiceRequests.ToList())
+                {
+                    ids.Add(x.Address);
+                }
+                if (!ids.Contains(addressToCheck))
+                {
+                    db.Addresses.Remove(addressToCheck);
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
+
             }
 
             return View(contractor);
@@ -351,6 +421,23 @@ namespace Capstone4.Controllers
             ViewBag.Message = "An account for this user already exists";
 
             return View();
+        }
+
+
+        public ActionResult Manual_Validate_Thank_You(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Contractor contractor = db.Contractors.Find(id);
+
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(contractor);
         }
 
         [AllowAnonymous]

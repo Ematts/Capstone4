@@ -7,7 +7,7 @@
 <h2>Manual Validate</h2>
 
 <div>
-    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">Street</a> - <a class="toggle-vis" data-column="3">City</a> - <a class="toggle-vis" data-column="4">State</a> - <a class="toggle-vis" data-column="5">Zip</a> - <a class="toggle-vis" data-column="6">Vacant</a> - <a class="toggle-vis" data-column="7">Validated</a> - <a class="toggle-vis" data-column="8">Inactive</a> - <a class="toggle-vis" data-column="9">Type</a>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Username</a> - <a class="toggle-vis" data-column="1">Email</a> - <a class="toggle-vis" data-column="2">Street</a> - <a class="toggle-vis" data-column="3">City</a> - <a class="toggle-vis" data-column="4">State</a> - <a class="toggle-vis" data-column="5">Zip</a> - <a class="toggle-vis" data-column="6">Vacant</a> - <a class="toggle-vis" data-column="7">Validated</a> - <a class="toggle-vis" data-column="8">Inactive</a> - <a class="toggle-vis" data-column="9">Type</a> - <a class="toggle-vis" data-column="10">Remove</a>
 </div>
 <br />
 <div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
@@ -189,7 +189,8 @@
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
             "columnDefs": [
-                { "orderable": false, "targets": 10 }
+                { "orderable": false, "targets": 10 },
+                { "orderable": false, "targets": 11 }
             ]
         });
 

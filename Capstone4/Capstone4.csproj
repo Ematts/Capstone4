@@ -475,6 +475,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\ContractorCreateValidator.js" />
+    <Content Include="Scripts\ContractorEditValidator.js" />
     <Content Include="Scripts\DataTables.js" />
     <Content Include="Scripts\DataTablesSelector.js" />
     <Content Include="Scripts\Drag.js" />
@@ -622,6 +624,7 @@
     <Content Include="Views\ReviewResponses\Edit.cshtml" />
     <Content Include="Views\ReviewResponses\Index.cshtml" />
     <Content Include="Views\ContractorReviews\AddResponse.cshtml" />
+    <Content Include="Views\Contractors\Manual_Validate_Thank_You.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
