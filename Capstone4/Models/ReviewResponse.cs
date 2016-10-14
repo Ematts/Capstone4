@@ -11,6 +11,7 @@ namespace Capstone4.Models
     {
         public int ID { get; set; }
         [DataType(DataType.MultilineText)]
+        [StringLength(1000, MinimumLength = 2)]
         public string Response { get; set; }
         [Column(TypeName = "datetime2")]
         [Display(Name = "Response Date")]

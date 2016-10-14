@@ -423,8 +423,33 @@
     <Compile Include="Migrations\201610121736119_d13.Designer.cs">
       <DependentUpon>201610121736119_d13.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610142054165_d14.cs" />
+    <Compile Include="Migrations\201610142054165_d14.Designer.cs">
+      <DependentUpon>201610142054165_d14.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610142116110_f6.cs" />
+    <Compile Include="Migrations\201610142116110_f6.Designer.cs">
+      <DependentUpon>201610142116110_f6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610142203555_vv.cs" />
+    <Compile Include="Migrations\201610142203555_vv.Designer.cs">
+      <DependentUpon>201610142203555_vv.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610142215152_s11.cs" />
+    <Compile Include="Migrations\201610142215152_s11.Designer.cs">
+      <DependentUpon>201610142215152_s11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610142245543_f7.cs" />
+    <Compile Include="Migrations\201610142245543_f7.Designer.cs">
+      <DependentUpon>201610142245543_f7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610142345365_s12.cs" />
+    <Compile Include="Migrations\201610142345365_s12.Designer.cs">
+      <DependentUpon>201610142345365_s12.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddResponseViewModel.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\CompletedServiceRequest.cs" />
@@ -625,6 +650,8 @@
     <Content Include="Views\ReviewResponses\Index.cshtml" />
     <Content Include="Views\ContractorReviews\AddResponse.cshtml" />
     <Content Include="Views\Contractors\Manual_Validate_Thank_You.cshtml" />
+    <Content Include="Views\ServiceRequests\AddResponse.cshtml" />
+    <Content Include="Views\ServiceRequests\AddResponseView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -755,6 +782,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610121736119_d13.resx">
       <DependentUpon>201610121736119_d13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610142054165_d14.resx">
+      <DependentUpon>201610142054165_d14.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610142116110_f6.resx">
+      <DependentUpon>201610142116110_f6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610142203555_vv.resx">
+      <DependentUpon>201610142203555_vv.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610142215152_s11.resx">
+      <DependentUpon>201610142215152_s11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610142245543_f7.resx">
+      <DependentUpon>201610142245543_f7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610142345365_s12.resx">
+      <DependentUpon>201610142345365_s12.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

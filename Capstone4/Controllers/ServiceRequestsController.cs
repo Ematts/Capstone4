@@ -688,8 +688,65 @@ namespace Capstone4.Controllers
             }
 
         }
+        
+        public ActionResult AddResponseView(AddResponseViewModel model, int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
 
 
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if(serviceRequest.ContractorReviewID == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            model.ContractorUsername = serviceRequest.Contractor.Username;
+            model.HomeownerUsername = serviceRequest.Homeowner.Username;
+            model.Rating = serviceRequest.ContractorReview.Rating;
+            model.Review = serviceRequest.ContractorReview.Review;
+            model.ReviewDate = serviceRequest.ContractorReview.ReviewDate;
+            model.Service_Number = serviceRequest.Service_Number;
+            ModelState.Clear();
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddResponse (AddResponseViewModel model, int ID)
+        {
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            ReviewResponse reviewResponse = new ReviewResponse();
+            if (ModelState.IsValid)
+            {
+                reviewResponse.ResponseDate = DateTime.Now;
+                reviewResponse.ContractorID = serviceRequest.ContractorID;
+                reviewResponse.Response = model.Response;
+                db.ReviewResponses.Add(reviewResponse);
+                serviceRequest.ContractorReview.ReviewResponseID = reviewResponse.ID;
+                db.SaveChanges();
+                return RedirectToAction("Index", "ReviewResponses");
+            }
+            return View(serviceRequest);
+        }
 
         public ActionResult PaymentView(int? ID)
         {
@@ -850,14 +907,13 @@ namespace Capstone4.Controllers
         }
         public void Notify_Contractor_of_Review(ContractorReview contractorReview, ServiceRequest serviceRequest)
         {
-            http://localhost:37234/ContractorReviews/AddResponse/" + contractorReview.ID;
             string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
             string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
             var myMessage = new SendGrid.SendGridMessage();
             myMessage.AddTo(contractorReview.Contractor.ApplicationUser.Email);
             myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
             myMessage.Subject = "You've been reviewed!!";
-            string url = "http://localhost:37234/ContractorReviews/AddResponse/" + contractorReview.ID;
+            string url = "http://localhost:37234/ServiceRequests/AddResponseView/" + serviceRequest.ID;
             string message = "Hello " + contractorReview.Contractor.FirstName + "," + "<br>" + "<br>" + serviceRequest.Homeowner.Username + " has given given your service a " + contractorReview.Rating + " star rating." + "<br>" + "<br>" + "Additionally, the following review has been posted:" + "<br > " + " <br >" + contractorReview.Review + "<br >" + "<br>" + "To respond to this review, please click on the following link: <br><a href =" + url + "> Click Here </a>";
             myMessage.Html = message; 
             var credentials = new NetworkCredential(name, pass);
