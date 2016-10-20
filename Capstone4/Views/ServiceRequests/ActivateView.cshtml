@@ -1,0 +1,158 @@
+﻿@model Capstone4.Models.ServiceRequest
+
+@{
+    ViewBag.Title = "ActivateView";
+}
+
+<h2>ValidateAddress</h2>
+@using (Html.BeginForm("Activate", "ServiceRequests", Model.ID))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div>
+        <h4>Validate Address</h4>
+        <hr />
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Homeowner.Username)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Homeowner.Username)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Homeowner.ApplicationUser.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Homeowner.ApplicationUser.Email)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.Street)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.Street)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.City)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.City)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.State)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.State)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.Zip)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.Zip)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.vacant)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.vacant)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.validated)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.validated)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.PostedDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PostedDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CompletionDeadline)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CompletionDeadline)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Service_Number)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Service_Number)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Expired)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Expired)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Inactive)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Inactive)
+            </dd>
+
+        </dl>
+
+        <strong>Service Request Photos:</strong>
+        <br> <br>
+
+        @foreach (var item in Model.ServiceRequestFilePaths)
+        {
+
+            <div class="photocontainer">
+                <img class="photo" src="~/images/@item.FileName" alt="Service Request Photo" width="200" height="133" />
+            </div>
+
+        }
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Activate" class="btn btn-default" />
+        </div>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "EditManual", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/picBig.js" type="text/javascript"></script>
+
+}

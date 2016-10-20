@@ -447,6 +447,18 @@
     <Compile Include="Migrations\201610142345365_s12.Designer.cs">
       <DependentUpon>201610142345365_s12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610191624451_d15.cs" />
+    <Compile Include="Migrations\201610191624451_d15.Designer.cs">
+      <DependentUpon>201610191624451_d15.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610191629153_d16.cs" />
+    <Compile Include="Migrations\201610191629153_d16.Designer.cs">
+      <DependentUpon>201610191629153_d16.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610201648042_d17.cs" />
+    <Compile Include="Migrations\201610201648042_d17.Designer.cs">
+      <DependentUpon>201610201648042_d17.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -652,6 +664,10 @@
     <Content Include="Views\Contractors\Manual_Validate_Thank_You.cshtml" />
     <Content Include="Views\ServiceRequests\AddResponse.cshtml" />
     <Content Include="Views\ServiceRequests\AddResponseView.cshtml" />
+    <Content Include="Views\Admins\ValidateAddress.cshtml" />
+    <Content Include="Views\ServiceRequests\ActivateView.cshtml" />
+    <Content Include="Views\ServiceRequests\EditManual.cshtml" />
+    <Content Include="Views\ServiceRequests\Duplicate_Post.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -800,6 +816,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610142345365_s12.resx">
       <DependentUpon>201610142345365_s12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610191624451_d15.resx">
+      <DependentUpon>201610191624451_d15.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610191629153_d16.resx">
+      <DependentUpon>201610191629153_d16.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610201648042_d17.resx">
+      <DependentUpon>201610201648042_d17.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Capstone4.Models;
 using Microsoft.AspNet.Identity;
+using System.Net.Mail;
 
 namespace Capstone4.Controllers
 {
@@ -36,7 +37,7 @@ namespace Capstone4.Controllers
 
             foreach(var i in db.Homeowners.ToList())
             {
-                if(i.Inactive == true)
+                if(i.Inactive == true && i.Address.ManualValidated == null)
                 {
                     model.Homeowners.Add(i);
                 }
@@ -44,7 +45,7 @@ namespace Capstone4.Controllers
 
             foreach (var i in db.Contractors.ToList())
             {
-                if (i.Inactive == true)
+                if (i.Inactive == true && i.Address.ManualValidated == null)
                 {
                     model.Contractors.Add(i);
                 }
@@ -52,7 +53,7 @@ namespace Capstone4.Controllers
 
             foreach (var i in db.ServiceRequests.ToList())
             {
-                if (i.Inactive == true)
+                if (i.Inactive == true && i.Address.ManualValidated == null && i.Posted == false)
                 {
                     model.ServiceRequests.Add(i);
                 }
@@ -157,6 +158,96 @@ namespace Capstone4.Controllers
             db.Admins.Remove(admin);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult ValidateAddress(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            return View(serviceRequest);
+        }
+
+        public ActionResult Validate(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            
+            serviceRequest.Address.validated = true;
+            serviceRequest.Address.ManualValidated = true;
+            Notify_Homeowner_of_Validation(serviceRequest);
+            db.SaveChanges();
+            return RedirectToAction("ManualValidate");
+        }
+
+        public ActionResult Invalidate(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            serviceRequest.Inactive = true;
+            serviceRequest.Address.ManualValidated = false;
+            serviceRequest.Posted = false;
+            Notify_Homeowner_of_Invalidation(serviceRequest);
+            db.SaveChanges();
+            return RedirectToAction("ManualValidate");
+        }
+
+
+
+        public void Notify_Homeowner_of_Validation(ServiceRequest serviceRequest)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Address validated!!";
+            string url = "http://localhost:37234/ServiceRequests/ActivateView/" + serviceRequest.ID;
+            string message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Your address for this service request has been validated.  To activate this request, please click on the link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Homeowner_of_Invalidation(ServiceRequest serviceRequest)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Address invalid";
+            string url = "http://localhost:37234/ServiceRequests/ActivateView/" + serviceRequest.ID;
+            string message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "The address of " + serviceRequest.Address.FullAddress + " could not be validated.";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
         }
 
         protected override void Dispose(bool disposing)

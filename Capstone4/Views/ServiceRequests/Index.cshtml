@@ -186,7 +186,7 @@
             var table = $('#homeTable').DataTable();
             var row;
             console.log($(this).closest('table'));
-            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 0)) {
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 1)) {
                 var child = $(this).parents("tr.child");
                 row = $(child).siblings(".parent");
             } else {

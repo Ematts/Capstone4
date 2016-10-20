@@ -126,31 +126,12 @@ namespace Capstone4.Controllers
                 {
                     List<Models.Address> ids = new List<Models.Address>();
                     Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
-                    db.ServiceRequests.Remove(serviceRequest);
-                    foreach (var i in db.Addresses.ToList())
-                    {
-                        foreach (var x in db.Contractors.ToList())
-                        {
-                            ids.Add(x.Address);
-                        }
-                        foreach (var x in db.Homeowners.ToList())
-                        {
-                            ids.Add(x.Address);
-                        }
-                        foreach (var x in db.ServiceRequests.ToList())
-                        {
-                            ids.Add(x.Address);
-                        }
-                        if (!ids.Contains(addressToCheck))
-                        {
-                            db.Addresses.Remove(addressToCheck);
-                        }
-
-                    }
+                    serviceRequest.Posted = false;
                     TempData["address"] = addressToCheck;
                     db.SaveChanges();
                     return RedirectToAction("noService", "ServiceRequests", new {address = TempData["address"] });
                 }
+                serviceRequest.Posted = true;
                 db.SaveChanges();
                 postServiceRequest(serviceRequest, emailList);
                 return RedirectToAction("Index");
@@ -181,7 +162,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -363,6 +344,119 @@ namespace Capstone4.Controllers
             }
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Activate (int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
+            List<Contractor> emailList;
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            if(serviceRequest.CompletionDeadline < DateTime.Now)
+            {
+                return RedirectToAction("Date_Issue", "ServiceRequests");
+            }
+            serviceRequest.Inactive = false;
+            
+            emailList = GetDistance(serviceRequest);
+
+            if (emailList.Count == 0)
+            {
+                List<Models.Address> ids = new List<Models.Address>();
+                Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+                TempData["address"] = addressToCheck;
+                db.SaveChanges();
+                return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+            }
+            db.SaveChanges();
+            postServiceRequest(serviceRequest, emailList);
+            return RedirectToAction("Index");
+
+        }
+
+        public ActionResult ActivateView(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if(serviceRequest.Homeowner.ApplicationUser.Id != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+            return View(serviceRequest);
+        }
+
+        public ActionResult Duplicate_Post()
+        {
+            ViewBag.Message = "This service request has already been posted.";
+
+            return View();
+        }
+
+        public ActionResult EditManual(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(serviceRequest);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditManual([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated")] ServiceRequest serviceRequest)
+        {
+            List<Contractor> emailList;
+            if (ModelState.IsValid)
+            {
+                
+                var addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+                serviceRequest.Homeowner = db.Homeowners.Where(x => x.ID == serviceRequest.HomeownerID).SingleOrDefault();
+                serviceRequest.PostedDate = DateTime.Now;
+                db.Entry(serviceRequest).State = EntityState.Modified;
+                emailList = GetDistance(serviceRequest);
+                if (serviceRequest.PostedDate > serviceRequest.CompletionDeadline)
+                {
+                    return RedirectToAction("Date_Issue", "ServiceRequests");
+                }
+                if (emailList.Count == 0)
+                {
+                    serviceRequest.Posted = false;
+                    TempData["address"] = addressToCheck;
+                    db.SaveChanges();
+                    return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+                }
+                if(serviceRequest.Posted == true)
+                {
+                    return RedirectToAction("Duplicate_Post");
+                }
+                serviceRequest.Posted = true;
+                postServiceRequest(serviceRequest, emailList);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+
+            }
+            return View(serviceRequest);
         }
 
         protected override void Dispose(bool disposing)

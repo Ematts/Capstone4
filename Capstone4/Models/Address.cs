@@ -30,6 +30,7 @@ namespace Capstone4.Models
         public string googleAddress { get; set; }
         public bool vacant { get; set; }
         public bool validated { get; set; }
+        public bool? ManualValidated { get; set; }
     }
 }
 

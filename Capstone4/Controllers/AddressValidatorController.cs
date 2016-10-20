@@ -228,7 +228,7 @@ namespace Capstone4.Controllers
                 }
 
             }
-
+            serviceRequest.Posted = false;
             serviceRequest.PostedDate = DateTime.Now;
             db.ServiceRequests.Add(serviceRequest);
             db.SaveChanges();
@@ -367,6 +367,7 @@ namespace Capstone4.Controllers
 
             }
             serviceRequest.Description = description;
+            serviceRequest.Posted = false;
             serviceRequest.Price = price;
             serviceRequest.CompletionDeadline = completionDeadline;
             serviceRequest.Address.vacant = vacant;

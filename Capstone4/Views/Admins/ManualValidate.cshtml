@@ -171,6 +171,7 @@
                 <td>
                     @Html.ActionLink("Edit", "Edit", "ServiceRequests", new { id = item.ID }, null) |
                     @Html.ActionLink("Details", "Details", "ServiceRequests", new { id = item.ID }, null) |
+                    @Html.ActionLink("Validate", "ValidateAddress", "Admins", new { id = item.ID }, null) |
                     @Html.ActionLink("Delete", "Delete", "ServiceRequests", new { id = item.ID }, null)
                 </td>
             </tr>
@@ -222,8 +223,7 @@
         $(document).on("click", ".removeRow", function () {
             var table = $('#homeTable').DataTable();
             var row;
-            console.log($(this).closest('table'));
-            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 0)) {
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 1)) {
                 var child = $(this).parents("tr.child");
                 row = $(child).siblings(".parent");
             } else {
