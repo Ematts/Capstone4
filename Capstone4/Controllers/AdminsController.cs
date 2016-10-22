@@ -37,7 +37,7 @@ namespace Capstone4.Controllers
 
             foreach(var i in db.Homeowners.ToList())
             {
-                if(i.Inactive == true && i.Address.ManualValidated == null)
+                if(i.NeedsManualValidation == true)
                 {
                     model.Homeowners.Add(i);
                 }
@@ -45,7 +45,7 @@ namespace Capstone4.Controllers
 
             foreach (var i in db.Contractors.ToList())
             {
-                if (i.Inactive == true && i.Address.ManualValidated == null)
+                if (i.NeedsManualValidation == true)
                 {
                     model.Contractors.Add(i);
                 }
@@ -53,7 +53,7 @@ namespace Capstone4.Controllers
 
             foreach (var i in db.ServiceRequests.ToList())
             {
-                if (i.Inactive == true && i.Address.ManualValidated == null && i.Posted == false)
+                if (i.NeedsManualValidation == true)
                 {
                     model.ServiceRequests.Add(i);
                 }
@@ -174,6 +174,74 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
+        public ActionResult ManualValidateHomeowner(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Homeowner homeowner = db.Homeowners.Find(id);
+            if (homeowner == null)
+            {
+                return HttpNotFound();
+            }
+            return View(homeowner);
+        }
+
+        public ActionResult ManualValidateContractor(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Contractor contractor = db.Contractors.Find(id);
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(contractor);
+        }
+
+        public ActionResult ValidateHomeowner(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Homeowner homeowner = db.Homeowners.Find(id);
+            if (homeowner == null)
+            {
+                return HttpNotFound();
+            }
+
+            homeowner.Address.validated = true;
+            homeowner.Address.ManualValidated = true;
+            homeowner.NeedsManualValidation = false;
+            homeowner.Inactive = false;
+            Notify_Homeowner_of_Account_Activation(homeowner);
+            db.SaveChanges();
+            return RedirectToAction("ManualValidate");
+        }
+
+        public ActionResult ValidateContractor(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Contractor contractor = db.Contractors.Find(id);
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+            contractor.Inactive = false;
+            contractor.Address.validated = true;
+            contractor.Address.ManualValidated = true;
+            contractor.NeedsManualValidation = false;
+            Notify_Contractor_of_Account_Activation(contractor);
+            db.SaveChanges();
+            return RedirectToAction("ManualValidate");
+        }
         public ActionResult Validate(int? id)
         {
             if (id == null)
@@ -188,6 +256,7 @@ namespace Capstone4.Controllers
             
             serviceRequest.Address.validated = true;
             serviceRequest.Address.ManualValidated = true;
+            serviceRequest.NeedsManualValidation = false;
             Notify_Homeowner_of_Validation(serviceRequest);
             db.SaveChanges();
             return RedirectToAction("ManualValidate");
@@ -206,12 +275,50 @@ namespace Capstone4.Controllers
             }
             serviceRequest.Inactive = true;
             serviceRequest.Address.ManualValidated = false;
+            serviceRequest.NeedsManualValidation = false;
             serviceRequest.Posted = false;
             Notify_Homeowner_of_Invalidation(serviceRequest);
             db.SaveChanges();
             return RedirectToAction("ManualValidate");
         }
 
+        public ActionResult InvalidateHomeowner(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Homeowner homeowner = db.Homeowners.Find(id);
+            if (homeowner == null)
+            {
+                return HttpNotFound();
+            }
+            homeowner.Inactive = true;
+            homeowner.Address.ManualValidated = false;
+            homeowner.NeedsManualValidation = false;
+            Notify_Homeowner_of_Account_Invalidation(homeowner);
+            db.SaveChanges();
+            return RedirectToAction("ManualValidate");
+        }
+
+        public ActionResult InvalidateContractor(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Contractor contractor = db.Contractors.Find(id);
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+            contractor.Inactive = true;
+            contractor.Address.ManualValidated = false;
+            contractor.NeedsManualValidation = false;
+            Notify_Contractor_of_Account_Invalidation(contractor);
+            db.SaveChanges();
+            return RedirectToAction("ManualValidate");
+        }
 
 
         public void Notify_Homeowner_of_Validation(ServiceRequest serviceRequest)
@@ -225,6 +332,78 @@ namespace Capstone4.Controllers
             myMessage.Subject = "Address validated!!";
             string url = "http://localhost:37234/ServiceRequests/ActivateView/" + serviceRequest.ID;
             string message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Your address for this service request has been validated.  To activate this request, please click on the link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Homeowner_of_Account_Activation(Homeowner homeowner)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Address validated!!";
+            string url = "http://localhost:37234/Homeowners/Details/" + homeowner.ID;
+            string message = "Hello " + homeowner.FirstName + "," + "<br>" + "<br>" + "Your address has been validated and your account activated.  To see account details, please click on the link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Contractor_of_Account_Activation(Contractor contractor)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(contractor.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Address validated!!";
+            string url = "http://localhost:37234/Contractors/Details/" + contractor.ID;
+            string message = "Hello " + contractor.FirstName + "," + "<br>" + "<br>" + "Your address has been validated and your account activated.  To see account details, please click on the link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Homeowner_of_Account_Invalidation(Homeowner homeowner)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(homeowner.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Address validated!!";
+            string url = "http://localhost:37234/Homeowners/Details/" + homeowner.ID;
+            string message = "Hello " + homeowner.FirstName + "," + "<br>" + "<br>" + "Your address could not be validated.  To see account details, please click on the link below: <br><a href =" + url + "> Click Here </a>";
+            myMessage.Html = message;
+            var credentials = new NetworkCredential(name, pass);
+            var transportWeb = new SendGrid.Web(credentials);
+            transportWeb.DeliverAsync(myMessage);
+
+        }
+
+        public void Notify_Contractor_of_Account_Invalidation(Contractor contractor)
+        {
+
+            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            var myMessage = new SendGrid.SendGridMessage();
+            myMessage.AddTo(contractor.ApplicationUser.Email);
+            myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            myMessage.Subject = "Address validated!!";
+            string url = "http://localhost:37234/Contractors/Details/" + contractor.ID;
+            string message = "Hello " + contractor.FirstName + "," + "<br>" + "<br>" + "Your address could not be validated.  To see account details, please click on the link below: <br><a href =" + url + "> Click Here </a>";
             myMessage.Html = message;
             var credentials = new NetworkCredential(name, pass);
             var transportWeb = new SendGrid.Web(credentials);

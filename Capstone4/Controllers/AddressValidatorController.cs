@@ -230,6 +230,7 @@ namespace Capstone4.Controllers
             }
             serviceRequest.Posted = false;
             serviceRequest.PostedDate = DateTime.Now;
+            serviceRequest.NeedsManualValidation = true;
             db.ServiceRequests.Add(serviceRequest);
             db.SaveChanges();
             serviceRequest.Service_Number = serviceRequest.ID;
@@ -368,6 +369,7 @@ namespace Capstone4.Controllers
             }
             serviceRequest.Description = description;
             serviceRequest.Posted = false;
+            serviceRequest.NeedsManualValidation = true;
             serviceRequest.Price = price;
             serviceRequest.CompletionDeadline = completionDeadline;
             serviceRequest.Address.vacant = vacant;
@@ -405,7 +407,7 @@ namespace Capstone4.Controllers
                 UserManager.AddToRole(user.Id, role.Name);
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
-                Homeowner homeowner = new Homeowner() { Username = username, FirstName = firstname, LastName = lastname, UserId = user.Id, Inactive = inactive };
+                Homeowner homeowner = new Homeowner() { Username = username, FirstName = firstname, LastName = lastname, UserId = user.Id, Inactive = inactive, NeedsManualValidation = true };
                 db.Homeowners.Add(homeowner);
 
                 foreach (var i in db.Addresses.ToList())
@@ -547,7 +549,7 @@ namespace Capstone4.Controllers
                 }
 
             }
-
+            homeowner.NeedsManualValidation = true;
             homeowner.Address.vacant = vacant;
             homeowner.Inactive = inactive;
             homeowner.Address.validated = validated;
@@ -585,7 +587,7 @@ namespace Capstone4.Controllers
                 UserManager.AddToRole(user.Id, role.Name);
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
-                Contractor contractor = new Contractor() { Username = username, FirstName = firstname, LastName = lastname, UserId = user.Id, travelDistance = travelDistance, Inactive = inactive };
+                Contractor contractor = new Contractor() { Username = username, FirstName = firstname, LastName = lastname, UserId = user.Id, travelDistance = travelDistance, Inactive = inactive, NeedsManualValidation = true };
                 db.Contractors.Add(contractor);
 
                 foreach (var i in db.Addresses.ToList())
@@ -729,7 +731,7 @@ namespace Capstone4.Controllers
                 }
 
             }
-
+            contractor.NeedsManualValidation = true;
             contractor.Address.vacant = vacant;
             contractor.Inactive = inactive;
             contractor.Address.validated = validated;

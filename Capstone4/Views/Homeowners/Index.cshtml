@@ -85,13 +85,16 @@
                     @Html.DisplayFor(modelItem => item.Address.Zip)
                 </td>
                 <td>
-                    @item.Address.vacant
+                    @Html.DisplayFor(modelItem => item.Address.vacant)
+                    <div style="display: none;">@item.Address.vacant</div>
                 </td>
                 <td>
-                    @item.Address.validated
+                    @Html.DisplayFor(modelItem => item.Address.validated)
+                    <div style="display: none;">@item.Address.validated</div>
                 </td>
                 <td>
-                    @item.Inactive
+                    @Html.DisplayFor(modelItem => item.Inactive)
+                    <div style="display: none;">@item.Inactive</div>
                 </td>
                 <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
                 <td>

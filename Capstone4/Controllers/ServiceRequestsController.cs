@@ -127,11 +127,13 @@ namespace Capstone4.Controllers
                     List<Models.Address> ids = new List<Models.Address>();
                     Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
                     serviceRequest.Posted = false;
+                    serviceRequest.NeedsManualValidation = false;
                     TempData["address"] = addressToCheck;
                     db.SaveChanges();
                     return RedirectToAction("noService", "ServiceRequests", new {address = TempData["address"] });
                 }
                 serviceRequest.Posted = true;
+                serviceRequest.NeedsManualValidation = false;
                 db.SaveChanges();
                 postServiceRequest(serviceRequest, emailList);
                 return RedirectToAction("Index");
@@ -162,7 +164,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult Edit([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated,NeedsManualValidation")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
         {
             if (ModelState.IsValid)
             {
@@ -424,7 +426,7 @@ namespace Capstone4.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditManual([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated")] ServiceRequest serviceRequest)
+        public ActionResult EditManual([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated,NeedsManualValidation")] ServiceRequest serviceRequest)
         {
             List<Contractor> emailList;
             if (ModelState.IsValid)

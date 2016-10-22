@@ -89,6 +89,7 @@
                 <td>
                     @Html.ActionLink("Edit", "Edit", "Homeowners", new { id = item.ID }, null) |
                     @Html.ActionLink("Details", "Details", "Homeowners", new { id = item.ID }, null) |
+                    @Html.ActionLink("Validate", "ManualValidateHomeowner", "Admins", new { id = item.ID }, null) |
                     @Html.ActionLink("Delete", "Delete", "Homeowners", new { id = item.ID }, null)
                 </td>
             </tr>
@@ -130,6 +131,7 @@
                 <td>
                     @Html.ActionLink("Edit", "Edit", "Contractors", new { id = item.ID }, null) |
                     @Html.ActionLink("Details", "Details", "Contractors", new { id = item.ID }, null) |
+                    @Html.ActionLink("Validate", "ManualValidateContractor", "Admins", new { id = item.ID }, null) |
                     @Html.ActionLink("Delete", "Delete", "Contractors", new { id = item.ID }, null)
                 </td>
             </tr>

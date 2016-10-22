@@ -37,6 +37,7 @@ namespace Capstone4.Models
         public int Service_Number { get; set; }
         public bool Expired { get; set; }
         public bool? Posted { get; set; }
+        public bool? NeedsManualValidation { get; set; }
         [Column(TypeName = "datetime2")]
         [Display(Name = "Completion Date")]
         public DateTime? CompletionDate { get; set; }

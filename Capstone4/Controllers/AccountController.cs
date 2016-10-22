@@ -193,7 +193,7 @@ namespace Capstone4.Controllers
                     UserManager.AddToRole(user.Id, role.Name);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip, vacant = model.vacant, validated = model.validated };
-                    var homeowner = new Homeowner { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id, Inactive = model.Inactive };
+                    var homeowner = new Homeowner { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, UserId = user.Id, Inactive = model.Inactive, NeedsManualValidation = false };
                     db.Homeowners.Add(homeowner);
 
                     foreach (var i in db.Addresses.ToList())
@@ -251,7 +251,7 @@ namespace Capstone4.Controllers
                     UserManager.AddToRole(user.Id, role.Name);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     var address = new Address { Street = model.Street, City = model.City, State = model.State, Zip = model.Zip, vacant = model.vacant, validated = model.validated };
-                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, travelDistance = model.travelDistance, UserId = user.Id, Inactive = model.Inactive };
+                    var contractor = new Contractor { Username = model.Screen_name, FirstName = model.FirstName, LastName = model.LastName, travelDistance = model.travelDistance, UserId = user.Id, Inactive = model.Inactive, NeedsManualValidation = false };
                     db.Contractors.Add(contractor);
 
 

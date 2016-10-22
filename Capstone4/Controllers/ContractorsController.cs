@@ -238,7 +238,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,Rating,travelDistance")] Contractor contractor, Address address)
+        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,Rating,travelDistance,NeedsManualValidation")] Contractor contractor, Address address)
         {
             var formInfo = address;
             address = db.Addresses.Where(x => x.ID == contractor.AddressID).SingleOrDefault();
@@ -371,9 +371,12 @@ namespace Capstone4.Controllers
             }
             foreach(var request in db.ServiceRequests.ToList())
             {
-                if (request.ContractorReview.ContractorID == id)
+                if (request.ContractorReviewID != null)
                 {
-                    request.ContractorReviewID = null;
+                    if (request.ContractorReview.ContractorID == id)
+                    {
+                        request.ContractorReviewID = null;
+                    }
                 }
             }
             foreach(var review in db.ContractorReviews.ToList())

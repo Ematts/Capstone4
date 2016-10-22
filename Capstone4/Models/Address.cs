@@ -31,6 +31,7 @@ namespace Capstone4.Models
         public bool vacant { get; set; }
         public bool validated { get; set; }
         public bool? ManualValidated { get; set; }
+
     }
 }
 

@@ -19,6 +19,14 @@ namespace Capstone4.Controllers
         public ActionResult Index()
         {
             var homeowners = db.Homeowners.Include(h => h.Address).Include(h => h.ApplicationUser);
+            foreach (var i in db.Homeowners.ToList())
+            {
+                if (i.Address == null)
+                {
+                    Address address = new Address();
+                    i.Address = address;
+                }
+            }
             return View(homeowners.ToList());
         }
 
@@ -131,7 +139,7 @@ namespace Capstone4.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street")] Homeowner homeowner, Address address)
+        public ActionResult Edit([Bind(Include = "ID,UserId,AddressID,Username,FirstName,LastName,Street,NeedsManualValidation")] Homeowner homeowner, Address address)
         {
             var formInfo = address;
             address = db.Addresses.Where(x => x.ID == homeowner.AddressID).SingleOrDefault();
@@ -158,6 +166,11 @@ namespace Capstone4.Controllers
                             homeowner.Address = i;
                             homeowner.Address.validated = formInfo.validated;
                             homeowner.Address.vacant = formInfo.vacant;
+                            if(homeowner.Address.validated == true)
+                            {
+                                homeowner.NeedsManualValidation = false;
+
+                            }
                             db.SaveChanges();
                             return RedirectToAction("Index");
                         }
@@ -165,6 +178,11 @@ namespace Capstone4.Controllers
 
                     db.Addresses.Add(newAdd);
                     homeowner.AddressID = newAdd.ID;
+                    if (homeowner.Address.validated == true)
+                    {
+                        homeowner.NeedsManualValidation = false;
+
+                    }
                     db.SaveChanges();
                     return RedirectToAction("Index");
 
@@ -177,6 +195,11 @@ namespace Capstone4.Controllers
                         homeowner.AddressID = i.ID;
                         homeowner.Address.validated = formInfo.validated;
                         homeowner.Address.vacant = formInfo.vacant;
+                        if (homeowner.Address.validated == true)
+                        {
+                            homeowner.NeedsManualValidation = false;
+
+                        }
                         db.SaveChanges();
                         
                         foreach (var x in db.Contractors.ToList())
@@ -210,6 +233,11 @@ namespace Capstone4.Controllers
                 newAdd1.vacant = formInfo.vacant;
                 db.Addresses.Add(newAdd1);
                 homeowner.AddressID = newAdd1.ID;
+                if (homeowner.Address.validated == true)
+                {
+                    homeowner.NeedsManualValidation = false;
+
+                }
                 db.SaveChanges();
                 foreach (var x in db.Contractors.ToList())
                 {

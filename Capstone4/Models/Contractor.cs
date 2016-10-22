@@ -37,6 +37,7 @@ namespace Capstone4.Models
         [Display(Name = "Miles willing to travel:")]
         public double travelDistance { get; set; }
         public bool Inactive { get; set; }
+        public bool? NeedsManualValidation { get; set; }
 
     }
 }

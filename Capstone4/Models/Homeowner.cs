@@ -31,5 +31,6 @@ namespace Capstone4.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
         public bool Inactive { get; set; }
+        public bool? NeedsManualValidation { get; set; }
     }
 }
