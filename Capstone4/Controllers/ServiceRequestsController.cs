@@ -24,6 +24,14 @@ namespace Capstone4.Controllers
         public ActionResult Index()
         {
             var serviceRequests = db.ServiceRequests.Include(s => s.Address).Include(s => s.Contractor).Include(s => s.Homeowner);
+            foreach (var i in db.ServiceRequests.ToList())
+            {
+                if (i.Address == null)
+                {
+                    Models.Address address = new Models.Address();
+                    i.Address = address;
+                }
+            }
             return View(serviceRequests.ToList());
         }
 
@@ -81,8 +89,7 @@ namespace Capstone4.Controllers
 
                     }
                 }
-                serviceRequest.PostedDate = DateTime.Now;
-                if (serviceRequest.PostedDate > serviceRequest.CompletionDeadline)
+                if (serviceRequest.CompletionDeadline < DateTime.Now)
                 {
                     return RedirectToAction("Date_Issue", "ServiceRequests");
                 }
@@ -133,6 +140,7 @@ namespace Capstone4.Controllers
                     return RedirectToAction("noService", "ServiceRequests", new {address = TempData["address"] });
                 }
                 serviceRequest.Posted = true;
+                serviceRequest.PostedDate = DateTime.Now;
                 serviceRequest.NeedsManualValidation = false;
                 db.SaveChanges();
                 postServiceRequest(serviceRequest, emailList);
@@ -156,6 +164,11 @@ namespace Capstone4.Controllers
                 return HttpNotFound();
             }
 
+            if(serviceRequest.Posted == true && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("NoEdit", "ServiceRequests", new { id = serviceRequest.ID });
+            }
+
             return View(serviceRequest);
         }
 
@@ -170,6 +183,11 @@ namespace Capstone4.Controllers
             {
                 var formInfo = address;
                 var addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+
+                if (serviceRequest.CompletionDeadline < DateTime.Now)
+                {
+                    return RedirectToAction("Date_Issue", "ServiceRequests");
+                }
                 //serviceRequest.Service_Number = serviceRequest.ID;
                 db.Entry(serviceRequest).State = EntityState.Modified;
                 serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
@@ -205,13 +223,72 @@ namespace Capstone4.Controllers
                             serviceRequest.Address = i;
                             serviceRequest.Address.validated = formInfo.validated;
                             serviceRequest.Address.vacant = formInfo.vacant;
+                            if (serviceRequest.Address.validated == true)
+                            {
+                                serviceRequest.NeedsManualValidation = false;
+                                serviceRequest.Inactive = false;
+
+                            }
                             db.SaveChanges();
+                            if(serviceRequest.Posted != true && serviceRequest.NeedsManualValidation == false && serviceRequest.Inactive != true && serviceRequest.Address.validated == true)
+                            {
+                                List<Contractor> emailList;
+                                if (serviceRequest == null)
+                                {
+                                    return HttpNotFound();
+                                }
+                                
+                                emailList = GetDistance(serviceRequest);
+
+                                if (emailList.Count == 0)
+                                {
+                                    serviceRequest.Posted = false;
+                                    TempData["address"] = addressToCheck;
+                                    db.SaveChanges();
+                                    return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+                                }
+                                serviceRequest.Posted = true;
+                                serviceRequest.PostedDate = DateTime.Now;
+                                db.SaveChanges();
+                                postServiceRequest(serviceRequest, emailList);
+                                return RedirectToAction("Index");
+                            }
                             return RedirectToAction("Index");
                         }
                     }
                     db.Addresses.Add(newAdd);
                     serviceRequest.AddressID = newAdd.ID;
+                    serviceRequest.Address = newAdd;
+                    if (serviceRequest.Address.validated == true)
+                    {
+                        serviceRequest.NeedsManualValidation = false;
+                        serviceRequest.Inactive = false;
+
+                    }
                     db.SaveChanges();
+                    if (serviceRequest.Posted != true && serviceRequest.NeedsManualValidation == false && serviceRequest.Inactive != true && serviceRequest.Address.validated == true)
+                    {
+                        List<Contractor> emailList;
+                        if (serviceRequest == null)
+                        {
+                            return HttpNotFound();
+                        }
+
+                        emailList = GetDistance(serviceRequest);
+
+                        if (emailList.Count == 0)
+                        {
+                            serviceRequest.Posted = false;
+                            TempData["address"] = addressToCheck;
+                            db.SaveChanges();
+                            return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+                        }
+                        serviceRequest.Posted = true;
+                        serviceRequest.PostedDate = DateTime.Now;
+                        db.SaveChanges();
+                        postServiceRequest(serviceRequest, emailList);
+                        return RedirectToAction("Index");
+                    }
                     return RedirectToAction("Index");
                 }
                 List<Models.Address> ids = new List<Models.Address>();
@@ -222,6 +299,12 @@ namespace Capstone4.Controllers
                         serviceRequest.AddressID = i.ID;
                         serviceRequest.Address.validated = formInfo.validated;
                         serviceRequest.Address.vacant = formInfo.vacant;
+                        if (serviceRequest.Address.validated == true)
+                        {
+                            serviceRequest.NeedsManualValidation = false;
+                            serviceRequest.Inactive = false;
+
+                        }
                         db.SaveChanges();
 
                         foreach (var x in db.Contractors.ToList())
@@ -240,6 +323,33 @@ namespace Capstone4.Controllers
                         {
                             db.Addresses.Remove(addressToCheck);
                         }
+                        if (serviceRequest.Posted != true && serviceRequest.NeedsManualValidation == false && serviceRequest.Inactive != true && serviceRequest.Address.validated == true)
+                        {
+                            List<Contractor> emailList;
+                            if (serviceRequest == null)
+                            {
+                                return HttpNotFound();
+                            }
+                            if (serviceRequest.CompletionDeadline < DateTime.Now)
+                            {
+                                return RedirectToAction("Date_Issue", "ServiceRequests");
+                            }
+
+                            emailList = GetDistance(serviceRequest);
+
+                            if (emailList.Count == 0)
+                            {
+                                serviceRequest.Posted = false;
+                                TempData["address"] = addressToCheck;
+                                db.SaveChanges();
+                                return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+                            }
+                            serviceRequest.Posted = true;
+                            serviceRequest.PostedDate = DateTime.Now;
+                            db.SaveChanges();
+                            postServiceRequest(serviceRequest, emailList);
+                            return RedirectToAction("Index");
+                        }
                         db.SaveChanges();
                         return RedirectToAction("Index");
                     }
@@ -255,6 +365,12 @@ namespace Capstone4.Controllers
                 newAdd1.vacant = formInfo.vacant;
                 db.Addresses.Add(newAdd1);
                 serviceRequest.AddressID = newAdd1.ID;
+                if (serviceRequest.Address.validated == true)
+                {
+                    serviceRequest.Inactive = false;
+                    serviceRequest.NeedsManualValidation = false;
+
+                }
                 db.SaveChanges();
                 foreach (var x in db.Contractors.ToList())
                 {
@@ -273,6 +389,29 @@ namespace Capstone4.Controllers
                     db.Addresses.Remove(addressToCheck);
                 }
                 db.SaveChanges();
+                if (serviceRequest.Posted != true && serviceRequest.NeedsManualValidation == false && serviceRequest.Inactive != true && serviceRequest.Address.validated == true)
+                {
+                    List<Contractor> emailList;
+                    if (serviceRequest == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    emailList = GetDistance(serviceRequest);
+
+                    if (emailList.Count == 0)
+                    {
+                        serviceRequest.Posted = false;
+                        TempData["address"] = addressToCheck;
+                        db.SaveChanges();
+                        return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+                    }
+                    serviceRequest.Posted = true;
+                    serviceRequest.PostedDate = DateTime.Now;
+                    db.SaveChanges();
+                    postServiceRequest(serviceRequest, emailList);
+                    return RedirectToAction("Index");
+                }
                 return RedirectToAction("Index");
 
             }
@@ -371,12 +510,15 @@ namespace Capstone4.Controllers
 
             if (emailList.Count == 0)
             {
+                serviceRequest.Posted = false;
                 List<Models.Address> ids = new List<Models.Address>();
                 Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
                 TempData["address"] = addressToCheck;
                 db.SaveChanges();
                 return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
             }
+            serviceRequest.Posted = true;
+            serviceRequest.PostedDate = DateTime.Now;
             db.SaveChanges();
             postServiceRequest(serviceRequest, emailList);
             return RedirectToAction("Index");
@@ -407,6 +549,21 @@ namespace Capstone4.Controllers
             ViewBag.Message = "This service request has already been posted.";
 
             return View();
+        }
+
+        public ActionResult NoEdit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(serviceRequest);
         }
 
         public ActionResult EditManual(int? id)
@@ -453,6 +610,7 @@ namespace Capstone4.Controllers
                     return RedirectToAction("Duplicate_Post");
                 }
                 serviceRequest.Posted = true;
+                serviceRequest.PostedDate = DateTime.Now;
                 postServiceRequest(serviceRequest, emailList);
                 db.SaveChanges();
                 return RedirectToAction("Index");

@@ -169,6 +169,7 @@ namespace Capstone4.Controllers
                             if(homeowner.Address.validated == true)
                             {
                                 homeowner.NeedsManualValidation = false;
+                                homeowner.Inactive = false;
 
                             }
                             db.SaveChanges();
@@ -178,9 +179,11 @@ namespace Capstone4.Controllers
 
                     db.Addresses.Add(newAdd);
                     homeowner.AddressID = newAdd.ID;
+                    homeowner.Address = newAdd;
                     if (homeowner.Address.validated == true)
                     {
                         homeowner.NeedsManualValidation = false;
+                        homeowner.Inactive = false;
 
                     }
                     db.SaveChanges();
@@ -198,6 +201,7 @@ namespace Capstone4.Controllers
                         if (homeowner.Address.validated == true)
                         {
                             homeowner.NeedsManualValidation = false;
+                            homeowner.Inactive = false;
 
                         }
                         db.SaveChanges();
@@ -236,6 +240,7 @@ namespace Capstone4.Controllers
                 if (homeowner.Address.validated == true)
                 {
                     homeowner.NeedsManualValidation = false;
+                    homeowner.Inactive = false;
 
                 }
                 db.SaveChanges();

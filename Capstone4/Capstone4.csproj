@@ -475,6 +475,14 @@
     <Compile Include="Migrations\201610222209424_d18.Designer.cs">
       <DependentUpon>201610222209424_d18.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610231933251_b.cs" />
+    <Compile Include="Migrations\201610231933251_b.Designer.cs">
+      <DependentUpon>201610231933251_b.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610231935308_v1.cs" />
+    <Compile Include="Migrations\201610231935308_v1.Designer.cs">
+      <DependentUpon>201610231935308_v1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -686,6 +694,7 @@
     <Content Include="Views\ServiceRequests\Duplicate_Post.cshtml" />
     <Content Include="Views\Admins\ManualValidateHomeowner.cshtml" />
     <Content Include="Views\Admins\ManualValidateContractor.cshtml" />
+    <Content Include="Views\ServiceRequests\NoEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -855,6 +864,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610222209424_d18.resx">
       <DependentUpon>201610222209424_d18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610231933251_b.resx">
+      <DependentUpon>201610231933251_b.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610231935308_v1.resx">
+      <DependentUpon>201610231935308_v1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

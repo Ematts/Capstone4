@@ -11,7 +11,7 @@ namespace Capstone4.Models
         [Display(Name = "Contractor")]
         public string Username { get; set; }
         [Display(Name = "Overall Rating")]
-        public double OverallRating { get; set; }
+        public double Rating { get; set; }
         [Display(Name = "Total Ratings")]
         public int? TotalRatings { get; set; }
         public int ID { get; set; }

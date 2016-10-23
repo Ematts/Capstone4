@@ -229,7 +229,6 @@ namespace Capstone4.Controllers
 
             }
             serviceRequest.Posted = false;
-            serviceRequest.PostedDate = DateTime.Now;
             serviceRequest.NeedsManualValidation = true;
             db.ServiceRequests.Add(serviceRequest);
             db.SaveChanges();
@@ -369,6 +368,7 @@ namespace Capstone4.Controllers
             }
             serviceRequest.Description = description;
             serviceRequest.Posted = false;
+            serviceRequest.PostedDate = null;
             serviceRequest.NeedsManualValidation = true;
             serviceRequest.Price = price;
             serviceRequest.CompletionDeadline = completionDeadline;

@@ -50,11 +50,11 @@ namespace Capstone4.Controllers
                     List<double> ratings;
                     ratings = (from x in contractor.ContractorReviews
                                select x.Rating).ToList();
-                    model.OverallRating = ratings.Average();
+                    model.Rating = ratings.Average();
                 }
                 else
                 {
-                    model.OverallRating = 0;
+                    model.Rating = 0;
                 }
                 model.TotalRatings = contractor.ContractorReviews.Count();
                 models.Add(model);
@@ -266,6 +266,12 @@ namespace Capstone4.Controllers
                             contractor.Address = i;
                             contractor.Address.validated = formInfo.validated;
                             contractor.Address.vacant = formInfo.vacant;
+                            if (contractor.Address.validated == true)
+                            {
+                                contractor.NeedsManualValidation = false;
+                                contractor.Inactive = false;
+
+                            }
                             db.SaveChanges();
                             return RedirectToAction("Index");
                         }
@@ -273,6 +279,12 @@ namespace Capstone4.Controllers
 
                     db.Addresses.Add(newAdd);
                     contractor.AddressID = newAdd.ID;
+                    if (contractor.Address.validated == true)
+                    {
+                        contractor.NeedsManualValidation = false;
+                        contractor.Inactive = false;
+
+                    }
                     db.SaveChanges();
                     return RedirectToAction("Index");
 
@@ -286,6 +298,12 @@ namespace Capstone4.Controllers
                         contractor.AddressID = i.ID;
                         contractor.Address.validated = formInfo.validated;
                         contractor.Address.vacant = formInfo.vacant;
+                        if (contractor.Address.validated == true)
+                        {
+                            contractor.NeedsManualValidation = false;
+                            contractor.Inactive = false;
+
+                        }
                         db.SaveChanges();
 
                         foreach (var x in db.Contractors.ToList())
@@ -319,6 +337,13 @@ namespace Capstone4.Controllers
                 newAdd1.vacant = formInfo.vacant;
                 db.Addresses.Add(newAdd1);
                 contractor.AddressID = newAdd1.ID;
+                contractor.Address = newAdd1;
+                if (contractor.Address.validated == true)
+                {
+                    contractor.NeedsManualValidation = false;
+                    contractor.Inactive = false;
+
+                }
                 db.SaveChanges();
                 foreach (var x in db.Contractors.ToList())
                 {

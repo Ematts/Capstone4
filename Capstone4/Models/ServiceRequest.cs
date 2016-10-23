@@ -21,8 +21,9 @@ namespace Capstone4.Models
         public virtual Homeowner Homeowner { get; set; }
         public int? ContractorReviewID { get; set; }
         public virtual ContractorReview ContractorReview { get; set; }
+        [Column(TypeName = "datetime2")]
         [Display(Name = "Posted Date")]
-        public DateTime PostedDate { get; set; }
+        public DateTime? PostedDate { get; set; }
         [Required]
         public decimal Price { get; set; }
         [Required]
