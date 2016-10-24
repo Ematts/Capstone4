@@ -53,6 +53,7 @@
                         @Html.DisplayNameFor(model => model.Response)
                     </th>
                     <th>Remove</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -61,8 +62,8 @@
                     <tr>
 
                         <td>
-                            <input id="input-id" type="number" value="@item.ContractorReview.Rating" class="rating" data-size="xs" name="Rating" data-readonly="true" data-show-clear="false">
                             @*<div style="display: none;">@item.ContractorReview.Rating</div>*@
+                            <input id="input-id" type="number" value="@item.ContractorReview.Rating" class="rating" data-size="xs" name="Rating" data-readonly="true" data-show-clear="false">
                         </td>
 
                         <td>
@@ -85,6 +86,9 @@
                             </div>
                         </td>
                         <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
+                        <td>
+                            @item.ContractorReview.Rating
+                        </td>
 
                     </tr>
                 }
@@ -132,7 +136,13 @@
             "columnDefs": [
                 { "orderable": false, "targets": 1 },
                 { "orderable": false, "targets": 4 },
-                { "orderable": false, "targets": 5 }
+                { "orderable": false, "targets": 5 },
+                { "orderData": [6], "targets": [0] },
+                {
+                    "targets": [6],
+                    "visible": false,
+                    "searchable": false
+                }
             ]
         });
 

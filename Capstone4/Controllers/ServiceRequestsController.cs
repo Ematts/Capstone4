@@ -188,7 +188,7 @@ namespace Capstone4.Controllers
                 {
                     return RedirectToAction("Date_Issue", "ServiceRequests");
                 }
-                //serviceRequest.Service_Number = serviceRequest.ID;
+                
                 db.Entry(serviceRequest).State = EntityState.Modified;
                 serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
 
@@ -365,6 +365,7 @@ namespace Capstone4.Controllers
                 newAdd1.vacant = formInfo.vacant;
                 db.Addresses.Add(newAdd1);
                 serviceRequest.AddressID = newAdd1.ID;
+                serviceRequest.Address = newAdd1;
                 if (serviceRequest.Address.validated == true)
                 {
                     serviceRequest.Inactive = false;

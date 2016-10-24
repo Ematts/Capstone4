@@ -115,6 +115,22 @@ namespace Capstone4.Controllers
             return RedirectToAction("Index");
         }
 
+
+        public EmptyResult GetIPN(PayPalCheckoutInfo payPalCheckoutInfo)
+        {
+            //ngrok http -host - header = localhost 37234
+            PayPalListenerModel model = new PayPalListenerModel();
+            model._PayPalCheckoutInfo = payPalCheckoutInfo;
+            byte[] parameters = Request.BinaryRead(Request.ContentLength);
+
+            if (parameters != null && parameters.Length > 0)
+            {
+                model.GetStatus(parameters, model);
+            }
+
+            return new EmptyResult();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

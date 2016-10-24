@@ -196,6 +196,7 @@ namespace Capstone4.Controllers
                     if (formInfo.FullAddress == i.FullAddress)
                     { 
                         homeowner.AddressID = i.ID;
+                        homeowner.Address = i;
                         homeowner.Address.validated = formInfo.validated;
                         homeowner.Address.vacant = formInfo.vacant;
                         if (homeowner.Address.validated == true)
@@ -237,6 +238,7 @@ namespace Capstone4.Controllers
                 newAdd1.vacant = formInfo.vacant;
                 db.Addresses.Add(newAdd1);
                 homeowner.AddressID = newAdd1.ID;
+                homeowner.Address = newAdd1;
                 if (homeowner.Address.validated == true)
                 {
                     homeowner.NeedsManualValidation = false;

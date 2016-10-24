@@ -10,18 +10,8 @@ namespace Capstone4.Controllers
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        public ActionResult Index(PayPalCheckoutInfo payPalCheckoutInfo)
+        public ActionResult Index()
         {
-            //ngrok http -host - header = localhost 37234
-            PayPalListenerModel model = new PayPalListenerModel();
-            model._PayPalCheckoutInfo = payPalCheckoutInfo;
-            byte[] parameters = Request.BinaryRead(Request.ContentLength);
-
-            if (parameters != null && parameters.Length > 0)
-            {
-                model.GetStatus(parameters, model);
-                return new EmptyResult();
-            }
             return View();
         }
 

@@ -20,6 +20,14 @@ namespace Capstone4.Controllers
         public ActionResult Index()
         {
             var contractors = db.Contractors.Include(c => c.Address).Include(c => c.ApplicationUser);
+            foreach (var i in db.Contractors.ToList())
+            {
+                if (i.Address == null)
+                {
+                    Address address = new Address();
+                    i.Address = address;
+                }
+            }
             return View(contractors.ToList());
         }
 
@@ -279,6 +287,7 @@ namespace Capstone4.Controllers
 
                     db.Addresses.Add(newAdd);
                     contractor.AddressID = newAdd.ID;
+                    contractor.Address = newAdd;
                     if (contractor.Address.validated == true)
                     {
                         contractor.NeedsManualValidation = false;
@@ -296,6 +305,7 @@ namespace Capstone4.Controllers
                     if (formInfo.FullAddress == i.FullAddress)
                     {
                         contractor.AddressID = i.ID;
+                        contractor.Address = i;
                         contractor.Address.validated = formInfo.validated;
                         contractor.Address.vacant = formInfo.vacant;
                         if (contractor.Address.validated == true)
@@ -390,10 +400,7 @@ namespace Capstone4.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Contractor contractor = db.Contractors.Find(id);
-            if (contractor.AddressID != null)
-            {
-                db.Addresses.Remove(contractor.Address);
-            }
+
             foreach(var request in db.ServiceRequests.ToList())
             {
                 if (request.ContractorReviewID != null)
@@ -406,24 +413,76 @@ namespace Capstone4.Controllers
             }
             foreach(var review in db.ContractorReviews.ToList())
             {
-                if(review.ContractorID == id)
+                if (review.ContractorID != null)
                 {
-                    
-                    db.ContractorReviews.Remove(review);
-                    
+                    if(review.ContractorID == id)
+                    {
+                        if(review.ReviewResponse != null)
+                        {
+                            db.ReviewResponses.Remove(review.ReviewResponse);
+                        }
+                        db.ContractorReviews.Remove(review);
+
+                    }
                 }
                 
             }
-            foreach(var acceptance in db.ContractorAcceptances)
+            foreach(var request in db.ServiceRequests.ToList())
             {
-                if(acceptance.ContractorID == id)
+                if (request.ContractorID != null)
                 {
-                    acceptance.ServiceRequest.ContractorID = null;
-                    db.ContractorAcceptances.Remove(acceptance);
+                    if (request.ContractorID == id)
+                    {
+                        request.ContractorID = null;
+                    }
                 }
             }
+            foreach(var acceptance in db.ContractorAcceptances.ToList())
+            {
+                if(acceptance.ContractorID != null)
+                {
+                    if(acceptance.ContractorID == id)
+                    {
+                        db.ContractorAcceptances.Remove(acceptance);
+                    }
+                }
+            }
+
+            List<Models.Address> ids = new List<Models.Address>();
+            Models.Address addressToCheck = db.Addresses.Where(x => x.ID == contractor.AddressID).SingleOrDefault();
            
-            db.Contractors.Remove(contractor);
+            foreach (var user in db.Users)
+            {
+                if (contractor.UserId == user.Id)
+                {
+                    db.Contractors.Remove(contractor);
+                    db.Users.Remove(user);
+                }
+            }
+            if (addressToCheck != null)
+            {
+                foreach (var i in db.Addresses.ToList())
+                {
+                    foreach (var x in db.Contractors.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.Homeowners.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.ServiceRequests.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    if (!ids.Contains(addressToCheck))
+                    {
+                        db.Addresses.Remove(addressToCheck);
+                    }
+
+                }
+            }
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }
