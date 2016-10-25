@@ -123,7 +123,7 @@ namespace Capstone4.Controllers
             ContractorReview contractorReview = db.ContractorReviews.Find(id);
             contractor = contractorReview.Contractor;
 
-            foreach (var request in db.ServiceRequests)
+            foreach (var request in db.ServiceRequests.ToList())
             {
                 if (request.ContractorReviewID == id)
                 {
@@ -131,6 +131,12 @@ namespace Capstone4.Controllers
                     
                 }
             }
+
+            if(contractorReview.ReviewResponseID != null)
+            {
+                db.ReviewResponses.Remove(contractorReview.ReviewResponse);
+            }
+
             db.ContractorReviews.Remove(contractorReview);
             db.SaveChanges();
             UpdateRating(contractor);

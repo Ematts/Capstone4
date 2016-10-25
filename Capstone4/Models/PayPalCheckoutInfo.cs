@@ -107,6 +107,7 @@ namespace Capstone4.Models
 
         [Column(TypeName = "datetime2")]
         public DateTime? TrxnDate { get; set; }
+        public string contractorEmail { get; set; }
 
         /// The status of the payment:
         /// Canceled_Reversal: A reversal has been canceled. For example, you

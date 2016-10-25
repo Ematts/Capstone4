@@ -427,7 +427,19 @@ namespace Capstone4.Controllers
                 }
                 
             }
-            foreach(var request in db.ServiceRequests.ToList())
+
+            foreach (var acceptance in db.ContractorAcceptances.ToList())
+            {
+                if (acceptance.ContractorID != null)
+                {
+                    if (acceptance.ContractorID == id)
+                    {
+                        db.ContractorAcceptances.Remove(acceptance);
+                    }
+                }
+            }
+
+            foreach (var request in db.ServiceRequests.ToList())
             {
                 if (request.ContractorID != null)
                 {
@@ -437,16 +449,7 @@ namespace Capstone4.Controllers
                     }
                 }
             }
-            foreach(var acceptance in db.ContractorAcceptances.ToList())
-            {
-                if(acceptance.ContractorID != null)
-                {
-                    if(acceptance.ContractorID == id)
-                    {
-                        db.ContractorAcceptances.Remove(acceptance);
-                    }
-                }
-            }
+
 
             List<Models.Address> ids = new List<Models.Address>();
             Models.Address addressToCheck = db.Addresses.Where(x => x.ID == contractor.AddressID).SingleOrDefault();

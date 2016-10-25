@@ -44,6 +44,7 @@ namespace Capstone4.Models
                         serviceRequest.ContractorPaid = true;
                         serviceRequest.PayPalListenerModelID = model.ID;
                         serviceRequest.PayPalListenerModel = model;
+                        model._PayPalCheckoutInfo.contractorEmail = serviceRequest.Contractor.ApplicationUser.Email;
                         db.PayPalListenerModels.Add(model);
                         var myMessage = new SendGrid.SendGridMessage();
                         string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
