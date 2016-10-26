@@ -7,18 +7,42 @@
 
 <h2>Payment Failure</h2>
 
+@{int id = Model.ID; }
+
 <strong>
 Something went wrong with your payment!
 </strong>
 <br /><br />
 
-<button onclick="functionToExec()">Close</button>
+<button id="close" onclick="functionToExec()">Close</button>
 
+<button id='back' onclick="document.location.href = '/ServiceRequests/PaymentView/' + @id">Back</button>
+
+@section Scripts {
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function() {
+        if (window.self !== window.top) {
+            $("#back").hide();
+            console.log("no");
+        }
+
+        if (window.self == window.top) {
+            $("#close").hide();
+            console.log("yes")
+        }
+    })
+</script>
 <script>
     function functionToExec()
     {
+        
         dgFlow = top.dgFlow || top.opener.top.dgFlow;
         dgFlow.closeFlow();
         top.close();
+
     }
+
 </script>
+
+}

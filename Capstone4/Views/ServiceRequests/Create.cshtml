@@ -73,8 +73,8 @@
 
         <div class="form-group">
             <label class="control-label col-md-2" for="autocomplete">Address locator</label>
-            <div id="locationField" class="col-md-10">
-                @Html.TextBox("autocomplete", "", new { @class = "form-control" })
+            <div id="locationField" class="col-md-10" spellcheck="false">
+                @Html.TextBox("autocomplete",Model.Homeowner.Address.FullAddress, new { @class = "form-control" })
 
             </div>
         </div>
@@ -181,6 +181,14 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <script>
+        $(document).ready(function(){
+
+            $("#Price").val("");
+            $("#CompletionDeadline").val("");
+
+        })
+    </script>
     <script>
             $(document).ready(function () {
                 $("#divProcessing").hide();

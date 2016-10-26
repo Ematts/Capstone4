@@ -9,7 +9,7 @@
     $("#divProcessing").show();
     $.ajax({
         type: "GET",
-        url: "http://localhost:37234/AddressValidator/getAddValStatus",
+        url: "/AddressValidator/getAddValStatus",
         contentType: "application/json; charset=utf-8",
         data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
         dataType: "json",

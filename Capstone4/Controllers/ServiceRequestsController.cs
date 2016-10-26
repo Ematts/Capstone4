@@ -60,11 +60,24 @@ namespace Capstone4.Controllers
                 return RedirectToAction("Must_be_logged_in", "ServiceRequests");
             }
 
-            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            if (!this.User.IsInRole("Homeowner"))
             {
                 return RedirectToAction("Must_be_logged_in", "ServiceRequests");
             }
-            return View();
+
+            ServiceRequest serviceRequest = new ServiceRequest();
+
+            foreach (var i in db.Homeowners)
+            {
+                if (i.UserId == identity)
+                {
+
+                    serviceRequest.Homeowner = i;
+
+                }
+            }
+
+            return View(serviceRequest);
         }
 
         // POST: ServiceRequests/Create

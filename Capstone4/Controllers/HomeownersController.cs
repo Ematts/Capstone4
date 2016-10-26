@@ -290,13 +290,111 @@ namespace Capstone4.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Homeowner homeowner = db.Homeowners.Find(id);
-            if (homeowner.Address != null)
+            foreach (var request in db.ServiceRequests.ToList())
             {
-                db.Addresses.Remove(homeowner.Address);
+                if (request.HomeownerID == id && request.ContractorID != null)
+                {
+
+                    if(request.ContractorReviewID != null)
+                    {
+                        if(request.ContractorReview.ReviewResponseID != null)
+                        {
+                            db.ReviewResponses.Remove(request.ContractorReview.ReviewResponse);
+                        }
+
+                        db.ContractorReviews.Remove(request.ContractorReview);
+                        db.SaveChanges();
+                        UpdateRating(request.Contractor);
+                    }
+                }
             }
-            db.Homeowners.Remove(homeowner);
+            foreach (var request in db.ServiceRequests.ToList())
+            {
+
+                if (request.HomeownerID == id && request.AddressID != null)
+                {
+                    List<Models.Address> ids = new List<Models.Address>();
+                    Models.Address serviceAddressToCheck = db.Addresses.Where(x => x.ID == request.AddressID).SingleOrDefault();
+                    db.ServiceRequests.Remove(request);
+                    if (serviceAddressToCheck != null)
+                    {
+                        foreach (var i in db.Addresses.ToList())
+                        {
+                            foreach (var x in db.Contractors.ToList())
+                            {
+                                ids.Add(x.Address);
+                            }
+                            foreach (var x in db.Homeowners.ToList())
+                            {
+                                ids.Add(x.Address);
+                            }
+                            foreach (var x in db.ServiceRequests.ToList())
+                            {
+                                ids.Add(x.Address);
+                            }
+                            if (!ids.Contains(serviceAddressToCheck))
+                            {
+                                db.Addresses.Remove(serviceAddressToCheck);
+                            }
+
+                        }
+                    }
+                }
+            }
+            db.SaveChanges();
+            Models.Address addressToCheck = db.Addresses.Where(x => x.ID == homeowner.AddressID).SingleOrDefault();
+            foreach (var user in db.Users)
+            {
+                if (homeowner.UserId == user.Id)
+                {
+                    db.Homeowners.Remove(homeowner);
+                    db.Users.Remove(user);
+                }
+            }
+            db.SaveChanges();
+            if (addressToCheck != null)
+            {
+                List<Models.Address> ids = new List<Models.Address>();
+                foreach (var i in db.Addresses.ToList())
+                {
+                    foreach (var x in db.Contractors.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.Homeowners.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    foreach (var x in db.ServiceRequests.ToList())
+                    {
+                        ids.Add(x.Address);
+                    }
+                    if (!ids.Contains(addressToCheck))
+                    {
+                        db.Addresses.Remove(addressToCheck);
+                    }
+
+                }
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public void UpdateRating(Contractor contractor)
+        {
+            List<double> ratings;
+            ratings = (from x in db.ContractorReviews
+                       where x.ContractorID == contractor.ID
+                       select x.Rating).ToList();
+            if (ratings.Count > 0)
+            {
+                contractor.Rating = ratings.Average();
+            }
+            else
+            {
+                contractor.Rating = null;
+            }
+
         }
 
         protected override void Dispose(bool disposing)
