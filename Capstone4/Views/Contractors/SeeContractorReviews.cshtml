@@ -173,17 +173,20 @@
         });
 
         $(document).on("click", ".showResponse", function () {
-
+            //var dWidth = $(window).width() * 0.38;
+            //var dHeight = $(window).height() * 0.4;
             var reply = $(this).siblings('.reply').attr('value');
             var replyDate = $(this).siblings('.reply2').attr('value');
             var div = $('<div></div>');
             var outputMsg = "Replied on: " + replyDate + "<br> <br>" + reply;
             div.html(outputMsg).dialog({
                 title: "Contractor Response",
-                height: 300,
-                width: 600,
+                height: 'auto',
+                width: 'auto',
+                maxWidth: 600,
                 autoOpen: true,
                 resizable: true,
+                fluid: true,
                 modal: true,
                 buttons: {
                     "CLOSE":
@@ -194,6 +197,40 @@
             });
 
         });
+
+        // on window resize run function
+        $(window).resize(function () {
+            fluidDialog();
+        });
+
+        // catch dialog if opened within a viewport smaller than the dialog width
+        $(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+            fluidDialog();
+        });
+
+        function fluidDialog() {
+            var $visible = $(".ui-dialog:visible");
+            // each open dialog
+            $visible.each(function () {
+                var $this = $(this);
+                var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+                // if fluid option == true
+                if (dialog.options.fluid) {
+                    var wWidth = $(window).width();
+                    // check window width against dialog width
+                    if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                        // keep dialog from filling entire screen
+                        $this.css("max-width", "90%");
+                    } else {
+                        // fix maxWidth bug
+                        $this.css("max-width", dialog.options.maxWidth + "px");
+                    }
+                    //reposition dialog
+                    dialog.option("position", dialog.options.position);
+                }
+            });
+
+        }
 
         $(document).on("click", ".removeRow", function () {
             var table = $('#homeTable').DataTable();

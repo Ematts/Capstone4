@@ -21,15 +21,16 @@
 </strong>
 <br /><br />
 
-<button onclick="functionToExec()">Close</button> 
+<button id='back' onclick="document.location.href='/Home/'">Home</button>
 
-<script>
-    function functionToExec()
-    {
-        dgFlow = top.dgFlow || top.opener.top.dgFlow;
-        dgFlow.closeFlow();
-        top.close();
-        window.location = "http://localhost:37234/about"
-    }
-</script>
+@section Scripts {
+    <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        if (window != top) {
+            top.location.replace(document.location);
+        }
+    })
+    </script>
 
+}

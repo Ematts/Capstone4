@@ -1,4 +1,38 @@
-﻿function ValidateAddress() {
+﻿// on window resize run function
+$(window).resize(function () {
+    fluidDialog();
+});
+
+// catch dialog if opened within a viewport smaller than the dialog width
+$(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+    fluidDialog();
+});
+
+function fluidDialog() {
+    var $visible = $(".ui-dialog:visible");
+    // each open dialog
+    $visible.each(function () {
+        var $this = $(this);
+        var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+        // if fluid option == true
+        if (dialog.options.fluid) {
+            var wWidth = $(window).width();
+            // check window width against dialog width
+            if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                // keep dialog from filling entire screen
+                $this.css("max-width", "90%");
+            } else {
+                // fix maxWidth bug
+                $this.css("max-width", dialog.options.maxWidth + "px");
+            }
+            //reposition dialog
+            dialog.option("position", dialog.options.position);
+        }
+    });
+
+}
+
+function ValidateAddress() {
     $("#vac").hide();
     $("#valid").hide();
     $("#inactive").hide();
@@ -23,8 +57,10 @@
                 var outputMsg = "Are you ready to submit your service request?";
                 div.html(outputMsg).dialog({
                     title: titleMsg,
-                    height: 300,
-                    width: 600,
+                    height: 'auto',
+                    width: 'auto',
+                    maxWidth: 600,
+                    fluid: true,
                     autoOpen: true,
                     resizable: true,
                     modal: true,
@@ -54,8 +90,11 @@
                 var titleMsg = "A few questions while we validate your address";
                 div.html(outputMsg).dialog({
                     title: titleMsg,
-                    height: 300,
-                    width: 600,
+                    height: 'auto',
+                    width: 'auto',
+                    maxWidth: 600,
+                    fluid: true,
+                    autoOpen: true,
                     resizable: true,
                     modal: true,
                     buttons: {
@@ -65,7 +104,7 @@
                             $(this).dialog("close");
                             $.ajax({
                                 type: "GET",
-                                url: "http://localhost:37234/AddressValidator/RunStreetLevelValidation",
+                                url: "/AddressValidator/RunStreetLevelValidation",
                                 contentType: "application/json; charset=utf-8",
                                 data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
                                 dataType: "json",
@@ -81,8 +120,10 @@
                                         var outputMsg = "Is this address in the vicinity of one of the following address ranges?" + "<br><br>" + (listOfAddresses.join('\r\n'));
                                         div.html(outputMsg).dialog({
                                             title: titleMsg,
-                                            height: 300,
-                                            width: 600,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            maxWidth: 600,
+                                            fluid: true,
                                             autoOpen: true,
                                             resizable: true,
                                             modal: true,
@@ -96,8 +137,10 @@
                                                     var outputMsg = "Are you ready to submit your service request?";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
-                                                        height: 300,
-                                                        width: 600,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        maxWidth: 600,
+                                                        fluid: true,
                                                         autoOpen: true,
                                                         resizable: true,
                                                         modal: true,
@@ -130,8 +173,10 @@
                                                     var outputMsg = "Would you like to request manual address validation?";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
-                                                        height: 300,
-                                                        width: 600,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        maxWidth: 600,
+                                                        fluid: true,
                                                         autoOpen: true,
                                                         resizable: true,
                                                         modal: true,
@@ -154,7 +199,7 @@
                                                                         type: 'POST',
                                                                         dataType: 'json',
                                                                         cache: false,
-                                                                        url: "http://localhost:37234/AddressValidator/ManualValidation",
+                                                                        url: "/AddressValidator/ManualValidation",
                                                                         processData: false,
                                                                         contentType: false,
                                                                         data: formdata,
@@ -164,8 +209,10 @@
                                                                             var outputMsg = "Your request has been submitted. We will get back to you shortly.";
                                                                             div.html(outputMsg).dialog({
                                                                                 title: titleMsg,
-                                                                                height: 300,
-                                                                                width: 600,
+                                                                                height: 'auto',
+                                                                                width: 'auto',
+                                                                                maxWidth: 600,
+                                                                                fluid: true,
                                                                                 autoOpen: true,
                                                                                 resizable: true,
                                                                                 modal: true,
@@ -173,7 +220,7 @@
                                                                                     "CLOSE":
                                                                                 function () {
                                                                                     $(this).dialog('close');
-                                                                                    window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                                    window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                                 }
                                                                               }
                                                                             })
@@ -205,8 +252,10 @@
                                         var outputMsg = "Would you like to request manual address validation?";
                                         div.html(outputMsg).dialog({
                                             title: titleMsg,
-                                            height: 300,
-                                            width: 600,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            maxWidth: 600,
+                                            fluid: true,
                                             autoOpen: true,
                                             resizable: true,
                                             modal: true,
@@ -229,7 +278,7 @@
                                                             type: 'POST',
                                                             dataType: 'json',
                                                             cache: false,
-                                                            url: "http://localhost:37234/AddressValidator/ManualValidation",
+                                                            url: "/AddressValidator/ManualValidation",
                                                             processData: false,
                                                             contentType: false,
                                                             data: formdata,
@@ -239,8 +288,10 @@
                                                                 var outputMsg = "Your request has been submitted. We will get back to you shortly.";
                                                                 div.html(outputMsg).dialog({
                                                                     title: titleMsg,
-                                                                    height: 300,
-                                                                    width: 600,
+                                                                    height: 'auto',
+                                                                    width: 'auto',
+                                                                    maxWidth: 600,
+                                                                    fluid: true,
                                                                     autoOpen: true,
                                                                     resizable: true,
                                                                     modal: true,
@@ -248,7 +299,7 @@
                                                                         "CLOSE":
                                                                     function () {
                                                                         $(this).dialog('close');
-                                                                        window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                        window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                     }
                                                                   }
                                                                 })
@@ -289,8 +340,10 @@
                             var outputMsg = "Address validation failed for the following reason(s):" + "<br><br>" + (listOfErrors.join('\r\n')) + "<br><br>" + "Would you like to request manual validation?";
                             div.html(outputMsg).dialog({
                                 title: titleMsg,
-                                height: 300,
-                                width: 600,
+                                height: 'auto',
+                                width: 'auto',
+                                maxWidth: 600,
+                                fluid: true,
                                 autoOpen: true,
                                 resizable: true,
                                 modal: true,
@@ -313,7 +366,7 @@
                                                 type: 'POST',
                                                 dataType: 'json',
                                                 cache: false,
-                                                url: "http://localhost:37234/AddressValidator/ManualValidation",
+                                                url: "/AddressValidator/ManualValidation",
                                                 processData: false,
                                                 contentType: false,
                                                 data: formdata,
@@ -323,8 +376,10 @@
                                                     var outputMsg = "Your request has been submitted. We will get back to you shortly.";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
-                                                        height: 300,
-                                                        width: 600,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        maxWidth: 600,
+                                                        fluid: true,
                                                         autoOpen: true,
                                                         resizable: true,
                                                         modal: true,
@@ -332,7 +387,7 @@
                                                             "CLOSE":
                                                         function () {
                                                             $(this).dialog('close');
-                                                            window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                            window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                         }
                                                       }
                                                     })

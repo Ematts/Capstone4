@@ -25,7 +25,7 @@
                             '<h4 class="modal-title">Hello!</h4>' +
                          '</div>' +
                         '<div class="modal-body">' +
-                           '  <img not-to-enlarge="true" class="img-responsive" + src=""alt="...">' +
+                           '  <img not-to-enlarge="true" id="img1" class="img-responsive" + src=""alt="...">' +
                         '</div>' +
                          '<div class="modal-footer">' +
                              '<button type="button" class="btn btn-default" data-dismiss="modal">' +
