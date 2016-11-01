@@ -518,6 +518,10 @@ namespace Capstone4.Controllers
             int id = Convert.ToInt16(form["ID"]);
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
             string description = (form["Description"]);
+            if(description == "")
+            {
+                description = serviceRequest.Description;
+            }
             string priceString = (form["Price"]);
             decimal? price;
             decimal priceParse;

@@ -102,6 +102,7 @@ function fluidDialog() {
                                     '<br>' +
                                     '<span role="prev" class="btn btn-primary switch">Prev</span>' +
                                     '<span role="next" class="btn btn-primary switch">Next</span>' +
+                                    '</br>' +
                                     '<span role="delete" class="btn btn-primary deletePic">Delete</span>' +
                                 '</div>' +
                             '</div>' +
@@ -168,34 +169,57 @@ function fluidDialog() {
             $.each(other_data, function (key, input) {
                 formdata.append(input.name, input.value);
             });
-            formdata.append("picName", picToDelete)
-            //var $ctrl = $(this);
-            if (confirm('Do you really want to delete this file?')) {
-                $.ajax({
-                    url: "/ServiceRequests/DeletePic",
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: formdata, 
-                }).done(function (data) {
-                    if (data.Result == "OK") {
-                        var newUrl = "/ServiceRequests/Edit/";
-                        var description = data.description;
-                        var price = data.price;
-                        var completionDeadline = data.completionDeadline;
-                        window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline;
-                    }
-                    else if (data.Result.Message) {
-                        alert(data.Result.Message);
-                    }
-                }).fail(function () {
-                    alert("There is something wrong. Please try again.");
+            formdata.append("picName", picToDelete);
+            var outputMsg = "Do you really want to delete this file?";
+            var div = $('<div></div>');
+            var titleMsg = "Confirm deletion";
+            div.html(outputMsg).dialog({
+                title: titleMsg,
+                height: 'auto',
+                width: 'auto',
+                maxWidth: 600,
+                fluid: true,
+                autoOpen: true,
+                zIndex: 100000,
+                open: function (event, ui) {
+                    $('.ui-dialog').css('z-index',100000);
+                    $('.ui-widget-overlay').css('z-index', 99999);
+                },
+                resizable: true,
+                modal: true,
+                buttons: {
+                    "YES": function () {
+                        $.ajax({
+                            url: "/ServiceRequests/DeletePic",
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: formdata,
+                        }).done(function (data) {
+                            if (data.Result == "OK") {
+                                var newUrl = "/ServiceRequests/Edit/";
+                                var description = data.description;
+                                var price = data.price;
+                                var completionDeadline = data.completionDeadline;
+                                window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline;
+                            }
+                            else if (data.Result.Message) {
+                                alert(data.Result.Message);
+                            }
+                        }).fail(function () {
+                            alert("There is something wrong. Please try again.");
+                        })
+
+                    },
+                    "NO":
+                        function () {
+                            $(this).dialog("close");
+                        }
+                    }   
                 })
+            });
 
-            }
-        });
-
-    }
+      };
     //图片放大
     function zoomIn() {
         $('.zoom-in').click(function () {
