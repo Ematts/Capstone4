@@ -165,7 +165,7 @@ namespace Capstone4.Controllers
         }
 
         // GET: ServiceRequests/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, string description, decimal? price, DateTime? completionDeadline)
         {
             if (id == null)
             {
@@ -181,7 +181,18 @@ namespace Capstone4.Controllers
             {
                 return RedirectToAction("NoEdit", "ServiceRequests", new { id = serviceRequest.ID });
             }
-
+            if(description != null)
+            {
+                serviceRequest.Description = description;
+            }
+            if (price != null)
+            {
+                serviceRequest.Price = price.Value;
+            }
+            if (completionDeadline != null)
+            {
+                serviceRequest.CompletionDeadline = completionDeadline.Value;
+            }
             return View(serviceRequest);
         }
 
@@ -501,6 +512,65 @@ namespace Capstone4.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult DeletePic()
+        {
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            string description = (form["Description"]);
+            string priceString = (form["Price"]);
+            decimal? price;
+            decimal priceParse;
+            if (Decimal.TryParse(priceString, out priceParse))
+                price = priceParse;
+            else
+                price = serviceRequest.Price;
+            string dateString = (form["CompletionDeadline"]);;
+            DateTime date;
+            DateTime dateParse;
+            if (DateTime.TryParse(dateString, out dateParse))
+                date = dateParse;
+            else
+                date = serviceRequest.CompletionDeadline;
+            string dateToPass = Convert.ToString(date);
+            string filename = (form["picName"]);
+            string[] nameSplit = filename.Split('/');
+            Array.Reverse(nameSplit);
+            string fileToDelete = nameSplit[0];
+            foreach (var pic in serviceRequest.ServiceRequestFilePaths.ToList())
+            {
+                if (pic.FileName == fileToDelete)
+                {
+                    db.ServiceRequestFilePaths.Remove(pic);
+                    db.SaveChanges();
+                }
+                    
+            }
+            
+            return Json(new { Result = "OK", id = serviceRequest.ID, description = description, price = price, completionDeadline = dateToPass });
+        }
+
+        public ActionResult DeleteContractorPic()
+        {
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            string filename = (form["picName"]);
+            string[] nameSplit = filename.Split('/');
+            Array.Reverse(nameSplit);
+            string fileToDelete = nameSplit[0];
+            foreach (var pic in serviceRequest.CompletedServiceRequestFilePaths.ToList())
+            {
+                if (pic.FileName == fileToDelete)
+                {
+                    db.CompletedServiceRequestFilePaths.Remove(pic);
+                    db.SaveChanges();
+                }
+
+            }
+
+            return Json(new { Result = "OK", id = serviceRequest.ID});
+        }
         public ActionResult Activate (int? id)
         {
             if (id == null)

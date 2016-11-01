@@ -4,11 +4,30 @@
     ViewBag.Title = "Confirm Completion";
 }
 
-<h2>ConfirmCompletion</h2>
-@using (Html.BeginForm("ConfirmCompletion", "ServiceRequests", Model.ID))
+<h2>Confirm Completion</h2>
+
+<h4>Add Contractor Photos</h4>
+
+@using (Html.BeginForm("AddContractorPhotos", "ServiceRequests", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "picForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.ID)
+        <div id="multiple">
+            <input type="file" id="fileInput" class="multiple" name="files" multiple />
+        </div>
+        <div id="single">
+            <input type="file" class="single" name="files" /><br />
+            <input type="file" class="single" name="files" /><br />
+            <input type="file" class="single" name="files" /><br />
+        </div>
+        <button class="btn btn-default">Upload</button>
+    </div>
+}
+@using (Html.BeginForm("ConfirmCompletion", "ServiceRequests", new {id = "detailsForm" }))
 {
 <div>
-    <h4>ServiceRequest</h4>
     <hr />
     <dl class="dl-horizontal">
         @Html.HiddenFor(model => model.ID)
@@ -114,7 +133,6 @@
     </div>
     <br> <br />
 
-
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Confirm Completion" class="btn btn-default" />
@@ -123,15 +141,6 @@
 </div>
 }
 
-@using (Html.BeginForm("AddContractorPhotosView", "ServiceRequests", Model.ID))
-{
-    @Html.HiddenFor(model => model.ID)
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Post Photos" class="btn btn-default" />
-        </div>
-    </div>
-}
 
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
@@ -140,9 +149,19 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
-    <script src="~/Scripts/jquerypic.js" type="text/javascript"></script>
+    <script src="~/Scripts/deletepicContractor.js" type="text/javascript"></script>
     <script src="~/Scripts/PhotoNumbering.js" type="text/javascript"></script>
-
+    <script type="text/javascript">
+        $(function () {
+            if(window.FileReader != null){
+                $('#single').hide();
+                $('.single').prop('disabled', true);
+            } else {
+                $('#multiple').hide();
+                $('.multiple').prop('disabled', true);
+            }
+        });
+    </script>
     <script>
 
     $(".photocontainer").imageBox();

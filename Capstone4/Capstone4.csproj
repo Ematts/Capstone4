@@ -549,6 +549,7 @@
     <Content Include="Scripts\ContractorEditValidator.js" />
     <Content Include="Scripts\DataTables.js" />
     <Content Include="Scripts\DataTablesSelector.js" />
+    <Content Include="Scripts\deletepicContractor.js" />
     <Content Include="Scripts\Drag.js" />
     <Content Include="Scripts\EditServiceRequestAuto.js" />
     <Content Include="Scripts\FixedColumnDataTable.js" />
@@ -564,6 +565,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jquerypic.js" />
+    <Content Include="Scripts\jquerypicdelete.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\PhotoNumbering.js" />
     <Content Include="Scripts\picBig.js" />
