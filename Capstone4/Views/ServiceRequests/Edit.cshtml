@@ -10,7 +10,7 @@
 <hr />
 
 @{int id = Model.ID; }
-<button id='Clear' onclick="document.location.href='/ServiceRequests/Edit/'+@id">Restore initial form values</button>
+<button id='Clear' onclick="document.location.href='/ServiceRequests/Edit/'+@id">Restore saved form values</button>
 
 @using (Html.BeginForm("Edit", "ServiceRequests", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "requestForm" }))
 {

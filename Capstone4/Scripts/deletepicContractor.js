@@ -1,4 +1,38 @@
-﻿(function ($) {
+﻿// on window resize run function
+$(window).resize(function () {
+    fluidDialog();
+});
+
+// catch dialog if opened within a viewport smaller than the dialog width
+$(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+    fluidDialog();
+});
+
+function fluidDialog() {
+    var $visible = $(".ui-dialog:visible");
+    // each open dialog
+    $visible.each(function () {
+        var $this = $(this);
+        var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+        // if fluid option == true
+        if (dialog.options.fluid) {
+            var wWidth = $(window).width();
+            // check window width against dialog width
+            if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                // keep dialog from filling entire screen
+                $this.css("max-width", "90%");
+            } else {
+                // fix maxWidth bug
+                $this.css("max-width", dialog.options.maxWidth + "px");
+            }
+            //reposition dialog
+            dialog.option("position", dialog.options.position);
+        }
+    });
+
+}
+
+(function ($) {
     $.fn.imageBox = function (options) {
         var options = $.extend({
             objClicked: '.img',      // 点击的元素
@@ -74,6 +108,7 @@
                                     '<br>' +
                                     '<span role="prev" class="btn btn-primary switch">Prev</span>' +
                                     '<span role="next" class="btn btn-primary switch">Next</span>' +
+                                    '</br>' +
                                     '<span role="delete" id="delete" class="btn btn-primary deletePic">Delete</span>' +
                                 '</div>' +
                             '</div>' +
@@ -141,33 +176,52 @@
                 formdata.append(input.name, input.value);
             });
             formdata.append("picName", picToDelete);
-            if (confirm('Do you really want to delete this file?')) {
-                $.ajax({
-                    url: "/ServiceRequests/DeleteContractorPic",
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: formdata,
-                }).done(function (data) {
-                    if (data.Result == "OK") {
-                        location.reload();
-                        //var newUrl = "/ServiceRequests/Edit/";
-                        //var description = data.description;
-                        //var price = data.price;
-                        //var completionDeadline = data.completionDeadline;
-                        //window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline;
-                    }
-                    else if (data.Result.Message) {
-                        alert(data.Result.Message);
-                    }
-                }).fail(function () {
-                    alert("There is something wrong. Please try again.");
-                })
+            var outputMsg = "Do you really want to delete this file?";
+            var div = $('<div></div>');
+            var titleMsg = "Confirm deletion";
+            div.html(outputMsg).dialog({
+                title: titleMsg,
+                height: 'auto',
+                width: 'auto',
+                maxWidth: 600,
+                fluid: true,
+                autoOpen: true,
+                open: function (event, ui) {
+                    $('.ui-dialog').css('z-index',100000);
+                    $('.ui-widget-overlay').css('z-index', 99999);
+                },
+                resizable: true,
+                modal: true,
+                buttons: {
+                    "YES": function () {
+                        $.ajax({
+                            url: "/ServiceRequests/DeleteContractorPic",
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: formdata,
+                        }).done(function (data) {
+                            if (data.Result == "OK") {
+                                location.reload();
+                            }
+                            else if (data.Result.Message) {
+                                alert(data.Result.Message);
+                            }
+                        }).fail(function () {
+                            alert("There is something wrong. Please try again.");
+                        })
 
-            }
+                    },
+                    "NO":
+                        function () {
+                            $(this).dialog("close");
+                        }
+                }   
+            })
         });
 
-    }
+    };
+
     //图片放大
     function zoomIn() {
         $('.zoom-in').click(function () {

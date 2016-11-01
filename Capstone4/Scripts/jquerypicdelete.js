@@ -180,7 +180,6 @@ function fluidDialog() {
                 maxWidth: 600,
                 fluid: true,
                 autoOpen: true,
-                zIndex: 100000,
                 open: function (event, ui) {
                     $('.ui-dialog').css('z-index',100000);
                     $('.ui-widget-overlay').css('z-index', 99999);
@@ -201,7 +200,11 @@ function fluidDialog() {
                                 var description = data.description;
                                 var price = data.price;
                                 var completionDeadline = data.completionDeadline;
-                                window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline;
+                                var city = data.city;
+                                var state = data.state;
+                                var zip = data.zip;
+                                var street = data.street;
+                                window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline + "&city=" + city + "&state=" + state + "&zip=" + zip + "&street=" + street;
                             }
                             else if (data.Result.Message) {
                                 alert(data.Result.Message);

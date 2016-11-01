@@ -165,7 +165,7 @@ namespace Capstone4.Controllers
         }
 
         // GET: ServiceRequests/Edit/5
-        public ActionResult Edit(int? id, string description, decimal? price, DateTime? completionDeadline)
+        public ActionResult Edit(int? id, string description, decimal? price, DateTime? completionDeadline, string city, string state, string zip, string street)
         {
             if (id == null)
             {
@@ -192,6 +192,22 @@ namespace Capstone4.Controllers
             if (completionDeadline != null)
             {
                 serviceRequest.CompletionDeadline = completionDeadline.Value;
+            }
+            if (city != null)
+            {
+                serviceRequest.Address.City = city;
+            }
+            if (state != null)
+            {
+                serviceRequest.Address.State = state;
+            }
+            if (zip != null)
+            {
+                serviceRequest.Address.Zip = zip;
+            }
+            if (street != null)
+            {
+                serviceRequest.Address.Street = street;
             }
             return View(serviceRequest);
         }
@@ -522,6 +538,26 @@ namespace Capstone4.Controllers
             {
                 description = serviceRequest.Description;
             }
+            string city = (form["Address.City"]);
+            if (city == "")
+            {
+                city = serviceRequest.Address.City;
+            }
+            string state = (form["Address.State"]);
+            if (state == "")
+            {
+                state = serviceRequest.Address.State;
+            }
+            string zip = (form["Address.Zip"]);
+            if (zip == "")
+            {
+                zip = serviceRequest.Address.Zip;
+            }
+            string street = (form["Address.Street"]);
+            if (street == "")
+            {
+                street = serviceRequest.Address.Street;
+            }
             string priceString = (form["Price"]);
             decimal? price;
             decimal priceParse;
@@ -551,7 +587,7 @@ namespace Capstone4.Controllers
                     
             }
             
-            return Json(new { Result = "OK", id = serviceRequest.ID, description = description, price = price, completionDeadline = dateToPass });
+            return Json(new { Result = "OK", id = serviceRequest.ID, description = description, price = price, completionDeadline = dateToPass, city = city, state = state, zip = zip, street = street });
         }
 
         public ActionResult DeleteContractorPic()
