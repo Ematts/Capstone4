@@ -7,7 +7,7 @@
 
 <h2>Create</h2>
 
-@using (Html.BeginForm("Create", "ServiceRequests", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "requestForm" })) 
+@using (Html.BeginForm("CreateRequest", "ServiceRequests", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "requestForm" })) 
 {
     @Html.AntiForgeryToken()
     <head>
@@ -154,23 +154,36 @@
             </div>
         </div>
 
-
-        <div id="multiple">
-            <input type="file" id="fileInput" class="multiple" name="files" multiple />
-        </div>
-        <div id="single">
-            <input type="file" class="single" name="files" /><br />
-            <input type="file" class="single" name="files" /><br />
-            <input type="file" class="single" name="files" /><br />
-        </div>
- 
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Post!" id="submitRequest" class="btn btn-default" onclick="ValidateAddress(event)" />
+                <input type="submit" value="Post!" id="submitRequest" class="btn btn-default" />
             </div>
         </div>
-    </div>
+      
+        
+        <input type="file"  style="display: none" id="fileInput" name="files" multiple><br />
+
+        <label for="fileInput" style="background-color: #A9A9A9" class="btn btn-default">
+            Browse Files
+        </label>
+
+        <div id="max">
+        
+            <p><font color="red">Maximum of 4 files reached!</font></p>
+        
+        </div>
+        
+
+        @*<div id="selectedFiles"></div>*@
+
+        <div class="picList">
+            <div id="dropbox" style="border:1px solid black;height:135px;overflow: auto;">
+                 Drop Here
+            </div>
+        </div>
+
+
+        </div>
 }
 
 <div>
@@ -180,7 +193,21 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/preview.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="~/Content/preview.css" />
+
+<style type="text/css">
+    #dropbox img {
+        width: 200px;
+        height: 133px;
+        text-align: justify;
+        float: left;
+        display: inline-block;
+        margin-bottom:10px;
+     }
+ </style>
+
     <script>
         $(document).ready(function(){
 
@@ -195,6 +222,7 @@
                 $("#vac").hide();
                 $("#valid").hide();
                 $("#inactive").hide();
+                $("#max").hide();
             })
     </script>
     <script src="~/Scripts/Validator.js" type="text/javascript"></script>
@@ -233,9 +261,10 @@
 
      })
      </script>
+    <script src="~/Scripts/auto.js"></script> 
     @{string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\auto.txt");}
     <script src="@source"
             async defer></script>
-    <script src="~/Scripts/auto.js"></script> 
+    
 
 }

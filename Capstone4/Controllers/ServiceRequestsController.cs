@@ -80,46 +80,155 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,Inactive")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> file)
+        //{
+        //    string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+        //    serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+        //    List<Contractor> emailList;
+        //    if (ModelState.IsValid)
+        //    {
+
+        //        foreach (var i in db.Homeowners)
+        //        {
+        //            if (i.UserId == identity)
+        //            {
+
+        //                serviceRequest.HomeownerID = i.ID;
+
+        //            }
+        //        }
+        //        if (serviceRequest.CompletionDeadline < DateTime.Now)
+        //        {
+        //            return RedirectToAction("Date_Issue", "ServiceRequests");
+        //        }
+        //        foreach (var file1 in file)
+        //        {
+
+        //            if (file1 != null && file1.ContentLength > 0)
+        //            {
+
+
+        //                var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file1.FileName) };
+        //                file1.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+        //                serviceRequest.ServiceRequestFilePaths.Add(photo);
+        //            }
+
+        //        }
+        //        foreach (var i in db.Addresses.ToList())
+        //        {
+        //            if (i.FullAddress == address.FullAddress)
+        //            {
+        //                serviceRequest.AddressID = i.ID;
+        //                serviceRequest.Address = i;
+        //                serviceRequest.Address.validated = address.validated;
+        //                serviceRequest.Address.vacant = address.vacant;
+        //                db.SaveChanges();
+        //            }
+        //        }
+        //        if (serviceRequest.AddressID == null)
+        //        {
+        //            db.Addresses.Add(address);
+        //            db.SaveChanges();
+        //            serviceRequest.AddressID = address.ID;
+        //        }
+
+        //        db.ServiceRequests.Add(serviceRequest);
+        //        db.SaveChanges();
+        //        serviceRequest.Service_Number = serviceRequest.ID;
+        //        emailList = GetDistance(serviceRequest);
+
+        //        if (emailList.Count == 0)
+        //        {
+        //            List<Models.Address> ids = new List<Models.Address>();
+        //            Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+        //            serviceRequest.Posted = false;
+        //            serviceRequest.NeedsManualValidation = false;
+        //            TempData["address"] = addressToCheck;
+        //            db.SaveChanges();
+        //            return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+        //        }
+        //        serviceRequest.Posted = true;
+        //        serviceRequest.PostedDate = DateTime.Now;
+        //        serviceRequest.NeedsManualValidation = false;
+        //        db.SaveChanges();
+        //        postServiceRequest(serviceRequest, emailList);
+        //        return RedirectToAction("Index");
+        //    }
+
+
+        //    return View(serviceRequest);
+        //}
+
         // POST: ServiceRequests/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,Inactive")] ServiceRequest serviceRequest, Models.Address address, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult CreateRequest()
         {
+
+            var files = Enumerable.Range(0, Request.Files.Count).Select(i => Request.Files[i]);
+            var form = Request.Form;
+            string city = (form["Address.City"]);
+            string state = (form["Address.State"]);
+            string zip = (form["Address.Zip"]);
+            string street = (form["Address.Street"]);
+            string description = (form["Description"]);
+            string priceString = (form["Price"]);
+            decimal price = Convert.ToDecimal(priceString);
+            string dateString = (form["CompletionDeadline"]);
+            DateTime completionDeadline = Convert.ToDateTime(dateString);
+            bool vacant = form["Address.vacant"].Contains("true");
+            bool validated = form["Address.validated"].Contains("true");
+            bool inactive = form["Inactive"].Contains("true");
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+
+            //serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
             List<Contractor> emailList;
-            if (ModelState.IsValid)
+            if (identity == null)
             {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Homeowner"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
-                foreach (var i in db.Homeowners)
+
+            Models.Address address = new Models.Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
+            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Inactive = inactive };
+            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+            foreach (var i in db.Homeowners)
+            {
+                if (i.UserId == identity)
                 {
-                    if (i.UserId == identity)
-                    {
 
-                        serviceRequest.HomeownerID = i.ID;
+                    serviceRequest.HomeownerID = i.ID;
 
-                    }
                 }
-                if (serviceRequest.CompletionDeadline < DateTime.Now)
+            }
+
+            if (serviceRequest.CompletionDeadline < DateTime.Now)
                 {
                     return RedirectToAction("Date_Issue", "ServiceRequests");
                 }
-                foreach (var file in files)
+            foreach (var file in files)
+            {
+
+                if (file != null && file.ContentLength > 0)
                 {
 
-                    if (file != null && file.ContentLength > 0)
-                    {
 
-
-                        var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
-                        file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
-                        serviceRequest.ServiceRequestFilePaths.Add(photo);
-                    }
-
+                    var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                    file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                    serviceRequest.ServiceRequestFilePaths.Add(photo);
                 }
-                foreach(var i in db.Addresses.ToList())
+
+            }
+
+            foreach (var i in db.Addresses.ToList())
                 {
                     if (i.FullAddress == address.FullAddress)
                     {
@@ -130,38 +239,38 @@ namespace Capstone4.Controllers
                         db.SaveChanges();
                     }
                 }
-                if (serviceRequest.AddressID == null)
-                {
-                    db.Addresses.Add(address);
-                    db.SaveChanges();
-                    serviceRequest.AddressID = address.ID;
-                }
 
-                db.ServiceRequests.Add(serviceRequest);
+            if (serviceRequest.AddressID == null)
+            {
+                db.Addresses.Add(address);
                 db.SaveChanges();
-                serviceRequest.Service_Number = serviceRequest.ID;
-                emailList=GetDistance(serviceRequest);
-
-                if (emailList.Count == 0)
-                {
-                    List<Models.Address> ids = new List<Models.Address>();
-                    Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
-                    serviceRequest.Posted = false;
-                    serviceRequest.NeedsManualValidation = false;
-                    TempData["address"] = addressToCheck;
-                    db.SaveChanges();
-                    return RedirectToAction("noService", "ServiceRequests", new {address = TempData["address"] });
-                }
-                serviceRequest.Posted = true;
-                serviceRequest.PostedDate = DateTime.Now;
-                serviceRequest.NeedsManualValidation = false;
-                db.SaveChanges();
-                postServiceRequest(serviceRequest, emailList);
-                return RedirectToAction("Index");
+                serviceRequest.AddressID = address.ID;
+                serviceRequest.Address = address;
             }
 
+            db.ServiceRequests.Add(serviceRequest);
+            db.SaveChanges();
+            serviceRequest.Service_Number = serviceRequest.ID;
+            emailList=GetDistance(serviceRequest);
 
-            return View(serviceRequest);
+            if (emailList.Count == 0)
+            {
+                List<Models.Address> ids = new List<Models.Address>();
+                Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+                serviceRequest.Posted = false;
+                serviceRequest.NeedsManualValidation = false;
+                TempData["address"] = addressToCheck;
+                db.SaveChanges();
+                return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
+            }
+            serviceRequest.Posted = true;
+            serviceRequest.PostedDate = DateTime.Now;
+            serviceRequest.NeedsManualValidation = false;
+            db.SaveChanges();
+            postServiceRequest(serviceRequest, emailList);
+            return Json(new { success = true, id = serviceRequest.ID },
+            JsonRequestBehavior.AllowGet);
+
         }
 
         // GET: ServiceRequests/Edit/5

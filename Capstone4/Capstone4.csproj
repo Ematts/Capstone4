@@ -525,7 +525,9 @@
     <Content Include="Content\DataTables.css" />
     <Content Include="Content\DataTablesSelector.css" />
     <Content Include="Content\DataTableWhiteSpaceForHeaderScroll.css" />
+    <Content Include="Content\dropzone.css" />
     <Content Include="Content\jqueryPic.css" />
+    <Content Include="Content\preview.css" />
     <Content Include="Content\ResponsiveDatatables.css" />
     <Content Include="Content\star-rating.css" />
     <Content Include="Content\theme-krajee-svg.css" />
@@ -551,6 +553,7 @@
     <Content Include="Scripts\DataTablesSelector.js" />
     <Content Include="Scripts\deletepicContractor.js" />
     <Content Include="Scripts\Drag.js" />
+    <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\EditServiceRequestAuto.js" />
     <Content Include="Scripts\FixedColumnDataTable.js" />
     <Content Include="Scripts\HomeownerCreateAuto.js" />
@@ -567,8 +570,10 @@
     <Content Include="Scripts\jquerypic.js" />
     <Content Include="Scripts\jquerypicdelete.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\original.js" />
     <Content Include="Scripts\PhotoNumbering.js" />
     <Content Include="Scripts\picBig.js" />
+    <Content Include="Scripts\preview.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\ResponiveDataTables.js" />
@@ -712,6 +717,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="js-webshim\" />
+    <Folder Include="obj\" />
     <Folder Include="Views\AddressValidator\" />
   </ItemGroup>
   <ItemGroup>

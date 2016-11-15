@@ -88,11 +88,10 @@
     <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
     <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
 
-    
+    <script src="~/Scripts/ReviewsAuto.js"></script> 
     @{string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\auto.txt");}
     <script src="@source"
         async defer></script>
-    <script src="~/Scripts/ReviewsAuto.js"></script> 
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
             "columnDefs": [

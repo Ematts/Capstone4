@@ -6,7 +6,7 @@
     $("#divProcessing").show();
     $.ajax({
         type: "GET",
-        url: "http://localhost:37234/AddressValidator/getAddValStatus",
+        url: "/AddressValidator/getAddValStatus",
         contentType: "application/json; charset=utf-8",
         data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
         dataType: "json",
@@ -62,7 +62,7 @@
                             $(this).dialog("close");
                             $.ajax({
                                 type: "GET",
-                                url: "http://localhost:37234/AddressValidator/RunStreetLevelValidation",
+                                url: "/AddressValidator/RunStreetLevelValidation",
                                 contentType: "application/json; charset=utf-8",
                                 data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
                                 dataType: "json",
@@ -153,7 +153,7 @@
                                                                         type: 'POST',
                                                                         dataType: 'json',
                                                                         cache: false,
-                                                                        url: "http://localhost:37234/AddressValidator/ManualValidationEdit",
+                                                                        url: "/AddressValidator/ManualValidationEdit",
                                                                         processData: false,
                                                                         contentType: false,
                                                                         data: formdata,
@@ -172,7 +172,8 @@
                                                                                     "CLOSE":
                                                                                 function () {
                                                                                     $(this).dialog('close');
-                                                                                    window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                                    $("#divProcessing").show();
+                                                                                    window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                                 }
                                                                                 }
                                                                             })
@@ -229,7 +230,7 @@
                                                             type: 'POST',
                                                             dataType: 'json',
                                                             cache: false,
-                                                            url: "http://localhost:37234/AddressValidator/ManualValidationEdit",
+                                                            url: "/AddressValidator/ManualValidationEdit",
                                                             processData: false,
                                                             contentType: false,
                                                             data: formdata,
@@ -248,7 +249,8 @@
                                                                         "CLOSE":
                                                                     function () {
                                                                         $(this).dialog('close');
-                                                                        window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                        $("#divProcessing").show();
+                                                                        window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                     }
                                                                     }
                                                                 })
@@ -315,7 +317,7 @@
                                                 type: 'POST',
                                                 dataType: 'json',
                                                 cache: false,
-                                                url: "http://localhost:37234/AddressValidator/ManualValidationEdit",
+                                                url: "/AddressValidator/ManualValidationEdit",
                                                 processData: false,
                                                 contentType: false,
                                                 data: formdata,
@@ -334,7 +336,8 @@
                                                             "CLOSE":
                                                         function () {
                                                             $(this).dialog('close');
-                                                            window.location = "http://localhost:37234/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                            $("#divProcessing").show();
+                                                            window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                         }
                                                         }
                                                     })
