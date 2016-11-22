@@ -547,6 +547,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\ConPicsDropbox.js" />
     <Content Include="Scripts\ContractorCreateValidator.js" />
     <Content Include="Scripts\ContractorEditValidator.js" />
     <Content Include="Scripts\DataTables.js" />

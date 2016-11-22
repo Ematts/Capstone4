@@ -165,7 +165,7 @@ function fluidDialog() {
             for (i = 0; i < fileInput.files.length; i++) {
                 formdata.append(fileInput.files[i].name, fileInput.files[i]);
             }
-            var other_data = $('form').serializeArray();
+            var other_data = $('#requestForm').serializeArray();
             $.each(other_data, function (key, input) {
                 formdata.append(input.name, input.value);
             });

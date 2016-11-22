@@ -823,7 +823,8 @@ namespace Capstone4.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeletePic()
         {
             var form = Request.Form;
@@ -885,7 +886,8 @@ namespace Capstone4.Controllers
             
             return Json(new { Result = "OK", id = serviceRequest.ID, description = description, price = price, completionDeadline = dateToPass, city = city, state = state, zip = zip, street = street });
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteContractorPic()
         {
             var form = Request.Form;
@@ -1493,16 +1495,73 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
 
         }
-        public ActionResult AddContractorPhotos(int? ID, IEnumerable<HttpPostedFileBase> files)
+        //public ActionResult AddContractorPhotos(int? ID, IEnumerable<HttpPostedFileBase> files)
+        //{
+        //    ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+        //    serviceRequest.CompletedServiceRequestFilePaths = new List<CompletedServiceRequestFilePath>();
+        //    foreach (var file in files)
+        //    {
+
+        //        if (file != null && file.ContentLength > 0)
+        //        {
+
+
+        //            var photo = new CompletedServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+        //            file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+        //            serviceRequest.CompletedServiceRequestFilePaths.Add(photo);
+        //        }
+
+        //    }
+        //    db.SaveChanges();
+        //    return RedirectToAction("ConfirmCompletionView", "ServiceRequests", new { id = serviceRequest.ID }); 
+
+        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddContractorPhotos()
         {
-            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            var files = Enumerable.Range(0, Request.Files.Count).Select(i => Request.Files[i]);
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
             serviceRequest.CompletedServiceRequestFilePaths = new List<CompletedServiceRequestFilePath>();
+            int fileList = 0;
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+            foreach (var path in db.CompletedServiceRequestFilePaths.ToList())
+            {
+                if (path.ServiceRequestID == serviceRequest.ID)
+                    fileList++;
+            }
+
+            foreach (var file in files)
+            {
+                fileList++;
+            }
+
+            if (fileList > 4)
+            {
+                return Json(new { success = true, tooManyPics = true, id = serviceRequest.ID },
+                JsonRequestBehavior.AllowGet);
+            }
+
             foreach (var file in files)
             {
 
                 if (file != null && file.ContentLength > 0)
                 {
-
 
                     var photo = new CompletedServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
                     file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
@@ -1511,7 +1570,8 @@ namespace Capstone4.Controllers
 
             }
             db.SaveChanges();
-            return RedirectToAction("ConfirmCompletionView", "ServiceRequests", new { id = serviceRequest.ID }); 
+            return Json(new { success = true, id = serviceRequest.ID },
+            JsonRequestBehavior.AllowGet);
 
         }
 
