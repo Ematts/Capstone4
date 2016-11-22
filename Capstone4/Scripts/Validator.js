@@ -84,6 +84,13 @@ if (!Array.prototype.includes) {
         storedFiles = [];
         dupCheck = [];
     });
+    window.addEventListener("dragover", function (e) {
+        if (e.target.id != dropbox) {
+            e.preventDefault();
+            e.dataTransfer.effectAllowed = "none";
+            e.dataTransfer.dropEffect = "none";
+        }
+    });
 
     function dragenter(e) {
         e.stopPropagation();
@@ -93,6 +100,7 @@ if (!Array.prototype.includes) {
     function dragover(e) {
         e.stopPropagation();
         e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
     }
     function drop(e) {
         e.stopPropagation();
@@ -200,7 +208,6 @@ if (!Array.prototype.includes) {
     }
 
     $('#submitRequest').click(function (e) {
-        //function ValidateAddress(event) {
         $("#vac").hide();
         $("#valid").hide();
         $("#inactive").hide();
@@ -248,7 +255,6 @@ if (!Array.prototype.includes) {
                                     $.each(other_data, function (key, input) {
                                         formdata.append(input.name, input.value);
                                     });
-                                    //var token = $('input[name="__RequestVerificationToken"]').val();
                                     var tokenadr = $('form[action="/ServiceRequests/CreateRequest"] input[name="__RequestVerificationToken"]').val();
                                     var token = tokenadr;
                                     var headers = {};
@@ -265,7 +271,12 @@ if (!Array.prototype.includes) {
                                         contentType: false,
                                         data: formdata,
                                         success: function (response, textStatus, jqXHR) {
-                                            window.location = "/ServiceRequests/Details/" + response.id;
+                                            if (response.noService == true) {
+                                                window.location = "/ServiceRequests/noService/" + response.id;
+                                            }
+                                            else {
+                                                window.location = "/ServiceRequests/Details/" + response.id;
+                                            }
                                         },
 
                                         error: function (jqXHR, textStatus, errorThrown) {
@@ -348,12 +359,51 @@ if (!Array.prototype.includes) {
                                                             buttons: {
                                                                 "YES":
                                                                 function () {
-
-
-                                                                    $(this).dialog('close');
-                                                                    $("#requestForm").submit();
                                                                     if ($("#requestForm").valid()) {
-                                                                        $("#divProcessing").show();
+                                                                        $(this).dialog('close');
+                                                                        $("#Inactive").prop("checked", false);
+                                                                        var formdata = new FormData();
+                                                                        var pics = storedFiles;
+                                                                        var fileInput = document.getElementById('fileInput');
+                                                                        for (var i = 0, len = pics.length; i < len; i++) {
+                                                                            formdata.append('files', pics[i]);
+                                                                        }
+                                                                        var other_data = $('#requestForm').serializeArray();
+                                                                        $.each(other_data, function (key, input) {
+                                                                            formdata.append(input.name, input.value);
+                                                                        });
+                                                                        var tokenadr = $('form[action="/ServiceRequests/CreateRequest"] input[name="__RequestVerificationToken"]').val();
+                                                                        var token = tokenadr;
+                                                                        var headers = {};
+                                                                        var headersadr = {};
+                                                                        headers['__RequestVerificationToken'] = token;
+                                                                        headersadr['__RequestVerificationToken'] = tokenadr;
+                                                                        $.ajax({
+                                                                            type: 'POST',
+                                                                            dataType: 'json',
+                                                                            headers: headersadr,
+                                                                            cache: false,
+                                                                            url: "/ServiceRequests/CreateRequest",
+                                                                            processData: false,
+                                                                            contentType: false,
+                                                                            data: formdata,
+                                                                            success: function (response, textStatus, jqXHR) {
+                                                                                if (response.noService == true) {
+                                                                                    window.location = "/ServiceRequests/noService/" + response.id;
+                                                                                }
+                                                                                else {
+                                                                                    window.location = "/ServiceRequests/Details/" + response.id;
+                                                                                }
+                                                                            },
+
+                                                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                                                alert('Error - ' + errorThrown);
+                                                                            },
+
+                                                                        })
+                                                                    }
+                                                                    else {
+                                                                        $(this).dialog('close');
                                                                     }
 
 
@@ -388,16 +438,24 @@ if (!Array.prototype.includes) {
                                                                         $(this).dialog('close');
                                                                         $("#Inactive").prop("checked", true);
                                                                         var formdata = new FormData();
+                                                                        var pics = storedFiles;
                                                                         var fileInput = document.getElementById('fileInput');
-                                                                        for (i = 0; i < fileInput.files.length; i++) {
-                                                                            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                                                                        for (i = 0; i < pics.length; i++) {
+                                                                            formdata.append('files', pics[i]);
                                                                         }
-                                                                        var other_data = $('form').serializeArray();
+                                                                        var other_data = $('#requestForm').serializeArray();
                                                                         $.each(other_data, function (key, input) {
                                                                             formdata.append(input.name, input.value);
                                                                         });
+                                                                        var tokenadr = $('form[action="/ServiceRequests/CreateRequest"] input[name="__RequestVerificationToken"]').val();
+                                                                        var token = tokenadr;
+                                                                        var headers = {};
+                                                                        var headersadr = {};
+                                                                        headers['__RequestVerificationToken'] = token;
+                                                                        headersadr['__RequestVerificationToken'] = tokenadr;
                                                                         $.ajax({
                                                                             type: 'POST',
+                                                                            headers: headersadr,
                                                                             dataType: 'json',
                                                                             cache: false,
                                                                             url: "/AddressValidator/ManualValidation",
@@ -467,17 +525,25 @@ if (!Array.prototype.includes) {
                                                             $(this).dialog('close');
                                                             $("#Inactive").prop("checked", true);
                                                             var formdata = new FormData();
+                                                            var pics = storedFiles;
                                                             var fileInput = document.getElementById('fileInput');
-                                                            for (i = 0; i < fileInput.files.length; i++) {
-                                                                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                                                            for (i = 0; i < pics.length; i++) {
+                                                                formdata.append('files', pics[i]);
                                                             }
-                                                            var other_data = $('form').serializeArray();
+                                                            var other_data = $('#requestForm').serializeArray();
                                                             $.each(other_data, function (key, input) {
                                                                 formdata.append(input.name, input.value);
                                                             });
+                                                            var tokenadr = $('form[action="/ServiceRequests/CreateRequest"] input[name="__RequestVerificationToken"]').val();
+                                                            var token = tokenadr;
+                                                            var headers = {};
+                                                            var headersadr = {};
+                                                            headers['__RequestVerificationToken'] = token;
+                                                            headersadr['__RequestVerificationToken'] = tokenadr;
                                                             $.ajax({
                                                                 type: 'POST',
                                                                 dataType: 'json',
+                                                                headers: headersadr,
                                                                 cache: false,
                                                                 url: "/AddressValidator/ManualValidation",
                                                                 processData: false,
@@ -557,19 +623,23 @@ if (!Array.prototype.includes) {
                                                 var formdata = new FormData();
                                                 var pics = storedFiles;
                                                 var fileInput = document.getElementById('fileInput');
-                                                //for (i = 0; i < fileInput.files.length; i++) {
-                                                //    formdata.append(fileInput.files[i].name, fileInput.files[i]);
-                                                //}
                                                 for (var i = 0, len = pics.length; i < len; i++) {
                                                     formdata.append('files', pics[i]);
                                                 }
-                                                var other_data = $('form').serializeArray();
+                                                var other_data = $('#requestForm').serializeArray();
                                                 $.each(other_data, function (key, input) {
                                                     formdata.append(input.name, input.value);
                                                 });
+                                                var tokenadr = $('form[action="/ServiceRequests/CreateRequest"] input[name="__RequestVerificationToken"]').val();
+                                                var token = tokenadr;
+                                                var headers = {};
+                                                var headersadr = {};
+                                                headers['__RequestVerificationToken'] = token;
+                                                headersadr['__RequestVerificationToken'] = tokenadr;
                                                 $.ajax({
                                                     type: 'POST',
                                                     dataType: 'json',
+                                                    headers: headersadr,
                                                     cache: false,
                                                     url: "/AddressValidator/ManualValidation",
                                                     processData: false,

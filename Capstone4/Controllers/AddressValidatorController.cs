@@ -156,6 +156,7 @@ namespace Capstone4.Controllers
         //}
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ManualValidation()
         {
             var files = Enumerable.Range(0, Request.Files.Count).Select(i => Request.Files[i]);            
@@ -240,6 +241,7 @@ namespace Capstone4.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ManualValidationEdit()
         {
             var files = Enumerable.Range(0, Request.Files.Count).Select(i => Request.Files[i]);
@@ -257,6 +259,7 @@ namespace Capstone4.Controllers
             bool vacant = form["Address.vacant"].Contains("true");
             bool validated = form["Address.validated"].Contains("true");
             bool inactive = form["Inactive"].Contains("true");
+            int fileList = 0;
 
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
@@ -281,6 +284,36 @@ namespace Capstone4.Controllers
             if (serviceRequest == null)
             {
                 return HttpNotFound();
+            }
+
+            foreach (var path in db.ServiceRequestFilePaths.ToList())
+            {
+                if (path.ServiceRequestID == serviceRequest.ID)
+                    fileList++;
+            }
+
+            foreach (var file in files)
+            {
+                fileList++;
+            }
+
+            if (fileList > 4)
+            {
+                return Json(new { success = true, tooManyPics = true, id = serviceRequest.ID },
+                JsonRequestBehavior.AllowGet);
+            }
+
+            foreach (var file in files)
+            {
+
+                if (file != null && file.ContentLength > 0)
+                {
+
+                    var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+                    file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+                    serviceRequest.ServiceRequestFilePaths.Add(photo);
+                }
+
             }
 
             if (serviceRequest.AddressID == null)
@@ -354,18 +387,34 @@ namespace Capstone4.Controllers
 
             }
 
-            foreach (var file in files)
-            {
+            //foreach (var path in db.ServiceRequestFilePaths.ToList())
+            //{
+            //    if (path.ServiceRequestID == serviceRequest.ID)
+            //        fileList++;
+            //}
 
-                if (file != null && file.ContentLength > 0)
-                {
+            //foreach (var file in files)
+            //{
+            //    fileList++;
+            //}
 
-                    var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
-                    file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
-                    serviceRequest.ServiceRequestFilePaths.Add(photo);
-                }
+            //if(fileList > 4)
+            //{
 
-            }
+            //}
+
+            //foreach (var file in files)
+            //{
+
+            //    if (file != null && file.ContentLength > 0)
+            //    {
+
+            //        var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
+            //        file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
+            //        serviceRequest.ServiceRequestFilePaths.Add(photo);
+            //    }
+
+            //}
             serviceRequest.Description = description;
             serviceRequest.Posted = false;
             serviceRequest.PostedDate = null;
