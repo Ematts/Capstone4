@@ -1,4 +1,19 @@
-﻿// on window resize run function
+﻿if (!String.prototype.includes) {
+    String.prototype.includes = function (search, start) {
+        'use strict';
+        if (typeof start !== 'number') {
+            start = 0;
+        }
+
+        if (start + search.length > this.length) {
+            return false;
+        } else {
+            return this.indexOf(search, start) !== -1;
+        }
+    };
+}
+
+// on window resize run function
 $(window).resize(function () {
     fluidDialog();
 });
@@ -171,7 +186,7 @@ function fluidDialog() {
             for (i = 0; i < fileInput.files.length; i++) {
                 formdata.append(fileInput.files[i].name, fileInput.files[i]);
             }
-            var other_data = $('#picForm, #detailsForm').serializeArray();
+            var other_data = $('#picForm').serializeArray();
             $.each(other_data, function (key, input) {
                 formdata.append(input.name, input.value);
             });

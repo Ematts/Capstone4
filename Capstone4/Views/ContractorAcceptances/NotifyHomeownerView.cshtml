@@ -5,7 +5,7 @@
 }
 
 <h2>Accept Contractor</h2>
-@using (Html.BeginForm("ConfirmContractor", "ContractorAcceptances", Model.ID))
+@using (Html.BeginForm("ConfirmContractor", "ContractorAcceptances", Model.ID, FormMethod.Post))
 {
 <div>
     @Html.AntiForgeryToken()

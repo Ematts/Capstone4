@@ -206,7 +206,7 @@ $('#submitRequest').click(function (e) {
     $("#vac").hide();
     $("#valid").hide();
     $("#inactive").hide();
-    event.preventDefault();
+    e.preventDefault();
     $("#divProcessing").show();
     $.ajax({
         type: "GET",

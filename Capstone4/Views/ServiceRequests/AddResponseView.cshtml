@@ -41,7 +41,7 @@
     </dd>
 </dl>
 
-@using (Html.BeginForm("AddResponse", "ServiceRequests", Model.ID))
+@using (Html.BeginForm("AddResponse", "ServiceRequests", Model.ID, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <div>

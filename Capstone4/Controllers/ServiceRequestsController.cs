@@ -1118,6 +1118,8 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Accept(int id)
         {
 
@@ -1193,6 +1195,8 @@ namespace Capstone4.Controllers
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmCompletion(int? ID)
         {
 
@@ -1450,6 +1454,11 @@ namespace Capstone4.Controllers
             if (serviceRequest == null)
             {
                 return HttpNotFound();
+            }
+
+            if (serviceRequest.CompletionDate == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
             }
 
             if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))

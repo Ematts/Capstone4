@@ -37,7 +37,7 @@
         </div>
     </div>
 }
-@using (Html.BeginForm("ConfirmCompletion", "ServiceRequests", new { id = "detailsForm" }))
+@using (Html.BeginForm("ConfirmCompletion", "ServiceRequests", FormMethod.Post, new { id = "detailsForm" }))
 {
     @Html.AntiForgeryToken()
 <div>

@@ -159,6 +159,8 @@ namespace Capstone4.Controllers
             return View(contractorAcceptance);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ConfirmContractor(int id)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();

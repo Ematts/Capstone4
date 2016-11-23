@@ -5,7 +5,7 @@
 }
 
 <h2>Add Review</h2>
-@using (Html.BeginForm("AddReview", "ServiceRequests", Model.ID))
+@using (Html.BeginForm("AddReview", "ServiceRequests", Model.ID, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 <div>
