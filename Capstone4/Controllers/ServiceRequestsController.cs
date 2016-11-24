@@ -1359,7 +1359,7 @@ namespace Capstone4.Controllers
                 }
                 db.SaveChanges();
                 Notify_Contractor_of_Review(contractorReview, serviceRequest);
-                return RedirectToAction("Index", "ContractorReviews");
+                return RedirectToAction("SeeContractorReviews", "Contractors", new { id = serviceRequest.ContractorID });
             }
             return View(serviceRequest);
         }
@@ -1435,7 +1435,7 @@ namespace Capstone4.Controllers
                 db.ReviewResponses.Add(reviewResponse);
                 serviceRequest.ContractorReview.ReviewResponseID = reviewResponse.ID;
                 db.SaveChanges();
-                return RedirectToAction("Index", "ReviewResponses");
+                return RedirectToAction("SeeContractorReviews", "Contractors", new { id = serviceRequest.ContractorID });
             }
             return View(serviceRequest);
         }

@@ -86,6 +86,14 @@ $('#fileInput').click(function () {
     dupCheck = [];
 });
 
+window.addEventListener("dragover", function (e) {
+    if (e.target.id != dropbox) {
+        e.preventDefault();
+        e.dataTransfer.effectAllowed = "none";
+        e.dataTransfer.dropEffect = "none";
+    }
+});
+
 function dragenter(e) {
     e.stopPropagation();
     e.preventDefault();
