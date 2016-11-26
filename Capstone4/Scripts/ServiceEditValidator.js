@@ -209,7 +209,7 @@ function removeFile(e) {
 
 }
 
-
+$.ajaxSetup({ cache: false });
 $('#submitRequest').click(function (e) {
     $("#vac").hide();
     $("#valid").hide();

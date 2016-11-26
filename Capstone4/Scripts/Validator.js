@@ -206,7 +206,7 @@ if (!Array.prototype.includes) {
         $(this).remove();
 
     }
-
+    $.ajaxSetup({ cache: false });
     $('#submitRequest').click(function (e) {
         $("#vac").hide();
         $("#valid").hide();

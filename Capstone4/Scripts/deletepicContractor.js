@@ -174,7 +174,7 @@ function fluidDialog() {
         switchImage(list_images, list_pairs);
 
     };
-
+    $.ajaxSetup({ cache: false });
     function deletePic(list_images, list_pairs) {
 
         $('.deletePic').click(function (e) {

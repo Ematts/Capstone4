@@ -431,6 +431,7 @@ namespace Capstone4.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<ActionResult> ManualValidationHomeownerCreate()
         {
@@ -485,6 +486,7 @@ namespace Capstone4.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ManualValidationHomeownerEdit()
         {
             
@@ -609,6 +611,7 @@ namespace Capstone4.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<ActionResult> ManualValidationContractorCreate()
         {
@@ -665,6 +668,7 @@ namespace Capstone4.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ManualValidationContractorEdit()
         {
 

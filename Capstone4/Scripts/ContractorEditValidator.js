@@ -1,8 +1,43 @@
-﻿function ValidateAddress() {
+﻿// on window resize run function
+$(window).resize(function () {
+    fluidDialog();
+});
+
+// catch dialog if opened within a viewport smaller than the dialog width
+$(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+    fluidDialog();
+});
+
+function fluidDialog() {
+    var $visible = $(".ui-dialog:visible");
+    // each open dialog
+    $visible.each(function () {
+        var $this = $(this);
+        var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+        // if fluid option == true
+        if (dialog.options.fluid) {
+            var wWidth = $(window).width();
+            // check window width against dialog width
+            if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                // keep dialog from filling entire screen
+                $this.css("max-width", "90%");
+            } else {
+                // fix maxWidth bug
+                $this.css("max-width", dialog.options.maxWidth + "px");
+            }
+            //reposition dialog
+            dialog.option("position", dialog.options.position);
+        }
+    });
+
+}
+
+$.ajaxSetup({ cache: false });
+$('#submitRequest').click(function (e) {
     $("#vac").hide();
     $("#valid").hide();
     $("#inactive").hide();
-    event.preventDefault();
+    e.preventDefault();
     $("#divProcessing").show();
     $.ajax({
         type: "GET",
@@ -19,8 +54,10 @@
                 var outputMsg = "Are you ready to submit your info?";
                 div.html(outputMsg).dialog({
                     title: titleMsg,
-                    height: 300,
-                    width: 600,
+                    height: 'auto',
+                    width: 'auto',
+                    maxWidth: 600,
+                    fluid: true,
                     autoOpen: true,
                     resizable: true,
                     modal: true,
@@ -51,8 +88,11 @@
                 var titleMsg = "A few questions while we validate your address";
                 div.html(outputMsg).dialog({
                     title: titleMsg,
-                    height: 300,
-                    width: 600,
+                    height: 'auto',
+                    width: 'auto',
+                    maxWidth: 600,
+                    fluid: true,
+                    autoOpen: true,
                     resizable: true,
                     modal: true,
                     buttons: {
@@ -78,8 +118,10 @@
                                         var outputMsg = "Is this address in the vicinity of one of the following address ranges?" + "<br><br>" + (listOfAddresses.join('\r\n'));
                                         div.html(outputMsg).dialog({
                                             title: titleMsg,
-                                            height: 300,
-                                            width: 600,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            maxWidth: 600,
+                                            fluid: true,
                                             autoOpen: true,
                                             resizable: true,
                                             modal: true,
@@ -93,8 +135,10 @@
                                                     var outputMsg = "Are you ready to submit your info?";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
-                                                        height: 300,
-                                                        width: 600,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        maxWidth: 600,
+                                                        fluid: true,
                                                         autoOpen: true,
                                                         resizable: true,
                                                         modal: true,
@@ -129,8 +173,10 @@
                                                     var outputMsg = "Would you like to request manual address validation?" + "<br><br>" + "(This will inactivate your account until address is validated)";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
-                                                        height: 300,
-                                                        width: 600,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        maxWidth: 600,
+                                                        fluid: true,
                                                         autoOpen: true,
                                                         resizable: true,
                                                         modal: true,
@@ -141,7 +187,7 @@
                                                                     $(this).dialog('close');
                                                                     $("#Inactive").prop("checked", true);
                                                                     var formdata = new FormData();
-                                                                    var other_data = $('form').serializeArray();
+                                                                    var other_data = $('#requestForm').serializeArray();
                                                                     $.each(other_data, function (key, input) {
                                                                         formdata.append(input.name, input.value);
                                                                     });
@@ -159,8 +205,10 @@
                                                                             var outputMsg = "Your request has been submitted. We will get back to you shortly.";
                                                                             div.html(outputMsg).dialog({
                                                                                 title: titleMsg,
-                                                                                height: 300,
-                                                                                width: 600,
+                                                                                height: 'auto',
+                                                                                width: 'auto',
+                                                                                maxWidth: 600,
+                                                                                fluid: true,
                                                                                 autoOpen: true,
                                                                                 resizable: true,
                                                                                 modal: true,
@@ -201,8 +249,10 @@
                                         var outputMsg = "Would you like to request manual address validation?" + "<br><br>" + "(This will inactivate your account until address is validated)";
                                         div.html(outputMsg).dialog({
                                             title: titleMsg,
-                                            height: 300,
-                                            width: 600,
+                                            height: 'auto',
+                                            width: 'auto',
+                                            maxWidth: 600,
+                                            fluid: true,
                                             autoOpen: true,
                                             resizable: true,
                                             modal: true,
@@ -213,7 +263,7 @@
                                                         $(this).dialog('close');
                                                         $("#Inactive").prop("checked", true);
                                                         var formdata = new FormData();
-                                                        var other_data = $('form').serializeArray();
+                                                        var other_data = $('#requestForm').serializeArray();
                                                         $.each(other_data, function (key, input) {
                                                             formdata.append(input.name, input.value);
                                                         });
@@ -231,8 +281,10 @@
                                                                 var outputMsg = "Your request has been submitted. We will get back to you shortly.";
                                                                 div.html(outputMsg).dialog({
                                                                     title: titleMsg,
-                                                                    height: 300,
-                                                                    width: 600,
+                                                                    height: 'auto',
+                                                                    width: 'auto',
+                                                                    maxWidth: 600,
+                                                                    fluid: true,
                                                                     autoOpen: true,
                                                                     resizable: true,
                                                                     modal: true,
@@ -283,8 +335,10 @@
                             var outputMsg = "Address validation failed for the following reason(s):" + "<br><br>" + (listOfErrors.join('\r\n')) + "<br><br>" + "Would you like to request manual validation?" + "<br>" + "(This will inactivate your account until address is validated)";
                             div.html(outputMsg).dialog({
                                 title: titleMsg,
-                                height: 300,
-                                width: 600,
+                                height: 'auto',
+                                width: 'auto',
+                                maxWidth: 600,
+                                fluid: true,
                                 autoOpen: true,
                                 resizable: true,
                                 modal: true,
@@ -295,7 +349,7 @@
                                             $(this).dialog('close');
                                             $("#Inactive").prop("checked", true);
                                             var formdata = new FormData();
-                                            var other_data = $('form').serializeArray();
+                                            var other_data = $('#requestForm').serializeArray();
                                             $.each(other_data, function (key, input) {
                                                 formdata.append(input.name, input.value);
                                             });
@@ -313,8 +367,10 @@
                                                     var outputMsg = "Your request has been submitted. We will get back to you shortly.";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
-                                                        height: 300,
-                                                        width: 600,
+                                                        height: 'auto',
+                                                        width: 'auto',
+                                                        maxWidth: 600,
+                                                        fluid: true,
                                                         autoOpen: true,
                                                         resizable: true,
                                                         modal: true,
@@ -356,4 +412,4 @@
             alert('Error - ' + errorThrown);
         }
     });
-}
+});
