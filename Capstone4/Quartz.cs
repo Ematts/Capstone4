@@ -14,31 +14,42 @@ namespace Capstone4
         private ApplicationDbContext db = new ApplicationDbContext();
         public void Execute(IJobExecutionContext context)
         {
-            db = new ApplicationDbContext();
             var requests = db.ServiceRequests.ToList();
             string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
             string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
             foreach (var i in requests)
             {
+                
+                DateTime WarnTime = i.CompletionDeadline.AddMinutes(-1);
+
+                if ((i.ContractorID != null) && (i.Expired != true) && (i.CompletionDate == null) && (i.WarningSent != true) && (WarnTime < DateTime.Now))
+                {
+                    
+                    AuxEmail conWarn = new AuxEmail();
+                    i.WarningSent = conWarn.WarnContractor(i);
+                    db.SaveChanges();
+                    
+                }
 
                 if ((i.CompletionDeadline < DateTime.Now) && (i.Expired == false))
                 {
-                    var myMessage = new SendGrid.SendGridMessage();
-                    myMessage.AddTo(i.Homeowner.ApplicationUser.Email);
-                    myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
-                    myMessage.Subject = "Your service request has expired!";
-                    string message = "Hello " + i.Homeowner.Username + "," + "<br>" + "<br>" + "Your service request \"" + i.Description + "\" has expired because the completion deadline has passed.";
-                    myMessage.Html = message;
-                    var credentials = new NetworkCredential(name, pass);
-                    var transportWeb = new SendGrid.Web(credentials);
-                    transportWeb.DeliverAsync(myMessage);
-                    if (i.ContractorID != null)
-                    {
-                        AuxEmail contractorWarn = new AuxEmail();
-                        contractorWarn.WarnContractor(i);
-                    }
+
                     i.Expired = true;
                     db.SaveChanges();
+
+                    if (i.ContractorID == null)
+                    {
+                        AuxEmail homeownerWarnExpired = new AuxEmail();
+                        homeownerWarnExpired.WarnHomeownerExpired(i);
+                    }
+
+                    if (i.ContractorID != null && i.CompletionDate == null)
+                    {
+                        AuxEmail bothWarnExpired = new AuxEmail();
+                        bothWarnExpired.WarnBothExpired(i);
+                    }
+
+
                 }
             }
         }
@@ -46,4 +57,4 @@ namespace Capstone4
 }
 
 
- 
+
