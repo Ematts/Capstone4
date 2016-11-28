@@ -15,8 +15,7 @@ namespace Capstone4
         public void Execute(IJobExecutionContext context)
         {
             var requests = db.ServiceRequests.ToList();
-            string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
-            string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+
             foreach (var i in requests)
             {
                 

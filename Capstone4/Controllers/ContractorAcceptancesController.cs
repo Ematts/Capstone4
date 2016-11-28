@@ -152,10 +152,80 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ContractorAcceptance contractorAcceptance = db.ContractorAcceptances.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             if (contractorAcceptance == null)
             {
                 return HttpNotFound();
             }
+
+            if(contractorAcceptance.ServiceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(contractorAcceptance);
+        }
+
+        public ActionResult Already_Accepted(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ContractorAcceptance contractorAcceptance = db.ContractorAcceptances.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (contractorAcceptance == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (contractorAcceptance.Contractor.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(contractorAcceptance);
+        }
+
+        public ActionResult Already_Confirmed_Contractor(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ContractorAcceptance contractorAcceptance = db.ContractorAcceptances.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (contractorAcceptance == null)
+            {
+                return HttpNotFound();
+            }
+            if (contractorAcceptance.ServiceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(contractorAcceptance);
+        }
+
+        public ActionResult Already_Confirmed_This_Contractor(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ContractorAcceptance contractorAcceptance = db.ContractorAcceptances.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (contractorAcceptance == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (contractorAcceptance.ServiceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
             return View(contractorAcceptance);
         }
 
@@ -176,6 +246,15 @@ namespace Capstone4.Controllers
                     {
                         if (a.ID == id)
                         {
+                            if (a.ServiceRequest.ContractorID != null && a.ServiceRequest.ContractorID == a.ContractorID)
+                            {
+                                return RedirectToAction("Already_Confirmed_This_Contractor", new { id = a.ID });
+                            }
+
+                            if (a.ServiceRequest.ContractorID != null)
+                            {
+                                return RedirectToAction("Already_Confirmed_Contractor", new { id = a.ID });
+                            }
                             a.ServiceRequest.Contractor = a.Contractor;
                             SendContractor(a);
                         }

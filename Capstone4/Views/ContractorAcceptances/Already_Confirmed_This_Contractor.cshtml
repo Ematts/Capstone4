@@ -1,0 +1,12 @@
+﻿@model Capstone4.Models.ContractorAcceptance
+
+@{
+    ViewBag.Title = "Already_Confirmed_This_Contractor";
+}
+
+<h2>Already Confirmed This Contractor</h2>
+
+@{int id = Model.ServiceRequest.ID; }
+@{string name = Model.ServiceRequest.Contractor.Username; }
+
+<strong>You have already confirmed @name's services for Service Request #@id.</strong>

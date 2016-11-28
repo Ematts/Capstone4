@@ -1,0 +1,12 @@
+﻿@model Capstone4.Models.ContractorAcceptance
+
+@{
+    ViewBag.Title = "Already Accepted";
+}
+
+<h2>Already Accepted</h2>
+
+@{int id = Model.ServiceRequest.ID; }
+
+<strong>You have already submitted an acceptance for Service Request #@id.</strong>
+

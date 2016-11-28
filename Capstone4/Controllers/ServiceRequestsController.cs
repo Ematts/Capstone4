@@ -1115,7 +1115,52 @@ namespace Capstone4.Controllers
             {
                 return HttpNotFound();
             }
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return RedirectToAction("Must_be_logged_in_to_accept_request");
+            }
+
+            foreach (var acceptance in serviceRequest.ContractorAcceptances)
+            {
+                if(acceptance.Contractor.UserId == identity)
+                {
+                    return RedirectToAction("Already_Accepted", "ContractorAcceptances", new { id = acceptance.ID });
+                }
+            }
+
+            if(serviceRequest.ContractorID != null)
+            {
+                return RedirectToAction("Contractor_Already_Accepted", new { id = serviceRequest.ID });
+            }
+
             return View(serviceRequest);
+        }
+
+        public ActionResult Contractor_Already_Accepted(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(serviceRequest);
+        }
+
+        public ActionResult Must_be_logged_in_to_accept_request()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -1168,6 +1213,32 @@ namespace Capstone4.Controllers
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
+            if ((identity == serviceRequest.Contractor.UserId) && (serviceRequest.CompletionDate != null))
+            {
+                return RedirectToAction("Already_Confirmed_Completion", new { id = serviceRequest.ID });
+            }
+            return View(serviceRequest);
+        }
+
+        public ActionResult Already_Confirmed_Completion(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (serviceRequest.Contractor.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
             return View(serviceRequest);
         }
 
@@ -1262,6 +1333,11 @@ namespace Capstone4.Controllers
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
 
+            if(serviceRequest.PayPalListenerModelID == null || serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
             //serviceRequest.ContractorPaid = true;
             db.SaveChanges();
 
@@ -1301,6 +1377,10 @@ namespace Capstone4.Controllers
             }
 
             if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+            if((serviceRequest.PaymentAttempted != true) || (serviceRequest.PayPalListenerModelID != null && serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status == "Completed"))
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
@@ -1440,6 +1520,19 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Unlock()
+        {
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            serviceRequest.PaymentAttempted = true;
+            db.SaveChanges();
+
+            return Json(new { success = true },
+                JsonRequestBehavior.AllowGet);
+        }
         public ActionResult PaymentView(int? ID)
         {
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -1465,6 +1558,12 @@ namespace Capstone4.Controllers
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
+
+            //if((identity == serviceRequest.Homeowner.UserId) && (serviceRequest.PayPalListenerModelID != null))
+            //{
+            //    return RedirectToAction("Already_Paid", new { id = serviceRequest.ID });
+            //}
+
             string payname = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\payname.txt");
             string paypass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\paypass.txt");
             string sig = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\sig.txt");
@@ -1503,6 +1602,28 @@ namespace Capstone4.Controllers
             ViewData["paykey"] = payResponse.payKey;
             return View(serviceRequest);
 
+        }
+
+        public ActionResult Already_Paid(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (serviceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(serviceRequest);
         }
         //public ActionResult AddContractorPhotos(int? ID, IEnumerable<HttpPostedFileBase> files)
         //{

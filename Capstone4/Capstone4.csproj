@@ -475,25 +475,13 @@
     <Compile Include="Migrations\201610222209424_d18.Designer.cs">
       <DependentUpon>201610222209424_d18.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201610231933251_b.cs" />
-    <Compile Include="Migrations\201610231933251_b.Designer.cs">
-      <DependentUpon>201610231933251_b.cs</DependentUpon>
+    <Compile Include="Migrations\201611282114191_d19.cs" />
+    <Compile Include="Migrations\201611282114191_d19.Designer.cs">
+      <DependentUpon>201611282114191_d19.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201610231935308_v1.cs" />
-    <Compile Include="Migrations\201610231935308_v1.Designer.cs">
-      <DependentUpon>201610231935308_v1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610242109379_d19.cs" />
-    <Compile Include="Migrations\201610242109379_d19.Designer.cs">
-      <DependentUpon>201610242109379_d19.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610251645005_v2.cs" />
-    <Compile Include="Migrations\201610251645005_v2.Designer.cs">
-      <DependentUpon>201610251645005_v2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611271823446_ff.cs" />
-    <Compile Include="Migrations\201611271823446_ff.Designer.cs">
-      <DependentUpon>201611271823446_ff.cs</DependentUpon>
+    <Compile Include="Migrations\201611282250213_d20.cs" />
+    <Compile Include="Migrations\201611282250213_d20.Designer.cs">
+      <DependentUpon>201611282250213_d20.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -719,6 +707,13 @@
     <Content Include="Views\Admins\ManualValidateHomeowner.cshtml" />
     <Content Include="Views\Admins\ManualValidateContractor.cshtml" />
     <Content Include="Views\ServiceRequests\NoEdit.cshtml" />
+    <Content Include="Views\ContractorAcceptances\Already_Accepted.cshtml" />
+    <Content Include="Views\ServiceRequests\Contractor_Already_Accepted.cshtml" />
+    <Content Include="Views\ServiceRequests\Must_be_logged_in_to_accept_request.cshtml" />
+    <Content Include="Views\ContractorAcceptances\Already_Confirmed_Contractor.cshtml" />
+    <Content Include="Views\ContractorAcceptances\Already_Confirmed_This_Contractor.cshtml" />
+    <Content Include="Views\ServiceRequests\Already_Confirmed_Completion.cshtml" />
+    <Content Include="Views\ServiceRequests\Already_Paid.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -891,20 +886,11 @@
     <EmbeddedResource Include="Migrations\201610222209424_d18.resx">
       <DependentUpon>201610222209424_d18.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610231933251_b.resx">
-      <DependentUpon>201610231933251_b.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611282114191_d19.resx">
+      <DependentUpon>201611282114191_d19.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610231935308_v1.resx">
-      <DependentUpon>201610231935308_v1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610242109379_d19.resx">
-      <DependentUpon>201610242109379_d19.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610251645005_v2.resx">
-      <DependentUpon>201610251645005_v2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611271823446_ff.resx">
-      <DependentUpon>201611271823446_ff.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611282250213_d20.resx">
+      <DependentUpon>201611282250213_d20.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

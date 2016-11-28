@@ -9,6 +9,12 @@
 <div>
     <h4>Service Request</h4>
     <hr />
+@using (Html.BeginForm("Unlock", "ServiceRequests", null, FormMethod.Post, new { id = "UnlockForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+
+}
     @{string service = Model.Description + " Service# = " + Model.Service_Number; }
 <form action="https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame" class="standard">
     <input type="image" id="submitBtn" value="Pay with PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif">
@@ -156,4 +162,61 @@
 
  </script>
 
+    <script>
+        $(document).on("click", "#submitBtn", function () {
+            var formdata = new FormData();
+            var other_data = $('#UnlockForm').serializeArray();
+            $.each(other_data, function (key, input) {
+                formdata.append(input.name, input.value);
+            });
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                cache: false,
+                url: "/ServiceRequests/Unlock",
+                processData: false,
+                contentType: false,
+                data: formdata,
+                success: function (response, textStatus, jqXHR) {
+                    console.log(response.success)
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                },
+            })
+        })
+    </script>
+
 }
+
+
+@*<script>
+        $(document).on("click", "#submitBtn", function () {
+            //var formdata = new FormData();
+            //var other_data = $('#UnlockForm').serializeArray();
+            //$.each(other_data, function (key, input) {
+            //    formdata.append(input.name, input.value);
+            //});
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var tokenadr = $('form[action="/Account/LogOff"] input[name="__RequestVerificationToken"]').val();
+            var headers = {};
+            var headersadr = {};
+            headers['__RequestVerificationToken'] = token;
+            headersadr['__RequestVerificationToken'] = tokenadr;
+            var myID = $("#ID").val();
+            $.ajax({
+                type: "POST",
+                headers: headersadr,
+                url: "/ServiceRequests/Unlock",
+                data: JSON.stringify({ __RequestVerificationToken: token, ID: myID }),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (response, textStatus, jqXHR) {
+                    console.log(response.success)
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                },
+            })
+        })
+</script>*@
