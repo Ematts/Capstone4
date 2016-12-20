@@ -19,6 +19,11 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Homeowner.Username)
+        @Html.HiddenFor(model => model.Timezone)
+        <input id="checkStreet" name="checkStreet" type="hidden" value="" />
+        <input id="checkCity" name="checkCity" type="hidden" value="" />
+        <input id="checkState" name="checkState" type="hidden" value="" />
+        <input id="X-ID" name="checkState" type="hidden" value="" />
 
 
         <br />
@@ -261,6 +266,144 @@
 
      })
      </script>
+<script>
+
+    $("#Address_Street").change(function () {
+        document.getElementById("checkStreet").value = document.getElementById("Address_Street").value;
+    });
+    $("#Address_City").change(function () {
+        document.getElementById("checkCity").value = document.getElementById("Address_City").value;
+    });
+    $("#Address_State").change(function () {
+        document.getElementById("checkState").value = document.getElementById("Address_State").value;
+    });
+</script>
+<script>
+    $(function () {
+        $('#CompletionDeadline').rules().remote.complete = function (xhr) {
+            if (xhr.status == 200 && xhr.responseText === 'true') {
+                // validation succeeded => we fetch the id that
+                // was sent from the server
+                var id = xhr.getResponseHeader('X-ID');
+
+                // and of course we do something useful with this id
+                //alert(id);
+                document.getElementById("Timezone").value = id;
+            }
+        };
+    });
+  </script>
+    <script>
+        $("#Address_Street").change(function () {
+            if($("#CompletionDeadline").val() != ""){
+                $('#CompletionDeadline').removeData('previousValue');
+                $('#CompletionDeadline').valid();
+            }
+        });
+        $("#Address_City").change(function () {
+            if ($("#CompletionDeadline").val() != "") {
+                $('#CompletionDeadline').removeData('previousValue');
+                $('#CompletionDeadline').valid();
+            }
+        });
+        $("#Address_State").change(function () {
+            if ($("#CompletionDeadline").val() != "") {
+                $('#CompletionDeadline').removeData('previousValue');
+                $('#CompletionDeadline').valid();
+            }
+        });
+    </script>
+    @*<script>
+
+        ($("#CompletionDeadline").focus)(function () {
+            console.log("hi")
+            var validator = $("#requestForm").data("validator");
+            if (validator) {
+                validator.settings.onkeyup = false;
+            }
+        });
+
+        ($("#CompletionDeadline").blur)(function () {
+            console.log("by")
+            var validator = $("requestForm").data("validator");
+            if (validator) {
+                validator.settings.onkeyup = true;
+            }
+
+        });
+
+          
+    </script>*@
+
+    @*//////////////////////*@
+
+    @*<script>
+        (function ($) {
+            $.validator.setDefaults({
+                onkeyup: function (element) {
+                    if ($(element).attr('data-val-remote-url')) {
+                        return false;
+                    }
+                    else {
+                        $(element).validate();
+                        return $(element).valid();
+                    }
+                }
+            })
+        }(jQuery));
+    </script>*@
+ @*///////////////////////////////*@    
+    
+<script>
+        (function ($) {
+            $.validator.setDefaults({
+                onkeyup: function (element) {
+                    if ($(element).attr('data-val-remote-url')) {
+                        return false;
+                    }
+                    if (event.which === 9 && this.elementValue(element) === "") {
+                        return;
+                    } else if (element.name in this.submitted || element === this.lastElement) {
+                        this.element(element);
+                    }
+
+                }
+            })
+        }(jQuery));
+</script>
+       
+    @*<script>
+        $('#requestForm').validate({ // initialize the plugin
+            onkeyup: function (element, event) {
+                if ($(element).attr('data-val-remote-url')) {
+                    return false;
+                }
+                if (event.which === 9 && this.elementValue(element) === "") {
+                    return;
+                } else if (element.name in this.submitted || element === this.lastElement) {
+                    this.element(element);
+                }
+            },
+        })
+    </script>*@
+    
+    @*<script>
+        (function ($) {
+            $.validator.setDefaults({
+                onkeyup: function (element) {
+                    var x = $(element).attr('id');
+                    console.log(x);
+                    if (x == "CompletionDeadline") {
+                        return false;
+                    }
+                    //else {
+    
+                    //    return true;
+                    //}
+                }
+            })
+        }(jQuery));
+    </script>*@
     <script src="~/Scripts/auto.js"></script> 
     @{string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\auto.txt");}
     <script src="@source"

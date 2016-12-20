@@ -1,0 +1,62 @@
+﻿@model Capstone4.Models.ServiceRequest
+
+@{
+    ViewBag.Title = "PayPalSuccess";
+}
+
+<h2>PayPalSuccess</h2>
+
+<div>
+    <h4>ServiceRequest</h4>
+    <hr />
+    @{string mail = Model.Homeowner.ApplicationUser.Email; }
+    @{string status = Model.PayPalListenerModel._PayPalCheckoutInfo.payment_status;  }
+    <div id="divProcessing">
+        <p>Processing, please wait . . . <img src="../../Content/ajax-loader.gif"></p>
+    </div>
+    <div id="pending">
+        <strong>We are still processing your payment.  You will receive a confirmation email at @mail once payment processing is complete. </strong>
+    </div>
+    <div id="details">
+    <dl class="dl-horizontal">
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.PayPalListenerModel.ID)
+        @Html.HiddenFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.payment_status)
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Homeowner.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Homeowner.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.payment_status)
+        </dt>
+
+        <dd>
+            <input id="paystatus" value="@status"  style="border:none" readonly>
+        </dd>
+
+
+    </dl>
+   </div>
+</div
+            @Html.DisplayFor(model => model.Homeowner.Username)
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+@section Scripts {
+@Scripts.Render("~/bundles/jqueryval")
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function(){
+        if (window != top) {
+            top.location.replace(document.location);
+        }
+    })
+</script>
+<script src="~/Scripts/PaypalSuccess.js" type="text/javascript"></script>
+}

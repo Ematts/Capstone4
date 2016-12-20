@@ -177,6 +177,7 @@ namespace Capstone4.Controllers
             string street = (form["Address.Street"]);
             string description = (form["Description"]);
             string priceString = (form["Price"]);
+            string tzone = (form["Timezone"]);
             decimal price = Convert.ToDecimal(priceString);
             string dateString = (form["CompletionDeadline"]);
             DateTime completionDeadline = Convert.ToDateTime(dateString);
@@ -198,7 +199,7 @@ namespace Capstone4.Controllers
 
 
             Models.Address address = new Models.Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
-            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Inactive = inactive };
+            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Timezone = tzone, Inactive = inactive };
             serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
             foreach (var i in db.Homeowners)
             {
@@ -210,10 +211,10 @@ namespace Capstone4.Controllers
                 }
             }
 
-            if (serviceRequest.CompletionDeadline < DateTime.Now)
-                {
-                    return RedirectToAction("Date_Issue", "ServiceRequests");
-                }
+            //if (serviceRequest.CompletionDeadline < DateTime.Now)
+            //{
+            //    return RedirectToAction("Date_Issue", "ServiceRequests");
+            //}
             foreach (var file in files)
             {
 
@@ -266,7 +267,12 @@ namespace Capstone4.Controllers
                     JsonRequestBehavior.AllowGet);
             }
             serviceRequest.Posted = true;
-            serviceRequest.PostedDate = DateTime.Now;
+            //Timezone zone = new Timezone();
+            //serviceRequest.PostedDate = zone.GetDateTime(serviceRequest);
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            serviceRequest.PostedDate = Time;
             serviceRequest.NeedsManualValidation = false;
             db.SaveChanges();
             postServiceRequest(serviceRequest, emailList);
@@ -1359,6 +1365,78 @@ namespace Capstone4.Controllers
 
         }
 
+        public ActionResult PayPalSuccess(int? ID)
+        {
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if (serviceRequest.PayPalListenerModelID == null)
+            {
+                serviceRequest.PayPalListenerModel = new PayPalListenerModel();
+                serviceRequest.PayPalListenerModel._PayPalCheckoutInfo = new PayPalCheckoutInfo();
+                serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status = null;
+
+            }
+
+            //if (serviceRequest.PayPalListenerModelID == null || serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")
+            //{
+            //    return RedirectToAction("Unauthorized_Access", "Home");
+            //}
+
+            //serviceRequest.ContractorPaid = true;
+            //db.SaveChanges();
+
+            //var myMessage = new SendGrid.SendGridMessage();
+            //string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+            //string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+            //string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
+            //myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+            //myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+            //myMessage.Subject = "Payment Confirmed!!";
+            //String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>"  + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>"; 
+            //myMessage.Html = message;
+            //var credentials = new NetworkCredential(name, pass);
+            //var transportWeb = new SendGrid.Web(credentials);
+            //transportWeb.DeliverAsync(myMessage);
+            //Notify_Contractor_of_Payment(serviceRequest);
+
+            return View(serviceRequest);
+
+        }
+        public ActionResult getPayPalInfo(int? ID)
+        {
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if(serviceRequest.PayPalListenerModelID == null)
+            {
+                return Json(new { success = true, found = false },
+                JsonRequestBehavior.AllowGet);
+            }
+
+            else
+            {
+                return Json(new { success = true, found = true, status = serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status },
+                JsonRequestBehavior.AllowGet);
+            }
+
+        }
         public ActionResult PaymentFailure(int? ID)
         {
 
@@ -1580,7 +1658,7 @@ namespace Capstone4.Controllers
             receiverList.receiver.Add(receiver2);
             RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
             string actionType = "PAY";
-            string successUrl = "http://localhost:37234/ServiceRequests/PaymentSuccess/" + serviceRequest.ID;
+            string successUrl = "http://localhost:37234/ServiceRequests/PayPalSuccess/" + serviceRequest.ID;
             string failureUrl = "http://localhost:37234/ServiceRequests/PaymentFailure/" + serviceRequest.ID;
             string returnUrl = successUrl;
             string cancelUrl = failureUrl;
@@ -1797,14 +1875,60 @@ namespace Capstone4.Controllers
             transportWeb.DeliverAsync(myMessage);
 
         }
+        //[AllowAnonymous]
+        //public JsonResult DateCheck(DateTime? CompletionDeadline)
+        //{
+        //    if (CompletionDeadline > DateTime.Now)
+        //    {
+        //        return Json(true, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json("The completion deadline must be later than the current time.", JsonRequestBehavior.AllowGet);
+        //}
+
         [AllowAnonymous]
-        public JsonResult DateCheck(DateTime? CompletionDeadline)
+        public JsonResult DateCheck(DateTime? CompletionDeadline, string checkStreet, string checkCity, string checkState)
         {
-            if (CompletionDeadline > DateTime.Now)
+          Checker checker = new Checker() { CompletionDeadline = CompletionDeadline, Street = checkStreet, City = checkCity, State = checkState };
+
+            if (checker.Street == "" || checker.City == "" || checker.State == "" )
             {
+                return Json("Please specify a full address to we can validate your Completion Deadline", JsonRequestBehavior.AllowGet);
+            }
+
+            Timezone zone = new Timezone();
+            checker = zone.checkDate(checker);
+
+            if (checker.Invalid == true)
+            {
+                return Json("You have entered an invalid time.", JsonRequestBehavior.AllowGet);
+            }
+
+            if (checker != null && checker.CompletionDeadline.HasValue && checker.Timezone != null)
+            {
+                TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(checker.Timezone);
+                var dt = checker.CompletionDeadline.Value;
+                DateTime Time = TimeZoneInfo.ConvertTime(dt, Zone);
+                bool dst = Time.IsDaylightSavingTime();
+            }
+
+            if (checker.Found == false)
+            {
+                return Json("You address could not be found to verify your timezone", JsonRequestBehavior.AllowGet);
+            }
+
+
+            if (checker.OK == false)
+            {
+                return Json("The completion deadline must be later than the current time now.", JsonRequestBehavior.AllowGet);
+            }
+
+            if (checker.OK == true)
+            {
+                Response.AddHeader("X-ID", checker.Timezone);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
-            return Json("The completion deadline must be later than the current time.", JsonRequestBehavior.AllowGet);
+
+            return Json("The completion deadline must be later than the current time now.", JsonRequestBehavior.AllowGet);
         }
 
         public List<Contractor> GetDistance(ServiceRequest serviceRequest)

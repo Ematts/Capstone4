@@ -28,7 +28,7 @@ namespace Capstone4.Models
         public decimal Price { get; set; }
         [Required]
         [Display(Name = "Completion Deadline")]
-        [System.Web.Mvc.Remote("DateCheck", "ServiceRequests", HttpMethod = "POST", ErrorMessage = "The completion deadline must be later than the current time.")]
+        [System.Web.Mvc.Remote("DateCheck", "ServiceRequests", HttpMethod = "POST", AdditionalFields = "checkStreet,checkCity,checkState", ErrorMessage = "The completion deadline must be later than the current time.")]
         public DateTime CompletionDeadline { get; set; }
         [StringLength(100, MinimumLength = 6)]
         [Required]
@@ -51,6 +51,7 @@ namespace Capstone4.Models
         public int? PayPalListenerModelID { get; set; }
         public virtual PayPalListenerModel PayPalListenerModel { get; set; }
         public bool Inactive { get; set; }
+        public string Timezone { get; set; }
         public virtual ICollection<ServiceRequestFilePath> ServiceRequestFilePaths { get; set; }
         public virtual ICollection<CompletedServiceRequestFilePath> CompletedServiceRequestFilePaths { get; set; }
         public virtual ICollection<ContractorAcceptance> ContractorAcceptances { get; set; }

@@ -46,6 +46,13 @@ function fillInAddress() {
             document.getElementById("Address_City").value = document.getElementById("locality").value;
             document.getElementById("Address_State").value = document.getElementById("administrative_area_level_1").value;
             document.getElementById("Address_Zip").value = document.getElementById("postal_code").value;
+            document.getElementById("checkStreet").value = document.getElementById("Address_Street").value;
+            document.getElementById("checkCity").value = document.getElementById("Address_City").value;
+            document.getElementById("checkState").value = document.getElementById("Address_State").value;
+            var value = $("#CompletionDeadline").val();
+            if (value != "") {
+                change();
+            }
         }
     }
 
@@ -67,4 +74,10 @@ function geolocate() {
             autocomplete.setBounds(circle.getBounds());
         });
     }
+}
+function change() {
+
+    $('#CompletionDeadline').removeData('previousValue');
+    $('#CompletionDeadline').valid();
+
 }
