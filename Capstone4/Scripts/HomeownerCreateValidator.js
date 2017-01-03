@@ -43,7 +43,7 @@ $('#submitRequest').click(function (e) {
     $("#divProcessing").show();
     $.ajax({
         type: "GET",
-        url: "http://localhost:37234/AddressValidator/getAddValStatus",
+        url: "/AddressValidator/getAddValStatus",
         contentType: "application/json; charset=utf-8",
         data: { street: '' + $('#Street').val() + '', City: '' + $('#City').val() + '', state: '' + $('#State').val() + '', zip: '' + $('#Zip').val() + '' },
         dataType: "json",
@@ -104,7 +104,7 @@ $('#submitRequest').click(function (e) {
                             $(this).dialog("close");
                             $.ajax({
                                 type: "GET",
-                                url: "http://localhost:37234/AddressValidator/RunStreetLevelValidation",
+                                url: "/AddressValidator/RunStreetLevelValidation",
                                 contentType: "application/json; charset=utf-8",
                                 data: { street: '' + $('#Street').val() + '', City: '' + $('#City').val() + '', state: '' + $('#State').val() + '', zip: '' + $('#Zip').val() + '' },
                                 dataType: "json",
@@ -195,7 +195,7 @@ $('#submitRequest').click(function (e) {
                                                                         type: 'POST',
                                                                         dataType: 'json',
                                                                         cache: false,
-                                                                        url: "http://localhost:37234/AddressValidator/ManualValidationHomeownerCreate",
+                                                                        url: "/AddressValidator/ManualValidationHomeownerCreate",
                                                                         processData: false,
                                                                         contentType: false,
                                                                         data: formdata,
@@ -270,7 +270,7 @@ $('#submitRequest').click(function (e) {
                                                             type: 'POST',
                                                             dataType: 'json',
                                                             cache: false,
-                                                            url: "http://localhost:37234/AddressValidator/ManualValidationHomeownerCreate",
+                                                            url: "/AddressValidator/ManualValidationHomeownerCreate",
                                                             processData: false,
                                                             contentType: false,
                                                             data: formdata,
@@ -354,7 +354,7 @@ $('#submitRequest').click(function (e) {
                                                 type: 'POST',
                                                 dataType: 'json',
                                                 cache: false,
-                                                url: "http://localhost:37234/AddressValidator/ManualValidationHomeownerCreate",
+                                                url: "/AddressValidator/ManualValidationHomeownerCreate",
                                                 processData: false,
                                                 contentType: false,
                                                 data: formdata,

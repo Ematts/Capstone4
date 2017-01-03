@@ -97,6 +97,10 @@
       <HintPath>..\packages\EasyPost-Official.2.2.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PayPalAdaptiveAccountsSDK, Version=2.9.110.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PayPalAdaptiveAccountsSDK.2.9.110\lib\net20\PayPalAdaptiveAccountsSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PayPalAdaptivePaymentsSDK, Version=2.15.117.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
       <HintPath>..\packages\PayPalAdaptivePaymentsSDK.2.15.117\lib\net20\PayPalAdaptivePaymentsSDK.dll</HintPath>
       <Private>True</Private>
@@ -285,6 +289,10 @@
     <Compile Include="Migrations\201612201749323_d.Designer.cs">
       <DependentUpon>201612201749323_d.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701021713568_bb.cs" />
+    <Compile Include="Migrations\201701021713568_bb.Designer.cs">
+      <DependentUpon>201701021713568_bb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -309,6 +317,7 @@
     <Compile Include="Models\ServiceRequest.cs" />
     <Compile Include="Models\ServiceRequestFilePath.cs" />
     <Compile Include="Models\TimeObject.cs" />
+    <Compile Include="PayPalVerify.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quartz.cs" />
     <Compile Include="Startup.cs" />
@@ -545,6 +554,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612201749323_d.resx">
       <DependentUpon>201612201749323_d.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701021713568_bb.resx">
+      <DependentUpon>201701021713568_bb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

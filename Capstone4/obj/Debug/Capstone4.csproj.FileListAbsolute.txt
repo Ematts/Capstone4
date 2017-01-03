@@ -108,3 +108,6 @@ C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d1.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.bb.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\PayPalAdaptiveAccountsSDK.dll
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\bin\PayPalAdaptiveAccountsSDK.xml

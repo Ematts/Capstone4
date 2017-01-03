@@ -88,6 +88,7 @@ namespace Capstone4
             double lat = mine.latitude;
             double longitude = mine.longitude;
             double myStamp = Getstamp();
+            //double myStamp = 1496341456;
             string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\time.txt");
             string url = "https://maps.googleapis.com/maps/api/timezone/json?location=" + lat + "," + longitude + "&timestamp=" + myStamp + "&key=" + source;
             WebRequest request = WebRequest.Create(url);
@@ -137,13 +138,22 @@ namespace Capstone4
                 {
                     var dt = checker.CompletionDeadline.Value;
                     TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Hawaiian Standard Time");
-                    DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
                     checker.Timezone = "Hawaiian Standard Time";
-                    if (checker.CompletionDeadline > TimeBackup)
+                    if (checker.CompletionDeadline > convertNow)
                     {
                         checker.OK = true;
                     }
-                    if (checker.CompletionDeadline < TimeBackup)
+                    if (checker.CompletionDeadline < convertNow)
                     {
                         checker.OK = false;
                     }
@@ -153,24 +163,153 @@ namespace Capstone4
                 {
                     var dt = checker.CompletionDeadline.Value;
                     TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Alaskan Standard Time");
-                    DateTime TimeBackup = TimeZoneInfo.ConvertTimeFromUtc(dt, ZoneBackup);
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
                     checker.Timezone = "Alaskan Standard Time";
-                    if (checker.CompletionDeadline > TimeBackup)
+                    if (checker.CompletionDeadline > convertNow)
                     {
                         checker.OK = true;
                     }
-                    if (checker.CompletionDeadline < TimeBackup)
+                    if (checker.CompletionDeadline < convertNow)
+                    {
+                        checker.OK = false;
+                    }
+                    return checker;
+                }
+                if (checker.CompletionDeadline.HasValue && result.timeZoneName == "Alaska Daylight Time")
+                {
+                    var dt = checker.CompletionDeadline.Value;
+                    TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Alaskan Standard Time");
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
+                    checker.Timezone = "Alaskan Standard Time";
+                    if (checker.CompletionDeadline > convertNow)
+                    {
+                        checker.OK = true;
+                    }
+                    if (checker.CompletionDeadline < convertNow)
+                    {
+                        checker.OK = false;
+                    }
+                    return checker;
+                }
+                if (checker.CompletionDeadline.HasValue && result.timeZoneName == "Mountain Daylight Time")
+                {
+                    var dt = checker.CompletionDeadline.Value;
+                    TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Mountain Standard Time");
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
+                    checker.Timezone = "Mountain Standard Time";
+                    if (checker.CompletionDeadline > convertNow)
+                    {
+                        checker.OK = true;
+                    }
+                    if (checker.CompletionDeadline < convertNow)
+                    {
+                        checker.OK = false;
+                    }
+                    return checker;
+                }
+                if (checker.CompletionDeadline.HasValue && result.timeZoneName == "Pacific Daylight Time")
+                {
+                    var dt = checker.CompletionDeadline.Value;
+                    TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
+                    checker.Timezone = "Pacific Standard Time";
+                    if (checker.CompletionDeadline > convertNow)
+                    {
+                        checker.OK = true;
+                    }
+                    if (checker.CompletionDeadline < convertNow)
+                    {
+                        checker.OK = false;
+                    }
+                    return checker;
+                }
+                if (checker.CompletionDeadline.HasValue && result.timeZoneName == "Eastern Daylight Time")
+                {
+                    var dt = checker.CompletionDeadline.Value;
+                    TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
+                    checker.Timezone = "Eastern Standard Time";
+                    if (checker.CompletionDeadline > convertNow)
+                    {
+                        checker.OK = true;
+                    }
+                    if (checker.CompletionDeadline < convertNow)
+                    {
+                        checker.OK = false;
+                    }
+                    return checker;
+                }
+                if (checker.CompletionDeadline.HasValue && result.timeZoneName == "Central Daylight Time")
+                {
+                    var dt = checker.CompletionDeadline.Value;
+                    TimeZoneInfo ZoneBackup = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                    DateTime convertNow = TimeZoneInfo.ConvertTime(now, ZoneBackup);
+                    try
+                    {
+                        DateTime TimeBackup = TimeZoneInfo.ConvertTime(dt, ZoneBackup);
+                    }
+                    catch
+                    {
+                        checker.Invalid = true;
+                        return checker;
+                    }
+                    checker.Timezone = "Central Standard Time";
+                    if (checker.CompletionDeadline > convertNow)
+                    {
+                        checker.OK = true;
+                    }
+                    if (checker.CompletionDeadline < convertNow)
                     {
                         checker.OK = false;
                     }
                     return checker;
                 }
 
-                DateTime backup = catchTime(result.rawOffset + result.dstOffset);
-                //serviceRequest.Timezone = result.timeZoneName;
-                return checker;
-
-                //Console.WriteLine("The registry does not define the " + result.timeZoneName + "Time zone.");
             }
             catch (InvalidTimeZoneException)
             {

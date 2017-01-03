@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Capstone4.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using PayPal.AdaptiveAccounts.Model;
 
 namespace Capstone4.Controllers
 {
@@ -490,6 +491,25 @@ namespace Capstone4.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult VerifyPaypal(string firstName, string lastName, string accountID)
+        {
+            string payname = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\payname.txt");
+            string paypass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\paypass.txt");
+            string sig = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\sig.txt");
+            string appid = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\appid.txt");
+            Dictionary<string, string> sdkConfig = new Dictionary<string, string>();
+            sdkConfig.Add("mode", "sandbox");
+            sdkConfig.Add("account1.apiUsername", payname); //PayPal.Account.APIUserName
+            sdkConfig.Add("account1.apiPassword", paypass); //PayPal.Account.APIPassword
+            sdkConfig.Add("account1.apiSignature", sig); //.APISignature
+            sdkConfig.Add("account1.applicationId", appid); //.ApplicatonId
+            GetVerifiedStatusRequest request = new GetVerifiedStatusRequest();
+            AccountIdentifierType accountIdentifierType = new AccountIdentifierType();
+           
+
+            return null;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -579,11 +599,14 @@ namespace Capstone4.Controllers
                 reader.Close();
                 response.Close();
                 db.SaveChanges();
-                if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                if (result.rows[0].elements[0].status == "OK")
                 {
-                    contractorsToDisplay.Add(contractor.ID);
-                }
+                    if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                    {
+                        contractorsToDisplay.Add(contractor.ID);
+                    }
 
+                }
             }
             return (contractorsToDisplay);
         }

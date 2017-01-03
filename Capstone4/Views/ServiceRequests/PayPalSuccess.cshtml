@@ -51,12 +51,110 @@
 @section Scripts {
 @Scripts.Render("~/bundles/jqueryval")
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-<script>
-    $(document).ready(function(){
+<script src="~/Scripts/PaypalSuccess.js" type="text/javascript"></script>
+
+
+
+@*<script src="https://www.paypalobjects.com/js/external/dg.js"></script>*@
+
+@*<script>
+
+    $(document).ready(function () {
+        var dgFlow;
+        if (top.opener != null && (top.dgFlow != "undefined" || top.opener.top.dgFlow != "undefined")) {
+            if (top.dgFlow != undefined) {
+                dgFlow = top.dgFlow;
+                
+            }
+            else {
+                try{
+                    dgFlow = top.opener.top.dgFlow;
+                }
+                catch(err){
+                    dgFlow = undefined;
+                }
+            }
+            //if (dgFlow !== window.self)
+            //{
+            //    alert("no");
+            //}
+            //else {
+            //    alert('yes');
+            //}
+            //alert(top.opener.top.document);
+            //alert(window.self.location);
+            //alert(top.opener.top);
+            //alert(dgFlow);
+            //alert(top.opener.location);
+            //var x = typeof top.opener;
+            //alert(x);
+            alert(top.opener.frames);
+            if (dgFlow != undefined) {
+                if (dgFlow.isOpen() == true) { 
+                    dgFlow.closeFlow();
+                }
+            }
+        }
+        //alert(top.opener.frames);
+        //alert(top);
+        //alert(top.location);
+        //alert(window.top.location);
+        //alert(window.parent.location)
+        //alert(top.opener.location);
+
+        //if (top.opener) {
+        //    top.opener.close();
+        //    if (window != top) {
+        //        top.location.replace(document.location);
+        //    }
+        //}
+        //    if (window != top) {
+        //    top.location.replace(document.location);
+        //    }
+        //top.location.replace(window.location);
+            if (top != window) {
+                top.location = window.location
+            }
+    })
+</script>*@
+
+@*<script>
+
+    $(document).ready(function () {
+        dgFlow = top.dgFlow || top.opener.top.dgFlow;
+        dgFlow.closeFlow();
+        top.close();
+        window.location = "http://02774274.ngrok.io"
+    })
+</script>*@
+
+@*<script>
+    $(document).ready(function () {
+        if (window.opener) { // check if opened in popup
+            window.close();
+        }
         if (window != top) {
             top.location.replace(document.location);
         }
     })
-</script>
-<script src="~/Scripts/PaypalSuccess.js" type="text/javascript"></script>
+</script>*@
+
+
+@*<script>
+window.onload = function(){
+	if(window.opener){
+		window.close();
+	}
+	else{
+		if(top.dg.isOpen() == true){
+			top.dg.closeFlow();
+			return true;
+		}
+	}
+};
+</script>*@
+
+
+@*<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="~/Scripts/PaypalSuccess.js" type="text/javascript"></script>*@
 }

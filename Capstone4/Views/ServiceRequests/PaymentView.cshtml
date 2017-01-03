@@ -16,16 +16,58 @@
 
 }
     @{string service = Model.Description + " Service# = " + Model.Service_Number; }
-<form action="https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame" class="standard">
+<form action="https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" target="PPDGFrame" id="payment" class="standard">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
     <input type="image" id="submitBtn" value="Pay with PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif">
-    <input id="type" type="hidden" name="expType" value="light">
+    <input id="type" type="hidden" name="expType" value="mini">
     <input id="paykey" type="hidden" name="paykey" value=@ViewData["paykey"]>
 </form>
-<script src="https://www.paypalobjects.com/js/external/dg.js">
-</script>
-<script>
+@*<script src="https://www.paypalobjects.com/js/external/dg.js">
+</script>*@
+    <script src="https://www.paypalobjects.com/js/external/apdg.js">
+    </script>
+
+@*<script>
   var dgFlow = new PAYPAL.apps.DGFlow({ trigger: 'submitBtn' });
-</script>
+</script>*@
+    <script>
+        var returnFromPayPal = function () {
+            getDetails();
+            function getDetails() {
+                var formdata = new FormData();
+                var other_data = $('#payment').serializeArray();
+                $.each(other_data, function (key, input) {
+                    formdata.append(input.name, input.value);
+                });
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    cache: false,
+                    url: "/ServiceRequests/getDetails",
+                    processData: false,
+                    contentType: false,
+                    data: formdata,
+                    success: function (response, textStatus, jqXHR) {
+                        if (response.success == "go") {
+                            window.location = "http://cfd4591a.ngrok.io/ServiceRequests/PayPalSuccess/" + response.id;
+                        }
+                        if (response.success == "stay") {
+                            console.log("payment attempt cancelled")
+                        }
+                        if (response.success == "fail") {
+                            window.location = "http://cfd4591a.ngrok.io/ServiceRequests/PaymentFailure/" + response.id;
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Error - ' + errorThrown);
+                    },
+                })
+            }
+       
+        }
+        var dgFlowMini = new PAYPAL.apps.DGFlowMini({ trigger: 'submitBtn', expType: 'mini', callbackFunction: 'returnFromPayPal' });
+    </script>
     <dl class="dl-horizontal">
         @Html.HiddenFor(model => model.ID)
  

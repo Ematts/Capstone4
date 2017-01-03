@@ -357,7 +357,7 @@
 <script>
         (function ($) {
             $.validator.setDefaults({
-                onkeyup: function (element) {
+                onkeyup: function (element, event) {
                     if ($(element).attr('data-val-remote-url')) {
                         return false;
                     }

@@ -73,6 +73,20 @@ if (!Array.prototype.includes) {
     dropbox.addEventListener("dragover", dragover, false);
     dropbox.addEventListener("drop", drop, false);
 
+    //dropbox.addEventListener("drop", function (e) {
+    //    e.stopPropagation();
+    //    e.preventDefault();
+    //    //var dt = e.dataTransfer;
+    //    //var files = dt.files;
+    //    setTimeout(function () {
+    //        var dt = e.dataTransfer;
+    //        var files = dt.files;
+    //        handleFiles(files);
+
+    //    }, 1000)
+    //});
+
+
     $(document).ready(function () {
         $("#fileInput").on("change", handleFilesFromClick);
         selDiv = $("#dropbox");
@@ -274,6 +288,9 @@ if (!Array.prototype.includes) {
                                             if (response.noService == true) {
                                                 window.location = "/ServiceRequests/noService/" + response.id;
                                             }
+                                            else if (response.LateDate == true) {
+                                                window.location = "/ServiceRequests/Date_Issue/";
+                                            }
                                             else {
                                                 window.location = "/ServiceRequests/Details/" + response.id;
                                             }
@@ -390,6 +407,9 @@ if (!Array.prototype.includes) {
                                                                             success: function (response, textStatus, jqXHR) {
                                                                                 if (response.noService == true) {
                                                                                     window.location = "/ServiceRequests/noService/" + response.id;
+                                                                                }
+                                                                                else if (response.LateDate == true) {
+                                                                                    window.location = "/ServiceRequests/Date_Issue/";
                                                                                 }
                                                                                 else {
                                                                                     window.location = "/ServiceRequests/Details/" + response.id;

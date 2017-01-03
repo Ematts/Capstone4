@@ -1,0 +1,2859 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PayPalAdaptiveAccountsSDK</name>
+    </assembly>
+    <members>
+        <member name="F:PayPal.AdaptiveAccounts.AdaptiveAccountsService.ServiceName">
+            <summary>
+            Service Name
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.AdaptiveAccountsService.SDKName">
+            <summary>
+            SDK Name
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.AdaptiveAccountsService.SDKVersion">
+            <summary>
+            SDK Version
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.#ctor">
+            <summary>
+            Default constructor for loading configuration from *.Config file
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.#ctor(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            constructor for passing in a dynamic configuration object
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CreateAccount(PayPal.AdaptiveAccounts.Model.CreateAccountRequest,System.String)">
+             <summary>
+             Coutries Supported:
+             AU - Australia
+             CA - Canada
+             CY -
+             Cyprus
+             CZ - Czech Republic
+             DK - Denmark
+             EE - Estonia
+             FI - Finland
+             FR -
+             France
+             DE - Germany
+             GR - Greece
+             HU - Hungary
+             IT - Italy
+             LV - Latvia
+             LT -
+             Lithuania
+             LU - Luxembourg
+             MT - Malta
+             NL - Netherlands
+             PL - Poland
+             PT -
+             Portugal
+             SK - Slovak Republic
+             SI - Slovenia
+             ES - Spain
+             SE - Sweden
+             UK -
+             United Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="createAccountRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CreateAccount(PayPal.AdaptiveAccounts.Model.CreateAccountRequest)">
+             <summary> 
+             Coutries Supported:
+             AU - Australia
+             CA - Canada
+             CY -
+             Cyprus
+             CZ - Czech Republic
+             DK - Denmark
+             EE - Estonia
+             FI - Finland
+             FR -
+             France
+             DE - Germany
+             GR - Greece
+             HU - Hungary
+             IT - Italy
+             LV - Latvia
+             LT -
+             Lithuania
+             LU - Luxembourg
+             MT - Malta
+             NL - Netherlands
+             PL - Poland
+             PT -
+             Portugal
+             SK - Slovak Republic
+             SI - Slovenia
+             ES - Spain
+             SE - Sweden
+             UK -
+             United Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="createAccountRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CreateAccount(PayPal.AdaptiveAccounts.Model.CreateAccountRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             Coutries Supported:
+             AU - Australia
+             CA - Canada
+             CY -
+             Cyprus
+             CZ - Czech Republic
+             DK - Denmark
+             EE - Estonia
+             FI - Finland
+             FR -
+             France
+             DE - Germany
+             GR - Greece
+             HU - Hungary
+             IT - Italy
+             LV - Latvia
+             LT -
+             Lithuania
+             LU - Luxembourg
+             MT - Malta
+             NL - Netherlands
+             PL - Poland
+             PT -
+             Portugal
+             SK - Slovak Republic
+             SI - Slovenia
+             ES - Spain
+             SE - Sweden
+             UK -
+             United Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="createAccountRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.GetUserAgreement(PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest,System.String)">
+             <summary>
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             CA
+             - Canada
+             CZ - Czech Republic
+             EU - European Union *
+             FR - France
+             DE -
+             Germany
+             GB - Great Britain
+             GR - Greece
+             IE - Ireland
+             IL - Israel
+             IT -
+             Italy
+             JP - Japan
+             NL - Netherlands
+             NZ - New Zealand (Aotearoa)
+             PL -
+             Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG - Singapore
+             ZA - South
+             Africa
+             ES - Spain
+             CH - Switzerland
+             US - United States
+             * technically a
+             group of countries
+             
+             
+             
+             
+             
+             </summary>
+            <param name="getUserAgreementRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.GetUserAgreement(PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest)">
+             <summary> 
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             CA
+             - Canada
+             CZ - Czech Republic
+             EU - European Union *
+             FR - France
+             DE -
+             Germany
+             GB - Great Britain
+             GR - Greece
+             IE - Ireland
+             IL - Israel
+             IT -
+             Italy
+             JP - Japan
+             NL - Netherlands
+             NZ - New Zealand (Aotearoa)
+             PL -
+             Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG - Singapore
+             ZA - South
+             Africa
+             ES - Spain
+             CH - Switzerland
+             US - United States
+             * technically a
+             group of countries
+             
+             
+             
+             
+             
+             </summary>
+            <param name="getUserAgreementRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.GetUserAgreement(PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             CA
+             - Canada
+             CZ - Czech Republic
+             EU - European Union *
+             FR - France
+             DE -
+             Germany
+             GB - Great Britain
+             GR - Greece
+             IE - Ireland
+             IL - Israel
+             IT -
+             Italy
+             JP - Japan
+             NL - Netherlands
+             NZ - New Zealand (Aotearoa)
+             PL -
+             Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG - Singapore
+             ZA - South
+             Africa
+             ES - Spain
+             CH - Switzerland
+             US - United States
+             * technically a
+             group of countries
+             
+             
+             
+             
+             
+             </summary>
+            <param name="getUserAgreementRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.GetVerifiedStatus(PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest,System.String)">
+             <summary>
+             All countries are supported.
+             
+             
+             
+             
+             
+             </summary>
+            <param name="getVerifiedStatusRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.GetVerifiedStatus(PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest)">
+             <summary> 
+             All countries are supported.
+             
+             
+             
+             
+             
+             </summary>
+            <param name="getVerifiedStatusRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.GetVerifiedStatus(PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             All countries are supported.
+             
+             
+             
+             
+             
+             </summary>
+            <param name="getVerifiedStatusRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.AddBankAccount(PayPal.AdaptiveAccounts.Model.AddBankAccountRequest,System.String)">
+             <summary>
+             Countries Supported:
+             AU - Australia
+             CA - Canada
+             FR -
+             France
+             DE - Germany
+             IL - Israel
+             IT - Italy
+             NL - Netherlands
+             UK - United
+             Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="addBankAccountRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.AddBankAccount(PayPal.AdaptiveAccounts.Model.AddBankAccountRequest)">
+             <summary> 
+             Countries Supported:
+             AU - Australia
+             CA - Canada
+             FR -
+             France
+             DE - Germany
+             IL - Israel
+             IT - Italy
+             NL - Netherlands
+             UK - United
+             Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="addBankAccountRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.AddBankAccount(PayPal.AdaptiveAccounts.Model.AddBankAccountRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             Countries Supported:
+             AU - Australia
+             CA - Canada
+             FR -
+             France
+             DE - Germany
+             IL - Israel
+             IT - Italy
+             NL - Netherlands
+             UK - United
+             Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="addBankAccountRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.AddPaymentCard(PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest,System.String)">
+             <summary>
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             BE
+             - Belgium
+             BR - Brazil
+             CA - Canada
+             CZ - Czech Republic
+             FR - France
+             DE -
+             Germany
+             GR - Greece
+             HK - Hong Kong
+             IE - Ireland
+             IT - Italy
+             JP - Japan
+             LU -
+             Luxembourg
+             MX - Mexico
+             NL - Netherlands
+             NZ - New Zealand (Aotearoa)
+             PL -
+             Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG - Singapore
+             ZA - South
+             Africa
+             ES - Spain
+             CH - Switzerland
+             UK - United Kingdom
+             US - United
+             States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="addPaymentCardRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.AddPaymentCard(PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest)">
+             <summary> 
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             BE
+             - Belgium
+             BR - Brazil
+             CA - Canada
+             CZ - Czech Republic
+             FR - France
+             DE -
+             Germany
+             GR - Greece
+             HK - Hong Kong
+             IE - Ireland
+             IT - Italy
+             JP - Japan
+             LU -
+             Luxembourg
+             MX - Mexico
+             NL - Netherlands
+             NZ - New Zealand (Aotearoa)
+             PL -
+             Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG - Singapore
+             ZA - South
+             Africa
+             ES - Spain
+             CH - Switzerland
+             UK - United Kingdom
+             US - United
+             States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="addPaymentCardRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.AddPaymentCard(PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             BE
+             - Belgium
+             BR - Brazil
+             CA - Canada
+             CZ - Czech Republic
+             FR - France
+             DE -
+             Germany
+             GR - Greece
+             HK - Hong Kong
+             IE - Ireland
+             IT - Italy
+             JP - Japan
+             LU -
+             Luxembourg
+             MX - Mexico
+             NL - Netherlands
+             NZ - New Zealand (Aotearoa)
+             PL -
+             Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG - Singapore
+             ZA - South
+             Africa
+             ES - Spain
+             CH - Switzerland
+             UK - United Kingdom
+             US - United
+             States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="addPaymentCardRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.SetFundingSourceConfirmed(PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest,System.String)">
+             <summary>
+             To be updated.
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             BE - Belgium
+             BR - Brazil
+             CA - Canada
+             CZ - Czech Republic
+             FR
+             - France
+             DE - Germany
+             GR - Greece
+             HK - Hong Kong
+             IE - Ireland
+             IT - Italy
+             JP - Japan
+             LU - Luxembourg
+             MX - Mexico
+             NL - Netherlands
+             NZ - New Zealand
+             (Aotearoa)
+             PL - Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG -
+             Singapore
+             ZA - South Africa
+             ES - Spain
+             CH - Switzerland
+             UK - United
+             Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="setFundingSourceConfirmedRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.SetFundingSourceConfirmed(PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest)">
+             <summary> 
+             To be updated.
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             BE - Belgium
+             BR - Brazil
+             CA - Canada
+             CZ - Czech Republic
+             FR
+             - France
+             DE - Germany
+             GR - Greece
+             HK - Hong Kong
+             IE - Ireland
+             IT - Italy
+             JP - Japan
+             LU - Luxembourg
+             MX - Mexico
+             NL - Netherlands
+             NZ - New Zealand
+             (Aotearoa)
+             PL - Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG -
+             Singapore
+             ZA - South Africa
+             ES - Spain
+             CH - Switzerland
+             UK - United
+             Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="setFundingSourceConfirmedRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.SetFundingSourceConfirmed(PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             To be updated.
+             Countries Supported:
+             AU - Australia
+             AT - Austria
+             BE - Belgium
+             BR - Brazil
+             CA - Canada
+             CZ - Czech Republic
+             FR
+             - France
+             DE - Germany
+             GR - Greece
+             HK - Hong Kong
+             IE - Ireland
+             IT - Italy
+             JP - Japan
+             LU - Luxembourg
+             MX - Mexico
+             NL - Netherlands
+             NZ - New Zealand
+             (Aotearoa)
+             PL - Poland
+             PT - Portugal
+             RU - Russian Federation
+             SG -
+             Singapore
+             ZA - South Africa
+             ES - Spain
+             CH - Switzerland
+             UK - United
+             Kingdom
+             US - United States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="setFundingSourceConfirmedRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CheckComplianceStatus(PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest,System.String)">
+             <summary>
+             To be updated.
+             Countries Supported:
+             US - United
+             States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="checkComplianceStatusRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CheckComplianceStatus(PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest)">
+             <summary> 
+             To be updated.
+             Countries Supported:
+             US - United
+             States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="checkComplianceStatusRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CheckComplianceStatus(PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             To be updated.
+             Countries Supported:
+             US - United
+             States
+             
+             
+             
+             
+             
+             </summary>
+            <param name="checkComplianceStatusRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CheckComplianceCapabilityStatus(PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest,System.String)">
+             <summary>
+             To be updated.
+             Countries Supported:
+             US - United
+             States
+             JP - Japan
+             
+             
+             
+             
+             
+             </summary>
+            <param name="checkComplianceCapabilityStatusRequest"></param>
+            <param name="apiUserName">API Username that you want to authenticate this call against. This username and the corresponding 3-token/certificate credentials must be available in Web.Config/App.Config</param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CheckComplianceCapabilityStatus(PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest)">
+             <summary> 
+             To be updated.
+             Countries Supported:
+             US - United
+             States
+             JP - Japan
+             
+             
+             
+             
+             
+             </summary>
+            <param name="checkComplianceCapabilityStatusRequest"></param>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.AdaptiveAccountsService.CheckComplianceCapabilityStatus(PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest,PayPal.Authentication.ICredential)">
+             <summary>
+             To be updated.
+             Countries Supported:
+             US - United
+             States
+             JP - Japan
+             
+             
+             
+             
+             
+             </summary>
+            <param name="checkComplianceCapabilityStatusRequest"></param>
+            <param name="credential">An explicit ICredential object that you want to authenticate this call against</param> 
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.EnumUtils">
+            <summary>
+            Utility class for Enums with descriptions
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.EnumUtils.GetDescription(System.Enum)">
+            <summary>
+            Get description for a give enum value
+            </summary>	
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.EnumUtils.GetValue(System.String,System.Type)">
+            <summary>
+            Convert a string to an enum object
+            </summary>	
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ErrorData">
+            <summary>
+            This type contains the detailed error information resulting
+            from the service operation. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.errorIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.domainField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.subdomainField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.severityField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.categoryField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.messageField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.exceptionIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorData.parameterField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ErrorData.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ErrorData.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new ErrorData object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ErrorParameter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorParameter.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ErrorParameter.valueField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ErrorParameter.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ErrorParameter.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new ErrorParameter object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.RequestEnvelope">
+            <summary>
+            This specifies the list of parameters with every request to
+            the service. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.RequestEnvelope.detailLevelField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.RequestEnvelope.errorLanguageField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.RequestEnvelope.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ResponseEnvelope">
+            <summary>
+            This specifies a list of parameters with every response from
+            a service. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ResponseEnvelope.timestampField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ResponseEnvelope.ackField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ResponseEnvelope.correlationIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ResponseEnvelope.buildField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ResponseEnvelope.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ResponseEnvelope.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new ResponseEnvelope object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ClientDetailsType">
+            <summary>
+            This elements in this type refers to the end user of the
+            application invoking this service. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.ipAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.deviceIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.applicationIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.modelField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.geoLocationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.customerTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.partnerNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.ClientDetailsType.customerIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.ClientDetailsType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.FaultMessage">
+            <summary>
+            This specifies a fault, encapsulating error data, with
+            specific error codes. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.FaultMessage.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.FaultMessage.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.FaultMessage.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.FaultMessage.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new FaultMessage object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ErrorSeverity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ErrorCategory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AckCode">
+            <summary>
+            AckCodeType This code identifies the
+             acknowledgement code types that could be used to
+             communicate the
+             status of processing a (request)
+             message to an application. This
+             code would be
+             used as part of a response message that contains
+             an
+             application level acknowledgement element.
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.DetailLevelCode">
+            <summary>
+            DetailLevelCodeType
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.BankAccountType">
+            <summary>
+            Bank account type should be CHECKING,
+             SAVINGS,BUSINESS_CHECKING,
+             BUSINESS_SAVINGS,NORMAL, or UNKNOWN.
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ConfirmationType">
+            <summary>
+            API confirmation type currently
+             Valid values are:
+             NONE, MOBILE and
+             WEB. WEB: Returns a URL to complete the
+             registration.
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.BusinessType">
+            <summary>
+            Business Types
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.BusinessSubtypeType">
+            <summary>
+            Subtype required only for Business Type
+             GOVERNMENT and ASSOCIATION
+             GOVERNMENT: ENTITY,
+             EMANATION,ESTD_COMMONWEALTH, ESTD_UNDER_STATE_TERRITORY,
+             ESTD_UNDER_FOREIGN_COUNTRY
+             ASSOCIATION: INCORPORATED,
+             NON_INCORPORATED
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.SalesVenueType">
+            <summary>
+            Sales venue / store front type
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.StakeholderRoleType">
+            <summary>
+            Stake holder role
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CardTypeType">
+            <summary>
+            SwitchMaestro, deprecated card type, use
+             UKMaestro instead
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.YesNoType">
+            <summary>
+            Generic Yes or No input validation type.
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.GovernmentIDTypes">
+            <summary>
+            Government ID Types
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.LegalAgreementTypes">
+            <summary>
+            Legal Agreement Types
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.ProductActivationErrors">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.Capability">
+            <summary>
+            PayPal Capability
+             
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AccountIdentifierType">
+            <summary>
+            Identifies a PayPal account to which this request is
+            targeted. Caller of this API has to provide ONLY one of
+            these inputs: emailAddress, accountId or phoneNumber. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AccountIdentifierType.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AccountIdentifierType.mobilePhoneNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AccountIdentifierType.accountIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AccountIdentifierType.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AccountIdentifierType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CreateAccountRequest">
+            <summary>
+            Valid values are: Personal, Premier, and Business. Flag="2"
+            corresponds to java.util.regex.Pattern.CASE_INSENSITIVE,
+            meaning the strings are not case-sensitive 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.clientDetailsField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.accountTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.dateOfBirthField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.addressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.contactPhoneNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.homePhoneNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.mobilePhoneNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.currencyCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.citizenshipCountryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.preferredLanguageCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.notificationURLField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.registrationTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.createAccountWebOptionsField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.suppressWelcomeEmailField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.performExtraVettingOnThisAccountField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.taxIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.partnerField1Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.partnerField2Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.partnerField3Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.partnerField4Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.partnerField5Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.businessInfoField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.governmentIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.professionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.occupationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.functionalAreaField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.legalAgreementField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.purposeOfAccountField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,PayPal.AdaptiveAccounts.Model.NameType,PayPal.AdaptiveAccounts.Model.AddressType,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CreateAccountRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CreateAccountResponse">
+            <summary>
+            Valid values are: COMPLETED 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.createAccountKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.execStatusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.redirectURLField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.accountIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CreateAccountResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new CreateAccountResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest.createAccountKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest.countryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest.languageCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetUserAgreementRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.GetUserAgreementResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementResponse.agreementField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetUserAgreementResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetUserAgreementResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetUserAgreementResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new GetUserAgreementResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest">
+            <summary>
+            Deprecated, use accountIdentifier.emailAddress instead 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.accountIdentifierField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.matchCriteriaField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.firstNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.lastNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse">
+            <summary>
+            Returned values are: VERIFIED|UNVERIFIED. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.accountStatusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.countryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.userInfoField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GetVerifiedStatusResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new GetVerifiedStatusResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest">
+            <summary>
+            Identifying the PayPal account to which this request is
+            targetted to. Caller of this API has to either provided an
+            emailAddress or an accountId. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.accountIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.createAccountKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bankCountryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bankNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.routingNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bankAccountTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bankAccountNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.ibanField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.clabeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bsbNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.branchLocationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.sortCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bankTransitNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.institutionNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.branchCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.agencyNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.bankCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.ribKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.controlDigitField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.taxIdTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.taxIdNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.accountHolderDateOfBirthField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.confirmationTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.webOptionsField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,System.String,System.Nullable{PayPal.AdaptiveAccounts.Model.ConfirmationType})">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddBankAccountRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse">
+            <summary>
+            Valid values are: FUNDING_SOURCE_ADDED,
+            WEB_URL_VERIFICATION_NEEDED 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.execStatusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.redirectURLField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.fundingSourceKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddBankAccountResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new AddBankAccountResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest">
+            <summary>
+            Identifying the PayPal account to which this request is
+            targetted to. Caller of this API has to either provided an
+            emailAddress or an accountId. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.accountIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.createAccountKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.nameOnCardField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.billingAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.cardOwnerDateOfBirthField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.cardNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.cardTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.expirationDateField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.cardVerificationNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.startDateField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.issueNumberField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.confirmationTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.webOptionsField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,PayPal.AdaptiveAccounts.Model.NameType,PayPal.AdaptiveAccounts.Model.AddressType,System.String,System.Nullable{PayPal.AdaptiveAccounts.Model.CardTypeType},System.Nullable{PayPal.AdaptiveAccounts.Model.ConfirmationType})">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddPaymentCardRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse">
+            <summary>
+            Valid values are: FUNDING_SOURCE_ADDED,
+            WEB_URL_VERIFICATION_NEEDED 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.execStatusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.redirectURLField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.fundingSourceKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddPaymentCardResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new AddPaymentCardResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest">
+            <summary>
+            Identifying the PayPal account to which this request is
+            targetted to. Caller of this API has to either provided an
+            emailAddress or an accountId. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest.accountIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest.fundingSourceKeyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedResponse">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.SetFundingSourceConfirmedResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new SetFundingSourceConfirmedResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest">
+            <summary>
+            Identifies a PayPal account to which this request is
+            targeted. Caller of this API has to provide ONLY one of
+            these inputs: emailAddress, accountId or mobilePhoneNumber. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest.accountIdentifierField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,PayPal.AdaptiveAccounts.Model.AccountIdentifierType)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse">
+            <summary>
+            Returned values are: ALLOW|DENY 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse.execStatusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse.denialReasonField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceStatusResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new CheckComplianceStatusResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest">
+            <summary>
+            Identifies a PayPal account to which this request is
+            targeted. Caller of this API has to provide ONLY one of
+            these inputs: emailAddress, accountId or mobilePhoneNumber. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest.requestEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest.accountIdentifierField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest.capabilityField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest.#ctor(PayPal.AdaptiveAccounts.Model.RequestEnvelope,PayPal.AdaptiveAccounts.Model.AccountIdentifierType)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusRequest.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse">
+            <summary>
+            Returned values are: ALLOW|DENY 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse.responseEnvelopeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse.execStatusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse.denialReasonField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse.errorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CheckComplianceCapabilityStatusResponse.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new CheckComplianceCapabilityStatusResponse object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.NameType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.NameType.salutationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.NameType.firstNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.NameType.middleNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.NameType.lastNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.NameType.suffixField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.NameType.#ctor(System.String,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.NameType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.NameType.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new NameType object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AddressType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddressType.line1Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddressType.line2Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddressType.cityField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddressType.stateField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddressType.postalCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AddressType.countryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddressType.#ctor(System.String,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AddressType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType">
+            <summary>
+            Ask end-user to also initiate confirmation of their mobile
+            phone. This number must be supplied by the API caller (using
+            mobilePhoneNumber) Default=false. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.returnUrlField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.showAddCreditCardField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.showMobileConfirmField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.returnUrlDescriptionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.useMiniBrowserField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.reminderEmailFrequencyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.confirmEmailField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CreateAccountWebOptionsType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.BusinessInfoType">
+            <summary>
+            PayPal Business Category. i.e., baby - 1004 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.businessNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.businessAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.workPhoneField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.categoryField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.subCategoryField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.merchantCategoryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.doingBusinessAsField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.customerServicePhoneField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.customerServiceEmailField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.disputeEmailField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.webSiteField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.companyIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.dateOfEstablishmentField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.businessTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.businessSubtypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.incorporationIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.averagePriceField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.averageMonthlyVolumeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.percentageRevenueFromOnlineField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.salesVenueField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.salesVenueDescField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.vatIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.vatCountryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.commercialRegistrationLocationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.principalPlaceOfBusinessAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.registeredOfficeAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.establishmentCountryCodeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.establishmentStateField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.businessStakeholderField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.businessEntityForThirdPartyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.hasDirectorsField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.hasBeneficialOwnersField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessInfoType.hasThirdPartyAssociatesField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.BusinessInfoType.#ctor(System.String,PayPal.AdaptiveAccounts.Model.AddressType,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.BusinessInfoType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType">
+            <summary>
+            Info about Stakeholders such as partner, beneficial, owner,
+            director etc. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.roleField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.fullLegalNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.addressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.dateOfBirthField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.occupationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.#ctor(System.Nullable{PayPal.AdaptiveAccounts.Model.StakeholderRoleType})">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.BusinessStakeholderType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.UserInfoType">
+            <summary>
+            Info about PayPal user such as emailAddress, accountId,
+            firstName, lastName etc. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.UserInfoType.emailAddressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.UserInfoType.accountTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.UserInfoType.accountIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.UserInfoType.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.UserInfoType.businessNameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.UserInfoType.businessTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.UserInfoType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.UserInfoType.CreateInstance(System.Collections.Generic.Dictionary{System.String,System.String},System.String,System.Int32)">
+            <summary>
+            Factory method for creating new object instances. For use by the de-serialization classes only.
+            </summary>
+            <param name="map">NVP map as returned by an API call</param>
+            <param name="prefix">NVP prefix for this class in the response</param>
+            <param name="index">For array elements, index of this element in the response</param>
+            <returns>
+            A new UserInfoType object created from the passed in NVP map
+            </returns>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.WebOptionsType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.WebOptionsType.returnUrlField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.WebOptionsType.cancelUrlField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.WebOptionsType.returnUrlDescriptionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.WebOptionsType.cancelUrlDescriptionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.WebOptionsType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.CardDateType">
+            <summary>
+            Month in integer format, between 1 and 12 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CardDateType.monthField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.CardDateType.yearField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CardDateType.#ctor(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.CardDateType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType">
+            <summary>
+            Third party type: Individual or Business. 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.thirdPartyTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.dateOfBirthField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.addressField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.professionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.relationshipWithThirdPartyField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.natureOfBusinessField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.nameOfBusinessField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.businessTypeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.incorporationIdField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.incorporationCountryField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.incorporationStateField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.BusinessEntityForThirdPartyType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.GovernmentIDPair">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GovernmentIDPair.valueField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.GovernmentIDPair.typeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.GovernmentIDPair.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.LegalAgreementType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.LegalAgreementType.acceptedField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.LegalAgreementType.typeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.LegalAgreementType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.Auditor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.Auditor.idField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.Auditor.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.Auditor.actionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.Auditor.notesField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.Auditor.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.Auditor.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.TupleType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.TupleType.nameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.TupleType.valueField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.TupleType.#ctor(System.String,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.TupleType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.DocumentType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.DocumentType.typeField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.DocumentType.filenameField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.DocumentType.#ctor(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.DocumentType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AuditorList">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditorList.auditorField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AuditorList.#ctor(System.Collections.Generic.List{PayPal.AdaptiveAccounts.Model.Auditor})">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AuditorList.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AuditeeInfoType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditeeInfoType.accountIdentifierField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditeeInfoType.documentField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditeeInfoType.dataField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AuditeeInfoType.#ctor(PayPal.AdaptiveAccounts.Model.AccountIdentifierType)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AuditeeInfoType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AuditDetailsType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditDetailsType.statusField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditDetailsType.levelField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditDetailsType.methodField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditDetailsType.reasonField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditDetailsType.dataField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AuditDetailsType.policyVersionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AuditDetailsType.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Constructor with arguments
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AuditDetailsType.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:PayPal.AdaptiveAccounts.Model.AccountInfoForUpdate">
+            <summary>
+            Account Holder's profession, values such as: Accountant,
+            Actuary, Advocate, Architect, Business Owner, Doctor,
+            Dentist, Engineer, Financial Analyst, Lawyer, Librarian,
+            Nurse, Pilot, Pharmacist, Physician, Physicial Therapist,
+            Professor, Psychologist, Scientist, Teacher, Webmaster,
+            Writer, Student, Other 
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AccountInfoForUpdate.professionField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AccountInfoForUpdate.purposeOfAccountField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:PayPal.AdaptiveAccounts.Model.AccountInfoForUpdate.businessStakeholderField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PayPal.AdaptiveAccounts.Model.AccountInfoForUpdate.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+    </members>
+</doc>

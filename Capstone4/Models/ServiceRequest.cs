@@ -40,6 +40,7 @@ namespace Capstone4.Models
         public bool? Posted { get; set; }
         public bool? NeedsManualValidation { get; set; }
         public bool? WarningSent { get; set; }
+        public bool? PaymentError { get; set; }
         public bool? PaymentAttempted { get; set; }
         [Column(TypeName = "datetime2")]
         [Display(Name = "Completion Date")]

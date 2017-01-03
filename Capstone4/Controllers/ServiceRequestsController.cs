@@ -215,6 +215,17 @@ namespace Capstone4.Controllers
             //{
             //    return RedirectToAction("Date_Issue", "ServiceRequests");
             //}
+
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+
+            if (serviceRequest.CompletionDeadline < Time)
+            {
+                return Json(new { success = true, LateDate = true },
+                JsonRequestBehavior.AllowGet); 
+            }
+
             foreach (var file in files)
             {
 
@@ -269,9 +280,9 @@ namespace Capstone4.Controllers
             serviceRequest.Posted = true;
             //Timezone zone = new Timezone();
             //serviceRequest.PostedDate = zone.GetDateTime(serviceRequest);
-            DateTime timeUtc = DateTime.UtcNow;
-            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
-            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            //DateTime timeUtc = DateTime.UtcNow;
+            //TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            //DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
             serviceRequest.PostedDate = Time;
             serviceRequest.NeedsManualValidation = false;
             db.SaveChanges();
@@ -1070,18 +1081,6 @@ namespace Capstone4.Controllers
             return View();
         }
 
-        //public ActionResult noService(Models.Address address)
-        //{
-
-        //    address = (Models.Address)TempData["address"];
-        //    if (address == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    TempData["address"] = address;
-        //    return View(address);
-        //}
-
         public ActionResult noService(int id)
         {
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
@@ -1115,8 +1114,13 @@ namespace Capstone4.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
             ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+
             if (serviceRequest == null)
             {
                 return HttpNotFound();
@@ -1191,7 +1195,10 @@ namespace Capstone4.Controllers
                     }
                     acceptance.ContractorID = con.ID;
                     acceptance.ServiceRequestID = id;
-                    acceptance.AcceptanceDate = DateTime.Now;
+                    DateTime timeUtc = DateTime.UtcNow;
+                    TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(acceptance.ServiceRequest.Timezone);
+                    DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+                    acceptance.AcceptanceDate = Time;
                     db.ContractorAcceptances.Add(acceptance);
                     db.SaveChanges();
                     NotifyAcceptance(acceptance);
@@ -1282,8 +1289,10 @@ namespace Capstone4.Controllers
             {
                 return HttpNotFound();
             }
-
-            serviceRequest.CompletionDate = DateTime.Now;
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            serviceRequest.CompletionDate = Time;
             serviceRequest.AmountDue = serviceRequest.Price * .9m;
             db.SaveChanges();
             Notify_Homeowner_of_Completion(serviceRequest);
@@ -1658,8 +1667,8 @@ namespace Capstone4.Controllers
             receiverList.receiver.Add(receiver2);
             RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
             string actionType = "PAY";
-            string successUrl = "http://localhost:37234/ServiceRequests/PayPalSuccess/" + serviceRequest.ID;
-            string failureUrl = "http://localhost:37234/ServiceRequests/PaymentFailure/" + serviceRequest.ID;
+            string successUrl = "http://5ecef778.ngrok.io/ServiceRequests/PayPalSuccess/" + serviceRequest.ID;
+            string failureUrl = "http://5ecef778.ngrok.io/ServiceRequests/PaymentFailure/" + serviceRequest.ID;
             string returnUrl = successUrl;
             string cancelUrl = failureUrl;
             string currencyCode = "USD";
@@ -1680,6 +1689,55 @@ namespace Capstone4.Controllers
             ViewData["paykey"] = payResponse.payKey;
             return View(serviceRequest);
 
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult getDetails()
+        {
+            var form = Request.Form;
+            int id = Convert.ToInt16(form["ID"]);
+            string key = (form["paykey"]);
+            string payname = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\payname.txt");
+            string paypass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\paypass.txt");
+            string sig = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\sig.txt");
+            string appid = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\appid.txt");
+            Dictionary<string, string> sdkConfig = new Dictionary<string, string>();
+            sdkConfig.Add("mode", "sandbox");
+            sdkConfig.Add("account1.apiUsername", payname); //PayPal.Account.APIUserName
+            sdkConfig.Add("account1.apiPassword", paypass); //PayPal.Account.APIPassword
+            sdkConfig.Add("account1.apiSignature", sig); //.APISignature
+            sdkConfig.Add("account1.applicationId", appid); //.ApplicatonId
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(sdkConfig);
+            RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
+            PaymentDetailsRequest paymentDetailsRequest = new PaymentDetailsRequest(requestEnvelope);
+            paymentDetailsRequest.payKey = key;
+            PaymentDetailsResponse paymentDetailsResponse = adaptivePaymentsService.PaymentDetails(paymentDetailsRequest);
+            if((paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "COMPLETED") || (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "PENDING") || (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "PROCESSING"))
+            {
+                ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+                serviceRequest.PaymentError = false;
+                db.SaveChanges();
+                return Json(new { success = "go", id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+
+            else if (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == null)
+            {
+                return Json(new { success = "stay", id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+
+            else
+            {
+                ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+                serviceRequest.PaymentError = true;
+                db.SaveChanges();
+                return Json(new { success = "fail", id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+
+            
         }
 
         public ActionResult Already_Paid(int? id)

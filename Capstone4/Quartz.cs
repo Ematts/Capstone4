@@ -19,12 +19,13 @@ namespace Capstone4
             foreach (var i in requests)
             {
 
-                //DateTime timeUtc = DateTime.UtcNow;
-                //TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(i.Timezone);
-                //DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+
+                DateTime timeUtc = DateTime.UtcNow;
+                TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(i.Timezone);
+                DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
                 DateTime WarnTime = i.CompletionDeadline.AddMinutes(-1);
 
-                if ((i.ContractorID != null) && (i.Expired != true) && (i.CompletionDate == null) && (i.WarningSent != true) && (WarnTime < DateTime.Now))
+                if ((i.ContractorID != null) && (i.Expired != true) && (i.CompletionDate == null) && (i.WarningSent != true) && (WarnTime < Time))
                 {
                     
                     AuxEmail conWarn = new AuxEmail();
@@ -33,7 +34,7 @@ namespace Capstone4
                     
                 }
 
-                if ((i.CompletionDeadline < DateTime.Now) && (i.Expired == false))
+                if ((i.CompletionDeadline < Time) && (i.Expired == false))
                 {
 
                     i.Expired = true;
