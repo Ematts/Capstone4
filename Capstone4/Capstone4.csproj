@@ -313,6 +313,18 @@
     <Compile Include="Migrations\201701082250405_d2.Designer.cs">
       <DependentUpon>201701082250405_d2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701112105025_f1.cs" />
+    <Compile Include="Migrations\201701112105025_f1.Designer.cs">
+      <DependentUpon>201701112105025_f1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701112233326_f2.cs" />
+    <Compile Include="Migrations\201701112233326_f2.Designer.cs">
+      <DependentUpon>201701112233326_f2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701112302342_d3.cs" />
+    <Compile Include="Migrations\201701112302342_d3.Designer.cs">
+      <DependentUpon>201701112302342_d3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -325,6 +337,8 @@
     <Compile Include="Models\ContractorReview.cs" />
     <Compile Include="Models\ContractorReviewsIndexViewModel.cs" />
     <Compile Include="Models\DistanceMatrix.cs" />
+    <Compile Include="Models\GetContractorActiveRequestsViewModel.cs" />
+    <Compile Include="Models\GetContractorPaidRequestsViewModel.cs" />
     <Compile Include="Models\ManualValidateViewModel.cs" />
     <Compile Include="Models\PayPalCheckoutInfo.cs" />
     <Compile Include="Models\PayPalListenerModel.cs" />
@@ -552,6 +566,8 @@
     <Content Include="Views\ServiceRequests\Already_Paid.cshtml" />
     <Content Include="Views\ServiceRequests\PayPalSuccess.cshtml" />
     <Content Include="Views\Contractors\GetOpenRequests.cshtml" />
+    <Content Include="Views\Contractors\GetContractorActiveRequests.cshtml" />
+    <Content Include="Views\Contractors\GetContractorPaidRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -594,6 +610,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701082250405_d2.resx">
       <DependentUpon>201701082250405_d2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701112105025_f1.resx">
+      <DependentUpon>201701112105025_f1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701112233326_f2.resx">
+      <DependentUpon>201701112233326_f2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701112302342_d3.resx">
+      <DependentUpon>201701112302342_d3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

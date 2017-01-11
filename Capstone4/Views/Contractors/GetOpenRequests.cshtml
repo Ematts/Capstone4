@@ -4,7 +4,7 @@
     ViewBag.Title = "GetOpenRequests";
 }
 
-<h2>GetOpenRequests</h2>
+<h2>Open Service Requests</h2>
 
 @using (Html.BeginForm())
 {
@@ -14,86 +14,187 @@
 
             
 
-            <strong>Enter address below to see contractors in area:</strong>
+            <strong>Enter number of miles to search from your registered address:</strong>
             <div><br /></div>@Html.TextBox("miles", @ViewData["Miles"], new { @class = "form-control" })
             <input type="submit" value="Search" id="locationField" />
 
 
 }
+<br />
+<div>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Homeowner</a> - <a class="toggle-vis" data-column="1">Street</a> - <a class="toggle-vis" data-column="2">City</a> - <a class="toggle-vis" data-column="3">State</a> - <a class="toggle-vis" data-column="4">Zip</a> - <a class="toggle-vis" data-column="5">Description</a> - <a class="toggle-vis" data-column="6">Price</a> - <a class="toggle-vis" data-column="7">Posted Date</a> - <a class="toggle-vis" data-column="8">Completion Deadline</a> - <a class="toggle-vis" data-column="9">Remove</a>
+</div>
+<br />
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
+<br />
 <br /><br />
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Username)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Street)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.City)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.State)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Zip)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FullAddress)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PostedDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CompletionDeadline)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Username)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Street)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.State)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Zip)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FullAddress)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PostedDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CompletionDeadline)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
-}
+<table class="table" id="homeTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Homeowner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletionDeadline)
+            </th>
+            <th>Remove</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Homeowner)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Street)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Zip)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompletionDeadline)
+                </td>
+                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
+                <td>
+                    @Html.ActionLink("Accept", "AcceptView", "ServiceRequests", new {id=item.ID}, null)
+                </td>
+            </tr>
+        }
+    </tbody>
 
 </table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+    <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
+
+
+    <script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 9 },
+                { "orderable": false, "targets": 10 }
+            ]
+        });
+
+        $(function () {
+            var isMouseDown = false,
+              isSelected;
+            $("#homeTable tr")
+              .mousedown(function () {
+                  isMouseDown = true;
+                  $(this).toggleClass("selected");
+                  isSelected = $(this).hasClass("selected");
+                  return false; // prevent text selection
+              })
+              .mouseover(function () {
+                  if (isMouseDown) {
+                      $(this).toggleClass("selected", isSelected);
+                  }
+              })
+              .bind("selectstart", function () {
+                  return false;
+              })
+
+            $(document)
+              .mouseup(function () {
+                  isMouseDown = false;
+              });
+        });
+
+        $(document).on("click", ".removeRow", function () {
+            var table = $('#homeTable').DataTable();
+            var row;
+            console.log($(this).closest('table'));
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 1)) {
+                var child = $(this).parents("tr.child");
+                row = $(child).siblings(".parent");
+            } else {
+                row = $(this).parents('tr');
+            }
+
+            table.row(row).remove().draw();
+
+        });
+
+        $(document).ready(function () {
+            var table = $('#homeTable').DataTable({
+                scrollY: "500px",
+                //scrollX: true,
+                responsive: true,
+                scrollCollapse: true,
+                paging: true,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
+
+            });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+            $('#cutSelectedButton').click(function () {
+                table.rows('.selected').remove().draw();
+            });
+            $('#cropSelectedButton').click(function () {
+                table.$('tr').toggleClass('selected');
+                table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload(true);
+            });
+
+        });
+
+    </script>
+
+
+}

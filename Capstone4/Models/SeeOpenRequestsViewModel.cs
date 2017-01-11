@@ -8,7 +8,7 @@ namespace Capstone4.Models
 {
     public class SeeOpenRequestsViewModel
     {
-        public string Username { get; set; }
+        public string Homeowner { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
@@ -22,6 +22,6 @@ namespace Capstone4.Models
         public decimal Price { get; set; }
         public DateTime? PostedDate { get; set; }
         public DateTime CompletionDeadline { get; set; }
-        public double? miles { get; set; }
+        public int ID { get; set; }
     }
 }

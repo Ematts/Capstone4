@@ -120,7 +120,8 @@ namespace Capstone4.Controllers
         {
             List<SeeOpenRequestsViewModel> models = new List<SeeOpenRequestsViewModel>();
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            
+            List<int> displayList;
+
             if (identity == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -132,17 +133,79 @@ namespace Capstone4.Controllers
 
             Contractor contractor = db.Contractors.Where(x => x.UserId == identity).SingleOrDefault();
             ViewData["Miles"] = contractor.travelDistance;
-            List<int> displayList = GetRequestList(contractor);
+
+            if (miles == null)
+            {
+                displayList = GetRequestList(contractor, null);
+            }
+            else
+            {
+                displayList = GetRequestList(contractor, miles);
+            }
 
             foreach(var i in db.ServiceRequests.ToList())
             {
                 if(displayList.Contains(i.ID))
                 {
-                    SeeOpenRequestsViewModel model = new SeeOpenRequestsViewModel() { Username = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline };
+                    SeeOpenRequestsViewModel model = new SeeOpenRequestsViewModel() { Homeowner = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline, ID = i.ID };
                     models.Add(model);
                 }
             }
 
+
+            return View(models);
+        }
+
+        public ActionResult GetContractorActiveRequests()
+        {
+            List<GetContractorActiveRequestsViewModel> models = new List<GetContractorActiveRequestsViewModel>();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Contractor contractor = db.Contractors.Where(x => x.UserId == identity).SingleOrDefault();
+
+            foreach(var i in db.ServiceRequests.ToList())
+            {
+                if((i.ContractorID == contractor.ID) && ((i.PayPalListenerModelID == null) || (i.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")))
+                {
+                    GetContractorActiveRequestsViewModel model = new GetContractorActiveRequestsViewModel() { Homeowner = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline, ID = i.ID, CompletionDate = i.CompletionDate };
+                    models.Add(model);
+                }
+            }
+
+            return View(models);
+        }
+
+        public ActionResult GetContractorPaidRequests()
+        {
+            List<GetContractorPaidRequestsViewModel> models = new List<GetContractorPaidRequestsViewModel>();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Contractor contractor = db.Contractors.Where(x => x.UserId == identity).SingleOrDefault();
+
+            foreach(var i in db.ServiceRequests.ToList())
+            {
+                if((i.ContractorID == contractor.ID) && (i.PayPalListenerModelID != null) && (i.PayPalListenerModel._PayPalCheckoutInfo.payment_status == "Completed"))
+                {
+                    GetContractorPaidRequestsViewModel model = new GetContractorPaidRequestsViewModel() { Homeowner = i.Homeowner.Username, Address = i.Address.FullAddress, Description = i.Description, AmountPaid = i.AmountDue, ServiceRequestInvoice = i.Service_Number, CompletionDate = i.CompletionDate, PaidDate = i.PayPalListenerModel._PayPalCheckoutInfo.payment_date, PayStatus = i.PayPalListenerModel._PayPalCheckoutInfo.payment_status, PayPalIDNumber = i.PayPalListenerModel._PayPalCheckoutInfo.txn_id };
+                    models.Add(model);
+                }
+            }
 
             return View(models);
         }
@@ -641,9 +704,17 @@ namespace Capstone4.Controllers
             }
             return (contractorsToDisplay);
         }
-        public List<int> GetRequestList(Contractor contractor)
+        public List<int> GetRequestList(Contractor contractor, double? miles)
         {
-
+            double? milesBase;
+            if(miles == null)
+            {
+                milesBase = contractor.travelDistance;
+            }
+            else
+            {
+                milesBase = miles;
+            }
             List<int> requestsToDisplay = new List<int>();
             string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\distance.txt");
             foreach (var service in db.ServiceRequests.ToList())
@@ -664,7 +735,7 @@ namespace Capstone4.Controllers
                     db.SaveChanges();
                     if (result.rows[0].elements[0].status == "OK")
                     {
-                        if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                        if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= milesBase)
                         {
                             requestsToDisplay.Add(service.ID);
                         }
