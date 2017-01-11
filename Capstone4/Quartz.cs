@@ -19,40 +19,57 @@ namespace Capstone4
             foreach (var i in requests)
             {
 
-
-                DateTime timeUtc = DateTime.UtcNow;
-                TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(i.Timezone);
-                DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
-                DateTime WarnTime = i.CompletionDeadline.AddMinutes(-1);
-
-                if ((i.ContractorID != null) && (i.Expired != true) && (i.CompletionDate == null) && (i.WarningSent != true) && (WarnTime < Time))
+                if ((i.Posted == true) && (i.Timezone != null))
                 {
-                    
-                    AuxEmail conWarn = new AuxEmail();
-                    i.WarningSent = conWarn.WarnContractor(i);
-                    db.SaveChanges();
-                    
-                }
-
-                if ((i.CompletionDeadline < Time) && (i.Expired == false))
-                {
-
-                    i.Expired = true;
-                    db.SaveChanges();
-
-                    if (i.ContractorID == null)
+                    DateTime timeUtc = DateTime.UtcNow;
+                    TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(i.Timezone);
+                    DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+                    DateTime? deadline;
+                    DateTime? WarnTime;
+                    if (i.UTCDate == null)
                     {
-                        AuxEmail homeownerWarnExpired = new AuxEmail();
-                        homeownerWarnExpired.WarnHomeownerExpired(i);
+                        deadline = i.CompletionDeadline;
                     }
-
-                    if (i.ContractorID != null && i.CompletionDate == null)
+                    else
                     {
-                        AuxEmail bothWarnExpired = new AuxEmail();
-                        bothWarnExpired.WarnBothExpired(i);
+                        deadline = i.UTCDate;
+                        Time = DateTime.UtcNow;
                     }
+                    if (deadline.HasValue)
+                    {
+                        WarnTime = deadline.Value.AddMinutes(-1);
 
 
+                        if ((i.ContractorID != null) && (i.Expired != true) && (i.CompletionDate == null) && (i.WarningSent != true) && (WarnTime < Time))
+                        {
+
+                            AuxEmail conWarn = new AuxEmail();
+                            i.WarningSent = conWarn.WarnContractor(i);
+                            db.SaveChanges();
+
+                        }
+
+                        if ((deadline < Time) && (i.Expired == false))
+                        {
+
+                            i.Expired = true;
+                            db.SaveChanges();
+
+                            if (i.ContractorID == null)
+                            {
+                                AuxEmail homeownerWarnExpired = new AuxEmail();
+                                homeownerWarnExpired.WarnHomeownerExpired(i);
+                            }
+
+                            if (i.ContractorID != null && i.CompletionDate == null)
+                            {
+                                AuxEmail bothWarnExpired = new AuxEmail();
+                                bothWarnExpired.WarnBothExpired(i);
+                            }
+
+
+                        }
+                    }
                 }
             }
         }

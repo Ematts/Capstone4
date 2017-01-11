@@ -293,6 +293,26 @@
     <Compile Include="Migrations\201701021713568_bb.Designer.cs">
       <DependentUpon>201701021713568_bb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701081639022_f.cs" />
+    <Compile Include="Migrations\201701081639022_f.Designer.cs">
+      <DependentUpon>201701081639022_f.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701081829199_vv.cs" />
+    <Compile Include="Migrations\201701081829199_vv.Designer.cs">
+      <DependentUpon>201701081829199_vv.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701082012109_ff.cs" />
+    <Compile Include="Migrations\201701082012109_ff.Designer.cs">
+      <DependentUpon>201701082012109_ff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701082053178_s1.cs" />
+    <Compile Include="Migrations\201701082053178_s1.Designer.cs">
+      <DependentUpon>201701082053178_s1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701082250405_d2.cs" />
+    <Compile Include="Migrations\201701082250405_d2.Designer.cs">
+      <DependentUpon>201701082250405_d2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -314,6 +334,7 @@
     <Compile Include="Models\Homeowner.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\SeeOpenRequestsViewModel.cs" />
     <Compile Include="Models\ServiceRequest.cs" />
     <Compile Include="Models\ServiceRequestFilePath.cs" />
     <Compile Include="Models\TimeObject.cs" />
@@ -530,6 +551,7 @@
     <Content Include="Views\ServiceRequests\Already_Confirmed_Completion.cshtml" />
     <Content Include="Views\ServiceRequests\Already_Paid.cshtml" />
     <Content Include="Views\ServiceRequests\PayPalSuccess.cshtml" />
+    <Content Include="Views\Contractors\GetOpenRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -557,6 +579,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701021713568_bb.resx">
       <DependentUpon>201701021713568_bb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701081639022_f.resx">
+      <DependentUpon>201701081639022_f.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701081829199_vv.resx">
+      <DependentUpon>201701081829199_vv.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701082012109_ff.resx">
+      <DependentUpon>201701082012109_ff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701082053178_s1.resx">
+      <DependentUpon>201701082053178_s1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701082250405_d2.resx">
+      <DependentUpon>201701082250405_d2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

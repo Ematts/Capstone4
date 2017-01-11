@@ -178,9 +178,20 @@ namespace Capstone4.Controllers
             string description = (form["Description"]);
             string priceString = (form["Price"]);
             string tzone = (form["Timezone"]);
+            string Ambig = (form["AmbigTime"]);
             decimal price = Convert.ToDecimal(priceString);
             string dateString = (form["CompletionDeadline"]);
+            string utcString = (form["UTCDate"]);
             DateTime completionDeadline = Convert.ToDateTime(dateString);
+            DateTime? utc;
+            try
+            {
+                utc = Convert.ToDateTime(utcString);
+            }
+            catch
+            {
+                utc = null;
+            }
             bool vacant = form["Address.vacant"].Contains("true");
             bool validated = form["Address.validated"].Contains("true");
             bool inactive = form["Inactive"].Contains("true");
@@ -199,7 +210,7 @@ namespace Capstone4.Controllers
 
 
             Models.Address address = new Models.Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
-            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Timezone = tzone, Inactive = inactive };
+            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Timezone = tzone, UTCDate = utc, AmbigTime = Ambig, Inactive = inactive };
             serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
             foreach (var i in db.Homeowners)
             {
@@ -1667,7 +1678,7 @@ namespace Capstone4.Controllers
             receiverList.receiver.Add(receiver2);
             RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
             string actionType = "PAY";
-            string successUrl = "http://5ecef778.ngrok.io/ServiceRequests/PayPalSuccess/" + serviceRequest.ID;
+            string successUrl = "http://localhost:37234/ServiceRequests/PayPalSuccess/" + serviceRequest.ID;
             string failureUrl = "http://5ecef778.ngrok.io/ServiceRequests/PaymentFailure/" + serviceRequest.ID;
             string returnUrl = successUrl;
             string cancelUrl = failureUrl;
@@ -1944,7 +1955,7 @@ namespace Capstone4.Controllers
         //}
 
         [AllowAnonymous]
-        public JsonResult DateCheck(DateTime? CompletionDeadline, string checkStreet, string checkCity, string checkState)
+        public JsonResult DateCheck(DateTime? CompletionDeadline, string checkStreet, string checkCity, string checkState, DateTime? UTCDate)
         {
           Checker checker = new Checker() { CompletionDeadline = CompletionDeadline, Street = checkStreet, City = checkCity, State = checkState };
 
@@ -1961,17 +1972,55 @@ namespace Capstone4.Controllers
                 return Json("You have entered an invalid time.", JsonRequestBehavior.AllowGet);
             }
 
+            if ((checker.Ambig == true) && (UTCDate == null))
+            {
+                DateTime dt;
+                TimeZoneInfo Zone;
+                TimeSpan[] offsets;
+                DateTime utcDateStandard;
+                DateTime utcDateDST;
+                //DateTime ambigConvertStandard;
+
+                if (checker.CompletionDeadline.HasValue)
+                {
+                    dt = checker.CompletionDeadline.Value;
+                    Zone = TimeZoneInfo.FindSystemTimeZoneById(checker.Timezone);
+                    offsets = Zone.GetAmbiguousTimeOffsets(dt);
+                    utcDateStandard = DateTime.SpecifyKind(dt - offsets[0], DateTimeKind.Utc);
+                    utcDateDST = DateTime.SpecifyKind(dt - offsets[1], DateTimeKind.Utc);
+                    //ambigConvertStandard = TimeZoneInfo.ConvertTimeFromUtc(utcDateStandard, Zone);
+                    Response.AddHeader("Z-ID", "ambigError");
+                    Response.AddHeader("Standard-ID", utcDateStandard.ToString());
+                    Response.AddHeader("DST-ID", utcDateDST.ToString());
+                    return Json("You have entered an ambiguous time.", JsonRequestBehavior.AllowGet);
+                }
+
+                //Response.AddHeader("Y-ID", checker.Ambig.ToString());
+                Response.AddHeader("Z-ID", "ambigError");
+                return Json("You have entered an ambiguous time.", JsonRequestBehavior.AllowGet);
+            }
+
             if (checker != null && checker.CompletionDeadline.HasValue && checker.Timezone != null)
             {
                 TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(checker.Timezone);
                 var dt = checker.CompletionDeadline.Value;
-                DateTime Time = TimeZoneInfo.ConvertTime(dt, Zone);
+                DateTime Time = TimeZoneInfo.ConvertTime(dt, Zone, Zone);
                 bool dst = Time.IsDaylightSavingTime();
             }
 
             if (checker.Found == false)
             {
-                return Json("You address could not be found to verify your timezone", JsonRequestBehavior.AllowGet);
+                return Json("Your address could not be found to verify your timezone", JsonRequestBehavior.AllowGet);
+            }
+
+            if ((checker.Ambig == true) && (UTCDate != null))
+            {
+                if(DateTime.UtcNow > UTCDate)
+                {
+                    return Json("The completion deadline must be later than the current time now.", JsonRequestBehavior.AllowGet);
+                }
+                Response.AddHeader("X-ID", checker.Timezone);
+                return Json(true, JsonRequestBehavior.AllowGet);
             }
 
 

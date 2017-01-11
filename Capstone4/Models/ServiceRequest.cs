@@ -24,11 +24,12 @@ namespace Capstone4.Models
         [Column(TypeName = "datetime2")]
         [Display(Name = "Posted Date")]
         public DateTime? PostedDate { get; set; }
+        public DateTime? UTCDate { get; set; }
         [Required]
         public decimal Price { get; set; }
         [Required]
         [Display(Name = "Completion Deadline")]
-        [System.Web.Mvc.Remote("DateCheck", "ServiceRequests", HttpMethod = "POST", AdditionalFields = "checkStreet,checkCity,checkState", ErrorMessage = "The completion deadline must be later than the current time.")]
+        [System.Web.Mvc.Remote("DateCheck", "ServiceRequests", HttpMethod = "POST", AdditionalFields = "checkStreet,checkCity,checkState,UTCDate", ErrorMessage = "The completion deadline must be later than the current time.")]
         public DateTime CompletionDeadline { get; set; }
         [StringLength(100, MinimumLength = 6)]
         [Required]
@@ -50,6 +51,7 @@ namespace Capstone4.Models
         [Display(Name = "Contractor paid")]
         public bool ContractorPaid { get; set; }
         public int? PayPalListenerModelID { get; set; }
+        public string AmbigTime { get; set; }
         public virtual PayPalListenerModel PayPalListenerModel { get; set; }
         public bool Inactive { get; set; }
         public string Timezone { get; set; }

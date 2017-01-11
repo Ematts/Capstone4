@@ -51,7 +51,7 @@ namespace Capstone4.Controllers
         {
             var contractors = db.Contractors.ToList();
             List<ContractorReviewsIndexViewModel> models = new List<ContractorReviewsIndexViewModel>();
-            foreach(var contractor in contractors)
+            foreach (var contractor in contractors)
             {
                 ContractorReviewsIndexViewModel model = new ContractorReviewsIndexViewModel { Username = contractor.Username, ID = contractor.ID };
                 if (contractor.ContractorReviews.Count > 0)
@@ -77,7 +77,7 @@ namespace Capstone4.Controllers
                 foreach (var model in models.ToList())
                 {
 
-                    if(!displayList.Contains(model.ID))
+                    if (!displayList.Contains(model.ID))
                     {
                         models.Remove(model);
                     }
@@ -115,6 +115,37 @@ namespace Capstone4.Controllers
             //}
             return View(models);
         }
+
+        public ActionResult GetOpenRequests(double? miles)
+        {
+            List<SeeOpenRequestsViewModel> models = new List<SeeOpenRequestsViewModel>();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Contractor contractor = db.Contractors.Where(x => x.UserId == identity).SingleOrDefault();
+            ViewData["Miles"] = contractor.travelDistance;
+            List<int> displayList = GetRequestList(contractor);
+
+            foreach(var i in db.ServiceRequests.ToList())
+            {
+                if(displayList.Contains(i.ID))
+                {
+                    SeeOpenRequestsViewModel model = new SeeOpenRequestsViewModel() { Username = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline };
+                    models.Add(model);
+                }
+            }
+
+
+            return View(models);
+        }
         public ActionResult SeeContractorReviews(SeeContractorReviewViewModel model, int? id)
         {
             Contractor contractor = db.Contractors.Find(id);
@@ -142,12 +173,12 @@ namespace Capstone4.Controllers
             model.ServiceRequests = new List<ServiceRequest>();
             foreach (var request in db.ServiceRequests)
             {
-                if(request.ContractorID == id && request.ContractorReviewID != null)
+                if (request.ContractorID == id && request.ContractorReviewID != null)
                 {
-                    
+
                     model.ServiceRequests.Add(request);
-                    
-                    if(request.ContractorReview.ReviewResponseID != null)
+
+                    if (request.ContractorReview.ReviewResponseID != null)
                     {
                         model.Response = request.ContractorReview.ReviewResponse.Response;
                     }
@@ -155,11 +186,11 @@ namespace Capstone4.Controllers
                     {
                         request.ContractorReview.ReviewResponse = new ReviewResponse() { ResponseDate = null, Response = null };
                     }
-                    
+
                 }
             }
 
-            
+
             return View(model);
         }
 
@@ -402,7 +433,7 @@ namespace Capstone4.Controllers
         {
             Contractor contractor = db.Contractors.Find(id);
 
-            foreach(var request in db.ServiceRequests.ToList())
+            foreach (var request in db.ServiceRequests.ToList())
             {
                 if (request.ContractorReviewID != null)
                 {
@@ -412,13 +443,13 @@ namespace Capstone4.Controllers
                     }
                 }
             }
-            foreach(var review in db.ContractorReviews.ToList())
+            foreach (var review in db.ContractorReviews.ToList())
             {
                 if (review.ContractorID != null)
                 {
-                    if(review.ContractorID == id)
+                    if (review.ContractorID == id)
                     {
-                        if(review.ReviewResponse != null)
+                        if (review.ReviewResponse != null)
                         {
                             db.ReviewResponses.Remove(review.ReviewResponse);
                         }
@@ -426,7 +457,7 @@ namespace Capstone4.Controllers
 
                     }
                 }
-                
+
             }
 
             foreach (var acceptance in db.ContractorAcceptances.ToList())
@@ -454,7 +485,7 @@ namespace Capstone4.Controllers
 
             List<Models.Address> ids = new List<Models.Address>();
             Models.Address addressToCheck = db.Addresses.Where(x => x.ID == contractor.AddressID).SingleOrDefault();
-           
+
             foreach (var user in db.Users)
             {
                 if (contractor.UserId == user.Id)
@@ -505,7 +536,7 @@ namespace Capstone4.Controllers
             sdkConfig.Add("account1.applicationId", appid); //.ApplicatonId
             GetVerifiedStatusRequest request = new GetVerifiedStatusRequest();
             AccountIdentifierType accountIdentifierType = new AccountIdentifierType();
-           
+
 
             return null;
         }
@@ -551,7 +582,7 @@ namespace Capstone4.Controllers
         }
 
         [AllowAnonymous]
-        
+
         public JsonResult doesUserNameExist(string Username)
         {
             ApplicationDbContext db = new ApplicationDbContext();
@@ -610,5 +641,38 @@ namespace Capstone4.Controllers
             }
             return (contractorsToDisplay);
         }
-    }
+        public List<int> GetRequestList(Contractor contractor)
+        {
+
+            List<int> requestsToDisplay = new List<int>();
+            string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\distance.txt");
+            foreach (var service in db.ServiceRequests.ToList())
+            {
+                if ((service.ContractorID == null) && (service.Posted == true) && (service.Expired != true))
+                {
+
+                    string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + contractor.Address.FullAddress + "&destinations=" + service.Address.FullAddress + "&key=" + source;
+                    WebRequest request = WebRequest.Create(url);
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    WebResponse response = request.GetResponse();
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string responseFromServer = reader.ReadToEnd();
+                    Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
+                    reader.Close();
+                    response.Close();
+                    db.SaveChanges();
+                    if (result.rows[0].elements[0].status == "OK")
+                    {
+                        if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                        {
+                            requestsToDisplay.Add(service.ID);
+                        }
+
+                    }
+                }
+            }
+            return (requestsToDisplay);
+      }
+   }
 }

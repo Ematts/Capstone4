@@ -13,11 +13,11 @@ namespace Capstone4
         public bool OK { get; set; }
         public bool Found { get; set; }
         public bool Invalid { get; set; }
+        public bool Ambig { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public DateTime? CompletionDeadline { get; set; }
-        //[ForeignKey("AddressID")]
-        //public virtual Address Address { get; set; }
+        public DateTime? UTCDate { get; set; }
     }
 }

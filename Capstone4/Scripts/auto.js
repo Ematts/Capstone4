@@ -49,6 +49,12 @@ function fillInAddress() {
             document.getElementById("checkStreet").value = document.getElementById("Address_Street").value;
             document.getElementById("checkCity").value = document.getElementById("Address_City").value;
             document.getElementById("checkState").value = document.getElementById("Address_State").value;
+            if ($("#AmbigTime").val() != "") {
+                document.getElementById("AmbigTime").value = "";
+            }
+            if ($("#UTCDate").val() != "") {
+                document.getElementById("UTCDate").value = "";
+            }
             var value = $("#CompletionDeadline").val();
             if (value != "") {
                 change();
