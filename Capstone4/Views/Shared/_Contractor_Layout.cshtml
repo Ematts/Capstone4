@@ -24,8 +24,15 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Check Open Service Requests", "GetOpenRequests", "Contractors")</li>
-                    <li>@Html.ActionLink("Check Open Service Requests", "GetContractorActiveRequests", "Contractors")</li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Messages <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Check Open Service Requests", "GetOpenRequests", "Contractors")</li>
+                            <li>@Html.ActionLink("Check Active Service Requests", "GetContractorActiveRequests", "Contractors")</li>
+                            <li>@Html.ActionLink("Check Paid Service Requests", "GetContractorPaidRequests", "Contractors")</li>
+                        </ul>
+                    </li>
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

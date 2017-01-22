@@ -1,0 +1,228 @@
+﻿@model IEnumerable<Capstone4.Models.GetHomeownerActiveRequestsViewModel>
+
+@{
+    ViewBag.Title = "GetHomeownerActiveRequests";
+}
+
+<h2>GetHomeownerActiveRequests</h2>
+
+<div>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Service Number</a> - <a class="toggle-vis" data-column="1">Contractor</a> - <a class="toggle-vis" data-column="2">Address</a> - <a class="toggle-vis" data-column="3">Description</a> - <a class="toggle-vis" data-column="4">Price</a> - <a class="toggle-vis" data-column="5">Posted Date</a> - <a class="toggle-vis" data-column="6">Completion Deadline</a> - <a class="toggle-vis" data-column="7">Completion Date</a> - <a class="toggle-vis" data-column="8">Acceptances</a> - <a class="toggle-vis" data-column="9">Remove</a>
+</div>
+<br />
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
+<br />
+<table class="table" id="homeTable">
+    <thead>
+            <th>
+                @Html.DisplayNameFor(model => model.Invoice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contractor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletionDeadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletionDate)
+            </th>
+            
+            <th>
+                Acceptences
+            </th>
+            <th>Remove</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Invoice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contractor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompletionDeadline)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompletionDate)
+                </td>
+                <td>
+                    <div class="replyDiv">
+                        @Html.DropDownListFor(modelItem => item.ContractorAcceptances, new SelectList(item.ContractorAcceptances, "Text", "Value"), "  -----Select List-----  ")
+                    </div>
+
+                </td>
+                <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+<link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+<script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
+
+@*<script>
+
+
+    $(".replyDiv").mouseover(function () {
+        alert("Handler for .mousedown() called.");
+    });
+</script>*@
+
+@*<script>
+    $(document).ready(function () {
+        if ($(".replyDiv").mouseover) {
+            alert('nn')
+        }
+    })
+    </script>*@
+
+
+<script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 1 },
+                { "orderable": false, "targets": 1 }
+            ]
+        });
+
+        $(function () {
+                var isMouseDown = false,
+                  isSelected;
+                $("#homeTable tr")
+                  .mousedown(function (event) {
+                      //alert(event.target.id);
+                      var z = event.target.id;
+                      if (z != "item_ContractorAcceptances") {
+                          //alert(z);
+                          //return false;
+
+                          isMouseDown = true;
+                          $(this).toggleClass("selected");
+                          isSelected = $(this).hasClass("selected");
+                          return false; // prevent text selection
+                      }
+                  })
+                  .mouseover(function () {
+                      if (isMouseDown) {
+                          $(this).toggleClass("selected", isSelected);
+                      }
+                  })
+                  .bind("selectstart", function () {
+                      return false;
+                  })
+
+                $(document)
+                  .mouseup(function () {
+                      isMouseDown = false;
+                  });
+            
+        });
+
+        $(document).on("click", ".removeRow", function () {
+            var table = $('#homeTable').DataTable();
+            var row;
+            console.log($(this).closest('table'));
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 1)) {
+                var child = $(this).parents("tr.child");
+                row = $(child).siblings(".parent");
+            } else {
+                row = $(this).parents('tr');
+            }
+
+            table.row(row).remove().draw();
+
+        });
+
+        $(document).ready(function () {
+            var table = $('#homeTable').DataTable({
+                scrollY: "500px",
+                //scrollX: true,
+                responsive: true,
+                scrollCollapse: true,
+                paging: true,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
+
+            });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+            $('#cutSelectedButton').click(function () {
+                table.rows('.selected').remove().draw();
+            });
+            $('#cropSelectedButton').click(function () {
+                table.$('tr').toggleClass('selected');
+                table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload(true);
+            });
+
+        });
+
+</script>
+<script>
+        $(document).on("change", "#item_ContractorAcceptances", function () {
+            var value;
+            var selectedText = $(this).find("option:selected").text();
+            var selectedValue = $(this).val();
+            value = selectedValue;
+            for (var i = 0; i < $(".replyDiv").children("#item_ContractorAcceptances").length; i++) {
+                var dropDown = $(".replyDiv").children("#item_ContractorAcceptances")[i];
+                dropDown.selectedIndex = 0;
+            }
+            window.location.href = "@Url.Action("Details", "ContractorAcceptances")" + "?id=" + value;
+
+
+        })
+</script>
+
+}

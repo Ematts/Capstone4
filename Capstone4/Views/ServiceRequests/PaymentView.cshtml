@@ -50,13 +50,13 @@
                     data: formdata,
                     success: function (response, textStatus, jqXHR) {
                         if (response.success == "go") {
-                            window.location = "http://cfd4591a.ngrok.io/ServiceRequests/PayPalSuccess/" + response.id;
+                            window.location = "http://86da92ec.ngrok.io/ServiceRequests/PayPalSuccess/" + response.id;
                         }
                         if (response.success == "stay") {
                             console.log("payment attempt cancelled")
                         }
                         if (response.success == "fail") {
-                            window.location = "http://cfd4591a.ngrok.io/ServiceRequests/PaymentFailure/" + response.id;
+                            window.location = "http://86da92ec.ngrok.io/ServiceRequests/PaymentFailure/" + response.id;
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {

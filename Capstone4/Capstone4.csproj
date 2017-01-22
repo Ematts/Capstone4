@@ -339,6 +339,8 @@
     <Compile Include="Models\DistanceMatrix.cs" />
     <Compile Include="Models\GetContractorActiveRequestsViewModel.cs" />
     <Compile Include="Models\GetContractorPaidRequestsViewModel.cs" />
+    <Compile Include="Models\GetHomeownerActiveRequestsViewModel.cs" />
+    <Compile Include="Models\GetHomeOwnerCompletedRequetsViewModel.cs" />
     <Compile Include="Models\ManualValidateViewModel.cs" />
     <Compile Include="Models\PayPalCheckoutInfo.cs" />
     <Compile Include="Models\PayPalListenerModel.cs" />
@@ -568,6 +570,8 @@
     <Content Include="Views\Contractors\GetOpenRequests.cshtml" />
     <Content Include="Views\Contractors\GetContractorActiveRequests.cshtml" />
     <Content Include="Views\Contractors\GetContractorPaidRequests.cshtml" />
+    <Content Include="Views\Homeowners\GetHomeownerCompletedRequests.cshtml" />
+    <Content Include="Views\Homeowners\GetHomeownerActiveRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

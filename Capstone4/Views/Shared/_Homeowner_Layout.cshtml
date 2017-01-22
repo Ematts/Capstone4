@@ -4,12 +4,67 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+
+    <style>
+       #navi ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /*//background-color: #333;*/
+        }
+
+       #navi li {
+            float: left;
+        }
+
+           #navi li a, .dropbtn {
+                display: inline-block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+                /*li a:hover, .dropdown:hover .dropbtn {
+                    background-color: blue;
+                }*/
+
+           #navi li.dropdown {
+                display: inline-block;
+            }
+
+        #navi .dropdown-content {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+
+            #navi .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                text-align: left;
+            }
+
+                #navi .dropdown-content a:hover {
+                    background-color: #f1f1f1;
+                }
+
+        #navi .show {
+            display: block;
+        }
+    </style>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    
+    <div class="navbar navbar-inverse navbar-fixed-top" id="navi">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -19,12 +74,21 @@
                 </button>
                 @Html.ActionLink("Welcome Homeowner!", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse" id="nav-main">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Create Service Request", "Create", "ServiceRequests")</li>
+                    <li class="dropdown" id="selector">
+                    <a href="javascript:void(0)" class="dropbtn">Service Request Manager</a>
+                    <div class="dropdown-content" id="myDropdown">
+                        @Html.ActionLink("Create Service Request", "Create", "ServiceRequests", null, new { onclick = "SetTextBoxValue()" })
+                        @Html.ActionLink("Check Active Service Requests", "GetHomeownerActiveRequests", "Homeowners", null, new { onclick = "SetTextBoxValue()" })
+                        @Html.ActionLink("Check Completed Service Requests", "GetHomeownerCompletedRequests", "Homeowners", null, new { onclick = "SetTextBoxValue()" })
+                        
+                    </div>
+                    </li>
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -41,6 +105,129 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+ <script>
+     if (!String.prototype.includes) {
+         String.prototype.includes = function (search, start) {
+             'use strict';
+             if (typeof start !== 'number') {
+                 start = 0;
+             }
+
+             if (start + search.length > this.length) {
+                 return false;
+             } else {
+                 return this.indexOf(search, start) !== -1;
+             }
+         };
+     }
+     function SetTextBoxValue() {
+         //$('.navbar-collapse').toggle();
+          // $('.nav').slideUp();
+         //$('#navi').toggle();
+         //$(".navbar-header").toggle();
+         //$(this).children("ul").slideUp();
+         //$('.navbar-toggle').toggle();
+         //$('#nav li').children('ul').slideToggle();
+         //var navMain = $("#nav-main");
+         //navMain.on("click", "a", null, function () {
+         //    navMain.collapse('hide');
+         //})
+         //var canSee = $("#nav-main").is(":visible");
+         //alert(canSee);
+         var x = $("#nav-main").hasClass('collapse');
+         if (x == false) {
+             $("#nav-main").collapse('hide');
+         }
+         var dropdowns = document.getElementsByClassName("dropdown-content");
+         for (var d = 0; d < dropdowns.length; d++) {
+             var openDropdown = dropdowns[d];
+             if (openDropdown.classList.contains('show')) {
+                 openDropdown.classList.remove('show');
+             }
+         }
+     }
+     $('.dropbtn').mouseenter(function (e) {
+         //alert("k")
+
+         document.getElementById("myDropdown").classList.toggle("show");
+         //alert("k")
+     })
+     $('.dropbtn').click(function (e) {
+         //alert("y")
+
+         document.getElementById("myDropdown").classList.toggle("show");
+     })
+
+ window.onmousemove = function (e) {
+     if (!Element.prototype.matches) {
+        Element.prototype.matches = 
+        Element.prototype.matchesSelector || 
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector || 
+        Element.prototype.oMatchesSelector || 
+        Element.prototype.webkitMatchesSelector ||
+        function(s) {
+            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                i = matches.length;
+            while (--i >= 0 && matches.item(i) !== this) {}
+            return i > -1;            
+        };
+}
+    if (!e.target.matches('.dropbtn')) {
+        //console.log(e.target)
+        var content = ($(e.target.parentNode).attr('class'));
+        //console.log(content)
+        
+            if ((content == undefined) || (!content.includes("dropdown-content"))) {
+                //alert("h")
+
+
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var d = 0; d < dropdowns.length; d++) {
+                    var openDropdown = dropdowns[d];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+      }
+ }
+ window.ontouchend = function (e) {
+     if (!Element.prototype.matches) {
+         Element.prototype.matches =
+         Element.prototype.matchesSelector ||
+         Element.prototype.mozMatchesSelector ||
+         Element.prototype.msMatchesSelector ||
+         Element.prototype.oMatchesSelector ||
+         Element.prototype.webkitMatchesSelector ||
+         function (s) {
+             var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                 i = matches.length;
+             while (--i >= 0 && matches.item(i) !== this) { }
+             return i > -1;
+         };
+     }
+     if (!e.target.matches('.dropbtn')) {
+         //console.log(e.target)
+         var content = ($(e.target.parentNode).attr('class'));
+         //console.log(content)
+
+         if ((content == undefined) || (!content.includes("dropdown-content"))) {
+             //alert("h")
+
+
+             var dropdowns = document.getElementsByClassName("dropdown-content");
+             for (var d = 0; d < dropdowns.length; d++) {
+                 var openDropdown = dropdowns[d];
+                 if (openDropdown.classList.contains('show')) {
+                     openDropdown.classList.remove('show');
+                 }
+             }
+         }
+     }
+ }
+</script>
 </body>
 </html>
 

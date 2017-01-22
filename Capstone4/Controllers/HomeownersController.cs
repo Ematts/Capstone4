@@ -30,6 +30,94 @@ namespace Capstone4.Controllers
             return View(homeowners.ToList());
         }
 
+        public ActionResult GetHomeownerCompletedRequests()
+        {
+            List<GetHomeOwnerCompletedRequetsViewModel> models = new List<GetHomeOwnerCompletedRequetsViewModel>();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Homeowner"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Homeowner homeowner = db.Homeowners.Where(x => x.UserId == identity).SingleOrDefault();
+            foreach (var i in db.ServiceRequests.ToList())
+            {
+                if ((i.HomeownerID == homeowner.ID) && (i.CompletionDate != null))
+                {
+                    GetHomeOwnerCompletedRequetsViewModel model = new GetHomeOwnerCompletedRequetsViewModel() {Invoice = i.Service_Number, Contractor = i.Contractor.Username, Address = i.Address.FullAddress, Description = i.Description, AmountPaid = i.Price, CompletionDate = i.CompletionDate, ID = i.ID  };
+                    if(i.PayPalListenerModelID != null)
+                    {
+                        model.PayPalIDNumber = i.PayPalListenerModelID;
+                    }
+                    models.Add(model);
+                }
+            }
+
+            return View(models);
+        }
+
+        public ActionResult GetHomeownerActiveRequests()
+        {
+            List<GetHomeownerActiveRequestsViewModel> models = new List<GetHomeownerActiveRequestsViewModel>();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+           
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Homeowner"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Homeowner homeowner = db.Homeowners.Where(x => x.UserId == identity).SingleOrDefault();
+            foreach (var i in db.ServiceRequests.ToList())
+            {
+
+                if (((i.HomeownerID == homeowner.ID) && (i.ContractorID != null) && (i.PayPalListenerModelID == null)) || ((i.Homeowner.ID == homeowner.ID) && (i.PostedDate != null) && (i.Expired != true)))
+                {
+                    GetHomeownerActiveRequestsViewModel model = new GetHomeownerActiveRequestsViewModel() { Invoice = i.Service_Number, Address = i.Address.FullAddress, Description = i.Description, Price = i.Price, ServiceID = i.ID, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline };
+                    List<ContractorAcceptance> AcceptList = new List<ContractorAcceptance>();
+                  
+
+                    var selectList = new SelectList(AcceptList, "Id", "Name");
+
+                    if (i.ContractorID != null)
+                    {
+                        model.Contractor = i.Contractor.Username;
+                    }
+
+                    if(i.CompletionDate != null)
+                    {
+                        model.CompletionDate = i.CompletionDate;
+                    }
+
+                    model.ContractorAcceptances = new List<SelectListItem>();
+                   
+
+                    foreach (var acceptance in db.ContractorAcceptances.ToList())
+                    {
+                        if(acceptance.ServiceRequestID == i.ID)
+                        {
+                            model.ContractorAcceptances.Add(new SelectListItem { Text = acceptance.ID.ToString(), Value = acceptance.Contractor.Username });
+                            
+                        }
+                    }
+                
+
+                    models.Add(model);
+                }
+            }
+
+            return View(models);
+        }
+
         // GET: Homeowners/Details/5
         public ActionResult Details(int? id)
         {
