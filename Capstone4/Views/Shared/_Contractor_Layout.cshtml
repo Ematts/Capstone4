@@ -19,16 +19,16 @@
                 </button>
                 @Html.ActionLink("Welcome Contractor!", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+            <div class="navbar-collapse collapse" id="nav-main">
+                <ul class="nav navbar-nav" id="linklist">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                     <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Messages <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
+                        <a href="javascript:void(0)" data-toggle="dropdown" id="selector" class="dropdown-toggle">Request Manager</a>
+                        <ul class="dropdown-menu" id="myDropdown">
                             <li>@Html.ActionLink("Check Open Service Requests", "GetOpenRequests", "Contractors")</li>
-                            <li>@Html.ActionLink("Check Active Service Requests", "GetContractorActiveRequests", "Contractors")</li>
+                            <li>@Html.ActionLink("Check Active Requests", "GetContractorActiveRequests", "Contractors")</li>
                             <li>@Html.ActionLink("Check Paid Service Requests", "GetContractorPaidRequests", "Contractors")</li>
                         </ul>
                     </li>
@@ -49,6 +49,141 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    
+    <script>
+        jQuery('ul.nav li.dropdown').hover(function () {
+            jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn();
+        }, function () {
+            jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut();
+        });
+    </script>
+    <script>
+        if (!String.prototype.includes) {
+            String.prototype.includes = function (search, start) {
+                'use strict';
+                if (typeof start !== 'number') {
+                    start = 0;
+                }
+
+                if (start + search.length > this.length) {
+                    return false;
+                } else {
+                    return this.indexOf(search, start) !== -1;
+                }
+            };
+        }
+        $('#myDropdown li').on('click', function(){
+            var childNode = this.childNodes[0];
+            var link = childNode.href;
+            var x = $("#nav-main").hasClass('collapse');
+            if (x == false) {
+                $("#nav-main").collapse('hide');
+             }
+             $("#myDropdown").dropdown("toggle");
+             window.location = link;
+            
+        });
+        $('#linklist').on('click', function (e) {
+            var parent = ($(e.target.parentNode).attr('class'));
+
+            if (parent == undefined) {
+                parent = "placeholder"
+            }
+
+            var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+            if (grandparent == undefined) {
+                grandparent = "placeholder"
+            }
+
+            if ((parent != "dropdown") && (grandparent != "dropdown-menu") && (parent != "dropdown open")) {
+
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    $("#nav-main").collapse('hide');
+                }
+            }
+
+        });
+
+   </script>
+    <script>
+        window.ontouchend = function (e) {
+            if ($(".dropdown").hasClass('open')) {
+                
+                var parent = ($(e.target.parentNode).attr('class'));
+
+                if (parent == undefined) {
+                    parent = "placeholder"
+                }
+
+                var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+                if (grandparent == undefined) {
+                    grandparent = "placeholder"
+                }
+
+                if ((parent != "dropdown") && (grandparent != "dropdown-menu")) {
+                    $("#myDropdown").dropdown("toggle");
+                }
+            
+                if (parent == "dropdown open") {
+                    $("#myDropdown").dropdown("toggle");
+                }
+
+            }
+        }
+    </script>
+    <script>
+        $('#loggedinlist').on('click', function (e) {
+            var parent = ($(e.target.parentNode).attr('class'));
+
+            if (parent == undefined) {
+                parent = "placeholder"
+            }
+            var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+            if (grandparent == undefined) {
+                grandparent = "placeholder"
+            }
+
+            if ((parent != "dropdown") && (grandparent != "dropdown-menu") && (parent != "dropdown open")) {
+
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    $("#nav-main").collapse('hide');
+                }
+            }
+
+        });
+
+
+    </script>
+    <script>
+        $('#loggedoutlist').on('click', function (e) {
+            var parent = ($(e.target.parentNode).attr('class'));
+
+            if (parent == undefined) {
+                parent = "placeholder"
+            }
+            var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+            if (grandparent == undefined) {
+                grandparent = "placeholder"
+            }
+
+            if ((parent != "dropdown") && (grandparent != "dropdown-menu") && (parent != "dropdown open")) {
+
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    $("#nav-main").collapse('hide');
+                }
+            }
+
+        });
+
+
+    </script>
 </body>
 </html>
 
