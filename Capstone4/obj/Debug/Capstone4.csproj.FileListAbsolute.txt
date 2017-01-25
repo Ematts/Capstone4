@@ -119,3 +119,5 @@ C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.f1.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.f2.resources
 C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d3.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.dd.resources
+C:\Users\erick\OneDrive\Documents\Visual Studio 2015\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.bb1.resources

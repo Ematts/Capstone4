@@ -1,0 +1,249 @@
+﻿@model IEnumerable<Capstone4.Models.GetHomeownerReviewsViewModel>
+
+@{
+    ViewBag.Title = "GetHomeownerReviews";
+}
+
+<h2>My Reviews</h2>
+<div>
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Service Number</a> - <a class="toggle-vis" data-column="1">Contractor</a> - <a class="toggle-vis" data-column="2">Rating</a> - <a class="toggle-vis" data-column="3">Review Date</a> - <a class="toggle-vis" data-column="4">Response</a> - <a class="toggle-vis" data-column="5">Remove</a>
+</div>
+<br />
+<div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
+<br />
+<table class="table" id="homeTable">
+  <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Invoice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contractor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReviewDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Response)
+        </th>
+        <th>Remove</th>
+        <th></th>
+    </tr>
+   </thead>
+    <tbody>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Invoice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contractor)
+        </td>
+        <td>
+            <input id="input-id" type="number" value="@item.Rating" class="rating" data-size="xs" name="Rating" data-readonly="true" data-show-clear="false">
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReviewDate)
+        </td>
+        <td>
+            <div class="replyDiv">
+                <input type="button" value="Show Contractor Reply" id="but2" class="btn btn-info btn-sm showResponse" />
+                <input id="#reply" class="reply" type="hidden" value="@item.Response" />
+                <input id="#reply2" class="reply2" type="hidden" value="@item.ResponseDate" />
+            </div>
+        </td>
+        <td><button id="but1" type="button" class="btn btn-info btn-sm removeRow">Remove this row</button></td>
+        <td>
+            @item.Rating
+        </td>
+    </tr>
+}
+</tbody>
+</table>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
+<link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
+<link href="~/Content/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
+<script src="~/Scripts/star-rating.js" type="text/javascript"></script>
+<link href="~/Content/theme-krajee-svg.css" media="all" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/theme-krajee-svg.js"></script>
+<link href="~/Content/DataTables.css" media="all" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/DataTables.js" type="text/javascript"></script>
+<script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            for (var i = 0; i < $(".replyDiv").children(".reply").length; i++) {
+                if ($(".replyDiv").children(".reply")[i].value == "") {
+                    $(".replyDiv").children(".showResponse")[i].disabled = true;
+                    $(".replyDiv").children(".showResponse")[i].value = "No Response added";
+                }
+            }
+
+        });
+
+        $.extend(true, $.fn.dataTable.defaults, {
+            "columnDefs": [
+                { "orderable": false, "targets": 4 },
+                { "orderable": false, "targets": 5 },
+                { "orderData": [6], "targets": [2] },
+                {
+                    "targets": [6],
+                    "visible": false,
+                    "searchable": false
+                }
+            ]
+        });
+
+
+
+        $(function () {
+            var isMouseDown = false,
+              isSelected;
+            $("#homeTable tr")
+              .mousedown(function () {
+                  isMouseDown = true;
+                  $(this).toggleClass("selected");
+                  isSelected = $(this).hasClass("selected");
+                  return false; // prevent text selection
+              })
+              .mouseover(function () {
+                  if (isMouseDown) {
+                      $(this).toggleClass("selected", isSelected);
+                  }
+              })
+              .bind("selectstart", function () {
+                  return false;
+              })
+
+            $(document)
+              .mouseup(function () {
+                  isMouseDown = false;
+              });
+        });
+
+        $(document).on("click", ".showResponse", function () {
+            //var dWidth = $(window).width() * 0.38;
+            //var dHeight = $(window).height() * 0.4;
+            var reply = $(this).siblings('.reply').attr('value');
+            var replyDate = $(this).siblings('.reply2').attr('value');
+            var div = $('<div></div>');
+            var outputMsg = "Replied on: " + replyDate + "<br> <br>" + reply;
+            div.html(outputMsg).dialog({
+                title: "Contractor Response",
+                height: 'auto',
+                width: 'auto',
+                maxWidth: 600,
+                autoOpen: true,
+                resizable: true,
+                fluid: true,
+                modal: true,
+                buttons: {
+                    "CLOSE":
+                          function () {
+                              $(this).dialog('close');
+                          }
+                }
+            });
+
+        });
+
+        // on window resize run function
+        $(window).resize(function () {
+            fluidDialog();
+        });
+
+        // catch dialog if opened within a viewport smaller than the dialog width
+        $(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+            fluidDialog();
+        });
+
+        function fluidDialog() {
+            var $visible = $(".ui-dialog:visible");
+            // each open dialog
+            $visible.each(function () {
+                var $this = $(this);
+                var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+                // if fluid option == true
+                if (dialog.options.fluid) {
+                    var wWidth = $(window).width();
+                    // check window width against dialog width
+                    if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                        // keep dialog from filling entire screen
+                        $this.css("max-width", "90%");
+                    } else {
+                        // fix maxWidth bug
+                        $this.css("max-width", dialog.options.maxWidth + "px");
+                    }
+                    //reposition dialog
+                    dialog.option("position", dialog.options.position);
+                }
+            });
+
+        }
+
+        $(document).on("click", ".removeRow", function () {
+            var table = $('#homeTable').DataTable();
+            var row;
+            console.log($(this).closest('table'));
+            if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 0)) {
+                var child = $(this).parents("tr.child");
+                row = $(child).siblings(".parent");
+            } else {
+                row = $(this).parents('tr');
+            }
+
+            table.row(row).remove().draw();
+
+        });
+
+        $(document).ready(function () {
+            var table = $('#homeTable').DataTable({
+                scrollY: "500px",
+                //scrollX: true,
+                responsive: true,
+                scrollCollapse: true,
+                paging: true,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+
+
+            });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+            $('#cutSelectedButton').click(function () {
+                table.rows('.selected').remove().draw();
+            });
+            $('#cropSelectedButton').click(function () {
+                table.$('tr').toggleClass('selected');
+                table.rows('.selected').remove().draw();
+            });
+
+            $('#refresh').click(function () {
+                location.reload(true);
+            });
+
+        });
+
+
+    </script>
+
+}

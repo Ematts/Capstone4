@@ -325,6 +325,14 @@
     <Compile Include="Migrations\201701112302342_d3.Designer.cs">
       <DependentUpon>201701112302342_d3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701252012132_dd.cs" />
+    <Compile Include="Migrations\201701252012132_dd.Designer.cs">
+      <DependentUpon>201701252012132_dd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701252029526_bb1.cs" />
+    <Compile Include="Migrations\201701252029526_bb1.Designer.cs">
+      <DependentUpon>201701252029526_bb1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -341,6 +349,7 @@
     <Compile Include="Models\GetContractorPaidRequestsViewModel.cs" />
     <Compile Include="Models\GetHomeownerActiveRequestsViewModel.cs" />
     <Compile Include="Models\GetHomeOwnerCompletedRequetsViewModel.cs" />
+    <Compile Include="Models\GetHomeownerReviewsViewModel.cs" />
     <Compile Include="Models\ManualValidateViewModel.cs" />
     <Compile Include="Models\PayPalCheckoutInfo.cs" />
     <Compile Include="Models\PayPalListenerModel.cs" />
@@ -572,6 +581,7 @@
     <Content Include="Views\Contractors\GetContractorPaidRequests.cshtml" />
     <Content Include="Views\Homeowners\GetHomeownerCompletedRequests.cshtml" />
     <Content Include="Views\Homeowners\GetHomeownerActiveRequests.cshtml" />
+    <Content Include="Views\Homeowners\GetHomeownerReviews.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -623,6 +633,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701112302342_d3.resx">
       <DependentUpon>201701112302342_d3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701252012132_dd.resx">
+      <DependentUpon>201701252012132_dd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701252029526_bb1.resx">
+      <DependentUpon>201701252029526_bb1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

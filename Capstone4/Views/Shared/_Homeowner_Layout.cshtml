@@ -4,67 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-
-    <style>
-       #navi ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            /*//background-color: #333;*/
-        }
-
-       #navi li {
-            float: left;
-        }
-
-           #navi li a, .dropbtn {
-                display: inline-block;
-                color: white;
-                text-align: center;
-                padding: 14px 16px;
-                text-decoration: none;
-            }
-
-                /*li a:hover, .dropdown:hover .dropbtn {
-                    background-color: blue;
-                }*/
-
-           #navi li.dropdown {
-                display: inline-block;
-            }
-
-        #navi .dropdown-content {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        }
-
-            #navi .dropdown-content a {
-                color: black;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-                text-align: left;
-            }
-
-                #navi .dropdown-content a:hover {
-                    background-color: #f1f1f1;
-                }
-
-        #navi .show {
-            display: block;
-        }
-    </style>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
     
-    <div class="navbar navbar-inverse navbar-fixed-top" id="navi">
+    <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -75,18 +20,19 @@
                 @Html.ActionLink("Welcome Homeowner!", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse" id="nav-main">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" id="linklist">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li class="dropdown" id="selector">
-                    <a href="javascript:void(0)" class="dropbtn">Service Request Manager</a>
-                    <div class="dropdown-content" id="myDropdown">
-                        @Html.ActionLink("Create Service Request", "Create", "ServiceRequests", null, new { onclick = "SetTextBoxValue()" })
-                        @Html.ActionLink("Check Active Service Requests", "GetHomeownerActiveRequests", "Homeowners", null, new { onclick = "SetTextBoxValue()" })
-                        @Html.ActionLink("Check Completed Service Requests", "GetHomeownerCompletedRequests", "Homeowners", null, new { onclick = "SetTextBoxValue()" })
-                        
-                    </div>
+                    <li class="dropdown">
+                        <a href="javascript:void(0)" data-toggle="dropdown" id="selector" class="dropdown-toggle">My Tools</a>
+                        <ul class="dropdown-menu" id="myDropdown">
+                            <li>@Html.ActionLink("See Contractor List", "ReviewsIndex", "Contractors")</li>
+                            <li>@Html.ActionLink("Create Service Request", "Create", "ServiceRequests")</li>
+                            <li>@Html.ActionLink("Check Active Service Requests", "GetHomeownerActiveRequests", "Homeowners")</li>
+                            <li>@Html.ActionLink("Check Completed Service Requests", "GetHomeownerCompletedRequests", "Homeowners")<li/>
+                            <li>@Html.ActionLink("See My Reviews", "GetHomeownerReviews", "Homeowners")<li />
+                        </ul>
                     </li>
 
                 </ul>
@@ -106,142 +52,140 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
- <script>
-     if (!String.prototype.includes) {
-         String.prototype.includes = function (search, start) {
-             'use strict';
-             if (typeof start !== 'number') {
-                 start = 0;
+    <script>
+        jQuery('ul.nav li.dropdown').hover(function () {
+            jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn();
+        }, function () {
+            jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut();
+        });
+    </script>
+    <script>
+        if (!String.prototype.includes) {
+            String.prototype.includes = function (search, start) {
+                'use strict';
+                if (typeof start !== 'number') {
+                    start = 0;
+                }
+
+                if (start + search.length > this.length) {
+                    return false;
+                } else {
+                    return this.indexOf(search, start) !== -1;
+                }
+            };
+        }
+        $('#myDropdown li').on('click', function(){
+            var childNode = this.childNodes[0];
+            var link = childNode.href;
+            var x = $("#nav-main").hasClass('collapse');
+            if (x == false) {
+                $("#nav-main").collapse('hide');
              }
+             $("#myDropdown").dropdown("toggle");
+             window.location = link;
 
-             if (start + search.length > this.length) {
-                 return false;
-             } else {
-                 return this.indexOf(search, start) !== -1;
-             }
-         };
-     }
-     function SetTextBoxValue() {
-         //$('.navbar-collapse').toggle();
-          // $('.nav').slideUp();
-         //$('#navi').toggle();
-         //$(".navbar-header").toggle();
-         //$(this).children("ul").slideUp();
-         //$('.navbar-toggle').toggle();
-         //$('#nav li').children('ul').slideToggle();
-         //var navMain = $("#nav-main");
-         //navMain.on("click", "a", null, function () {
-         //    navMain.collapse('hide');
-         //})
-         //var canSee = $("#nav-main").is(":visible");
-         //alert(canSee);
-         var x = $("#nav-main").hasClass('collapse');
-         if (x == false) {
-             $("#nav-main").collapse('hide');
-         }
-         var dropdowns = document.getElementsByClassName("dropdown-content");
-         for (var d = 0; d < dropdowns.length; d++) {
-             var openDropdown = dropdowns[d];
-             if (openDropdown.classList.contains('show')) {
-                 openDropdown.classList.remove('show');
-             }
-         }
-     }
-     $('.dropbtn').mouseenter(function (e) {
-         //alert("k")
+        });
+        $('#linklist').on('click', function (e) {
+            var parent = ($(e.target.parentNode).attr('class'));
 
-         document.getElementById("myDropdown").classList.toggle("show");
-         //alert("k")
-     })
-     $('.dropbtn').click(function (e) {
-         //alert("y")
+            if (parent == undefined) {
+                parent = "placeholder"
+            }
 
-         document.getElementById("myDropdown").classList.toggle("show");
-     })
+            var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
 
- window.onmousemove = function (e) {
-     if (!Element.prototype.matches) {
-        Element.prototype.matches = 
-        Element.prototype.matchesSelector || 
-        Element.prototype.mozMatchesSelector ||
-        Element.prototype.msMatchesSelector || 
-        Element.prototype.oMatchesSelector || 
-        Element.prototype.webkitMatchesSelector ||
-        function(s) {
-            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-                i = matches.length;
-            while (--i >= 0 && matches.item(i) !== this) {}
-            return i > -1;            
-        };
-}
-    if (!e.target.matches('.dropbtn')) {
-        //console.log(e.target)
-        var content = ($(e.target.parentNode).attr('class'));
-        //console.log(content)
-        
-            if ((content == undefined) || (!content.includes("dropdown-content"))) {
-                //alert("h")
+            if (grandparent == undefined) {
+                grandparent = "placeholder"
+            }
 
+            if ((parent != "dropdown") && (grandparent != "dropdown-menu") && (parent != "dropdown open")) {
 
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var d = 0; d < dropdowns.length; d++) {
-                    var openDropdown = dropdowns[d];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    $("#nav-main").collapse('hide');
                 }
             }
-      }
- }
- window.ontouchend = function (e) {
-     if (!Element.prototype.matches) {
-         Element.prototype.matches =
-         Element.prototype.matchesSelector ||
-         Element.prototype.mozMatchesSelector ||
-         Element.prototype.msMatchesSelector ||
-         Element.prototype.oMatchesSelector ||
-         Element.prototype.webkitMatchesSelector ||
-         function (s) {
-             var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-                 i = matches.length;
-             while (--i >= 0 && matches.item(i) !== this) { }
-             return i > -1;
-         };
-     }
-     if (!String.prototype.includes) {
-         String.prototype.includes = function (search, start) {
-             'use strict';
-             if (typeof start !== 'number') {
-                 start = 0;
-             }
 
-             if (start + search.length > this.length) {
-                 return false;
-             } else {
-                 return this.indexOf(search, start) !== -1;
-             }
-         };
-     }
-     if (!e.target.matches('.dropbtn')) {
-         //console.log(e.target)
-         var content = ($(e.target.parentNode).attr('class'));
-         //console.log(content)
+        });
 
-         if ((content == undefined) || (!content.includes("dropdown-content"))) {
-             //alert("h")
+    </script>
+    <script>
+        window.ontouchend = function (e) {
+            if ($(".dropdown").hasClass('open')) {
+
+                var parent = ($(e.target.parentNode).attr('class'));
+
+                if (parent == undefined) {
+                    parent = "placeholder"
+                }
+
+                var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+                if (grandparent == undefined) {
+                    grandparent = "placeholder"
+                }
+
+                if ((parent != "dropdown") && (grandparent != "dropdown-menu")) {
+                    $("#myDropdown").dropdown("toggle");
+                }
+
+                if (parent == "dropdown open") {
+                    $("#myDropdown").dropdown("toggle");
+                }
+
+            }
+        }
+    </script>
+    <script>
+        $('#loggedinlist').on('click', function (e) {
+            var parent = ($(e.target.parentNode).attr('class'));
+
+            if (parent == undefined) {
+                parent = "placeholder"
+            }
+            var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+            if (grandparent == undefined) {
+                grandparent = "placeholder"
+            }
+
+            if ((parent != "dropdown") && (grandparent != "dropdown-menu") && (parent != "dropdown open")) {
+
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    $("#nav-main").collapse('hide');
+                }
+            }
+
+        });
 
 
-             var dropdowns = document.getElementsByClassName("dropdown-content");
-             for (var d = 0; d < dropdowns.length; d++) {
-                 var openDropdown = dropdowns[d];
-                 if (openDropdown.classList.contains('show')) {
-                     openDropdown.classList.remove('show');
-                 }
-             }
-         }
-     }
- }
-</script>
+    </script>
+    <script>
+        $('#loggedoutlist').on('click', function (e) {
+            var parent = ($(e.target.parentNode).attr('class'));
+
+            if (parent == undefined) {
+                parent = "placeholder"
+            }
+            var grandparent = ($(e.target.parentNode.parentNode).attr('class'));
+
+            if (grandparent == undefined) {
+                grandparent = "placeholder"
+            }
+
+            if ((parent != "dropdown") && (grandparent != "dropdown-menu") && (parent != "dropdown open")) {
+
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    $("#nav-main").collapse('hide');
+                }
+            }
+
+        });
+
+
+    </script>
 </body>
 </html>
 
