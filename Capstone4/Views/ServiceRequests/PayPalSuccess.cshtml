@@ -11,6 +11,7 @@
     <hr />
     @{string mail = Model.Homeowner.ApplicationUser.Email; }
     @{string status = Model.PayPalListenerModel._PayPalCheckoutInfo.payment_status;  }
+    @{string payID = Model.PayPalListenerModel._PayPalCheckoutInfo.txn_id; }
     <div id="divProcessing">
         <p>Processing, please wait . . . <img src="../../Content/ajax-loader.gif"></p>
     </div>
@@ -37,6 +38,13 @@
 
         <dd>
             <input id="paystatus" value="@status"  style="border:none" readonly>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.txn_id)
+        </dt>
+
+        <dd>
+            <input id="paystatus" value="@payID" style="border:none" readonly>
         </dd>
 
 

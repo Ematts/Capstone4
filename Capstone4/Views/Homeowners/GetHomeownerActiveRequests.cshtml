@@ -79,6 +79,7 @@
                 <td>
                     <div class="replyDiv">
                         @Html.DropDownListFor(modelItem => item.ContractorAcceptances, new SelectList(item.ContractorAcceptances, "Text", "Value"), "  -----Select List-----  ")
+                        <input id="#reply2" class="reply2" type="hidden" value="@item.Contractor" />
                     </div>
 
                 </td>
@@ -215,11 +216,18 @@
             var selectedText = $(this).find("option:selected").text();
             var selectedValue = $(this).val();
             value = selectedValue;
+            var con = $(this).siblings('.reply2').attr('value');
+            var serviceId = $(this).siblings('.reply3').attr('value');
             for (var i = 0; i < $(".replyDiv").children("#item_ContractorAcceptances").length; i++) {
                 var dropDown = $(".replyDiv").children("#item_ContractorAcceptances")[i];
                 dropDown.selectedIndex = 0;
             }
-            window.location.href = "@Url.Action("Details", "ContractorAcceptances")" + "?id=" + value;
+            if (con == undefined) {
+                window.location.href = "@Url.Action("NotifyHomeownerView", "ContractorAcceptances")" + "?id=" + value;
+            }
+            if (con != undefined) {
+                window.location.href = "@Url.Action("Details", "ContractorAcceptances")" + "?id=" + value;
+            }
 
 
         })

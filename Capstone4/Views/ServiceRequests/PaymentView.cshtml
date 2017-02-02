@@ -50,13 +50,14 @@
                     data: formdata,
                     success: function (response, textStatus, jqXHR) {
                         if (response.success == "go") {
-                            window.location = "http://86da92ec.ngrok.io/ServiceRequests/PayPalSuccess/" + response.id;
+                            
+                            window.location.href = "@Url.Action("PayPalSuccess", "ServiceRequests")" + "?id=" + response.id;
                         }
                         if (response.success == "stay") {
                             console.log("payment attempt cancelled")
                         }
                         if (response.success == "fail") {
-                            window.location = "http://86da92ec.ngrok.io/ServiceRequests/PaymentFailure/" + response.id;
+                            window.location.href = "@Url.Action("PaymentFailure", "ServiceRequests")" + "?id=" + response.id;
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {

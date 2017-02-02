@@ -8,7 +8,7 @@
 
 
 <div>
-    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Invoice</a> - <a class="toggle-vis" data-column="1">Contractor</a> - <a class="toggle-vis" data-column="2">Address</a> - <a class="toggle-vis" data-column="3">Description</a> - <a class="toggle-vis" data-column="4">Completion Date</a> - <a class="toggle-vis" data-column="5">Amount Due</a> - <a class="toggle-vis" data-column="6">PayPal ID Number</a> 
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Invoice</a> - <a class="toggle-vis" data-column="1">Contractor</a> - <a class="toggle-vis" data-column="2">Address</a> - <a class="toggle-vis" data-column="3">Description</a> - <a class="toggle-vis" data-column="4">Completion Date</a> - <a class="toggle-vis" data-column="5">Amount Due</a> - <a class="toggle-vis" data-column="6">PayPal ID Number</a> - <a class="toggle-vis" data-column="7">Review Details</a>
 </div>
 <br />
 <div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
@@ -37,6 +37,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.PayPalIDNumber)
             </th>
+            <th>Review Details</th>
+            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -72,12 +74,23 @@
                     </div>
                 </td>
                 <td>
+                    <div class="reviewDiv">
+                        <input type="button" value="Review" id="but3" class="btn btn-info btn-sm showReview" />
+                        <input id="#review1" class="review1" type="hidden" value="@item.PayPalIDNumber" />
+                        <input id="#review2" class="review2" type="hidden" value="@item.ReviewID" />
+                        <input id="#review3" class="review3" type="hidden" value="@item.Invoice" />
+                    </div>
+                </td>
+                <td>
                    
                     @Html.ActionLink("Details", "Details", "ServiceRequests", new { id=item.ID}, null) 
                     
                 </td>
                 <td>
                     @item.PayPalIDNumber
+                </td>
+                <td>
+                    @item.ReviewID
                 </td>
             </tr>
         }
@@ -90,7 +103,36 @@
     <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
     <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
     
-    
+    <script>
+
+        $(document).ready(function () {
+        for (var i = 0; i < $(".reviewDiv").children(".review1").length; i++) {
+            if (($(".reviewDiv").children(".review1")[i].value != "") && ($(".reviewDiv").children(".review2")[i].value == "")) {
+                $(".reviewDiv").children(".showReview")[i].style.backgroundColor = '#008000';
+                $(".reviewDiv").children(".showReview")[i].value = "Add Review";
+            }
+            if (($(".reviewDiv").children(".review1")[i].value != "") && ($(".reviewDiv").children(".review2")[i].value != "")) {
+                $(".reviewDiv").children(".showReview")[i].style.backgroundColor = '#FF0000';
+                $(".reviewDiv").children(".showReview")[i].value = "See Review";
+            }
+            if ($(".reviewDiv").children(".review1")[i].value == "") {
+                $(".reviewDiv").children(".showReview")[i].disabled = true;
+                $(".reviewDiv").children(".showReview")[i].value = "No Review Available";
+            }
+        }
+        });
+        $(document).on("click", ".showReview", function () {
+                var paypalID = $(this).siblings('.review1').attr('value');
+                var reviewID = $(this).siblings('.review2').attr('value');
+                var invoice = $(this).siblings('.review3').attr('value');
+                if ((paypalID != undefined) && (reviewID == undefined)) {
+                    window.location.href = "@Url.Action("AddReview", "ServiceRequests")" + "?id=" + invoice;
+                }
+                if ((paypalID != undefined) && (reviewID != undefined)) {
+                    window.location.href = "@Url.Action("HomeownerReviewDetails", "Homeowners")" + "?id=" + invoice;
+                }
+        })
+    </script>
     <script>
 
         $(document).ready(function () {
@@ -116,13 +158,20 @@
 <script>
         $.extend(true, $.fn.dataTable.defaults, {
             "columnDefs": [
-                { "orderable": false, "targets": 7 },
-                { "orderData": [8], "targets": [6] },
+                { "orderable": false, "targets": 8 },
+                { "orderData": [9], "targets": [6] },
+                { "orderData": [10], "targets": [7] },
                  {
-                     "targets": [8],
+                     "targets": [9],
                      "visible": false,
                      "searchable": false
-                 }
+                 },
+                  {
+                      "targets": [10],
+                      "visible": false,
+                      "searchable": false
+                  }
+                                 
             ]
         });
 

@@ -25,7 +25,7 @@
         <input id="checkState" name="checkState" type="hidden" value="" />
         <input id="UTCDate" name="UTCDate" type="hidden" value="" />
         <input id="AmbigTime" name="AmbigTime" type="hidden" value="" />
-        <input id="X-ID" name="checkState" type="hidden" value="" />
+        <input id="Proceed" name="checkState" type="hidden" value="" />
 
 
         <br />
@@ -181,8 +181,6 @@
         </div>
         
 
-        @*<div id="selectedFiles"></div>*@
-
         <div class="picList">
             <div id="dropbox" style="border:1px solid black;height:135px;overflow: auto;">
                  Drop Here
@@ -200,9 +198,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-    @*<script src="~/Scripts/preview.js" type="text/javascript"></script>*@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-    @*<link rel="stylesheet" href="~/Content/preview.css" />*@
 
 <style type="text/css">
     #dropbox img {
@@ -280,21 +276,7 @@
         document.getElementById("checkState").value = document.getElementById("Address_State").value;
     });
 </script>
-@*<script>
-    $(function () {
-        $('#CompletionDeadline').rules().remote.complete = function (xhr) {
-            if (xhr.status == 200 && xhr.responseText === 'true') {
-                // validation succeeded => we fetch the id that
-                // was sent from the server
-                var id = xhr.getResponseHeader('X-ID');
 
-                // and of course we do something useful with this id
-                //alert(id);
-                document.getElementById("Timezone").value = id;
-            }
-        };
-    });
-  </script>*@
 <script>
     $(document).on("dialogopen", ".ui-dialog", function (event, ui) {
         fluidDialog();
@@ -359,23 +341,16 @@
     $(function () {
         $('#CompletionDeadline').rules().remote.complete = function (xhr) {
             if (xhr.status == 200 && xhr.responseText === 'true') {
-                // validation succeeded => we fetch the id that
-                // was sent from the server
                 var id = xhr.getResponseHeader('X-ID');
-
-                // and of course we do something useful with this id
-                //alert(id);
+                var proceed = xhr.getResponseHeader('Continue');
                 document.getElementById("Timezone").value = id;
+                document.getElementById("Proceed").value = proceed;
+
             }
             if (xhr.status == 200 && xhr.responseText !== 'true') {
-                //var id = xhr.getResponseHeader('Y-ID');
-                //var stand = document.getElementById("standardTime");
-                //var day = document.getElementById("DaylightSavingsTime");
                 var id = xhr.getResponseHeader('Z-ID');
                 var StandardId = xhr.getResponseHeader('Standard-ID');
                 var DSTID = xhr.getResponseHeader('DST-ID');
-                //alert(StandardId);
-                //alert(DSTID);
                 if (id == "ambigError") {
                     var titleMsg = "You have entered an ambiguous time.";
                     var div = $('<div></div>');
@@ -393,11 +368,6 @@
                             var day = document.getElementById("DaylightSavingsTime");
                             if (day.checked == true) {
                                 document.getElementById("UTCDate").value = DSTID;
-                                //alert(document.getElementById("UTCDate").value);
-
-                                //$("CompletionDeadline").val(DSTID);
-                                //document.getElementById("CompletionDeadline").value = DSTID;
-                                //document.getElementById("AmbigTime").value = "Daylight Savings Time is effect for this service request";
                                 document.getElementById("AmbigTime").value = "--(Daylight Savings Time is in effect for this service request)";
                                 $('#CompletionDeadline').removeData('previousValue');
                                 $('#CompletionDeadline').valid();
@@ -421,10 +391,6 @@
                             var day = document.getElementById("DaylightSavingsTime");
                             if (day.checked == true) {
                                 document.getElementById("UTCDate").value = DSTID;
-                                //alert(document.getElementById("UTCDate").value);
-
-                                //$("CompletionDeadline").val(DSTID);
-                                //document.getElementById("CompletionDeadline").value = DSTID;
                                 document.getElementById("AmbigTime").value = "--(Daylight Savings Time is effect for this service request)";
                                 $('#CompletionDeadline').removeData('previousValue');
                                 $('#CompletionDeadline').valid();
@@ -449,17 +415,15 @@
     
 </script>
     <script>
-        $("#myform").on("change", "checkbox", function () {
-            alert("change");
-        });
-    </script>
-    <script>
         $("#Address_Street").change(function () {
             if ($("#UTCDate").val() != "") {
                 document.getElementById("UTCDate").value = "";
             }
             if ($("#AmbigTime").val() != "") {
                 document.getElementById("AmbigTime").value = "";
+            }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
             }
             if ($("#CompletionDeadline").val() != "") {
                 $('#CompletionDeadline').removeData('previousValue');
@@ -473,6 +437,9 @@
             if ($("#AmbigTime").val() != "") {
                 document.getElementById("AmbigTime").value = "";
             }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
             if ($("#CompletionDeadline").val() != "") {
                 $('#CompletionDeadline').removeData('previousValue');
                 $('#CompletionDeadline').valid();
@@ -485,6 +452,9 @@
             if ($("#AmbigTime").val() != "") {
                 document.getElementById("AmbigTime").value = "";
             }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
             if ($("#CompletionDeadline").val() != "") {
                 $('#CompletionDeadline').removeData('previousValue');
                 $('#CompletionDeadline').valid();
@@ -496,6 +466,9 @@
             }
             if ($("#UTCDate").val() != "") {
                 document.getElementById("UTCDate").value = "";
+            }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
             }
         });
     </script>

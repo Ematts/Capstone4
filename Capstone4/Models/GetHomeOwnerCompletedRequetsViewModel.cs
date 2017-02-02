@@ -20,6 +20,7 @@ namespace Capstone4.Models
         [Display(Name = "Payment ID")]
         public int? PayPalIDNumber { get; set; }
         public int? ID { get; set; }
+        public int? ReviewID { get; set; }
 
     }
 }

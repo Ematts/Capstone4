@@ -333,6 +333,22 @@
     <Compile Include="Migrations\201701252029526_bb1.Designer.cs">
       <DependentUpon>201701252029526_bb1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701301935420_d4.cs" />
+    <Compile Include="Migrations\201701301935420_d4.Designer.cs">
+      <DependentUpon>201701301935420_d4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701311656174_f3.cs" />
+    <Compile Include="Migrations\201701311656174_f3.Designer.cs">
+      <DependentUpon>201701311656174_f3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701311719454_dd1.cs" />
+    <Compile Include="Migrations\201701311719454_dd1.Designer.cs">
+      <DependentUpon>201701311719454_dd1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702011810070_f4.cs" />
+    <Compile Include="Migrations\201702011810070_f4.Designer.cs">
+      <DependentUpon>201702011810070_f4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -353,6 +369,7 @@
     <Compile Include="Models\ManualValidateViewModel.cs" />
     <Compile Include="Models\PayPalCheckoutInfo.cs" />
     <Compile Include="Models\PayPalListenerModel.cs" />
+    <Compile Include="Models\ReviewDetailsViewModel.cs" />
     <Compile Include="Models\ReviewResponse.cs" />
     <Compile Include="Models\SeeContractorReviewViewModel.cs" />
     <Compile Include="Models\FileType.cs" />
@@ -582,6 +599,8 @@
     <Content Include="Views\Homeowners\GetHomeownerCompletedRequests.cshtml" />
     <Content Include="Views\Homeowners\GetHomeownerActiveRequests.cshtml" />
     <Content Include="Views\Homeowners\GetHomeownerReviews.cshtml" />
+    <Content Include="Views\ServiceRequests\Expired.cshtml" />
+    <Content Include="Views\Homeowners\HomeownerReviewDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -639,6 +658,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701252029526_bb1.resx">
       <DependentUpon>201701252029526_bb1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701301935420_d4.resx">
+      <DependentUpon>201701301935420_d4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701311656174_f3.resx">
+      <DependentUpon>201701311656174_f3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701311719454_dd1.resx">
+      <DependentUpon>201701311719454_dd1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702011810070_f4.resx">
+      <DependentUpon>201702011810070_f4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

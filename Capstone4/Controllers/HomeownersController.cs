@@ -60,7 +60,38 @@ namespace Capstone4.Controllers
             }
             return View(models);
         }
-        
+        public ActionResult HomeownerReviewDetails(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ServiceRequest serviceRequests = db.ServiceRequests.Find(id);
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Homeowner"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (serviceRequests.Homeowner.UserId != identity)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            ReviewDetailsViewModel model = new ReviewDetailsViewModel() {Invoice = serviceRequests.ID, Contractor = serviceRequests.Contractor.Username, Rating = serviceRequests.ContractorReview.Rating, Review = serviceRequests.ContractorReview.Review, ReviewDate = serviceRequests.ContractorReview.ReviewDate };
+
+            if(serviceRequests.ContractorReview.ReviewResponseID != null)
+            {
+                model.Response = serviceRequests.ContractorReview.ReviewResponse.Response;
+            }
+
+            return View(model);
+        }
         public ActionResult GetHomeownerCompletedRequests()
         {
             List<GetHomeOwnerCompletedRequetsViewModel> models = new List<GetHomeOwnerCompletedRequetsViewModel>();
@@ -84,6 +115,10 @@ namespace Capstone4.Controllers
                     if(i.PayPalListenerModelID != null)
                     {
                         model.PayPalIDNumber = i.PayPalListenerModelID;
+                    }
+                    if(i.ContractorReviewID != null)
+                    {
+                        model.ReviewID = i.ContractorReviewID;
                     }
                     models.Add(model);
                 }

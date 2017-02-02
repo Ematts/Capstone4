@@ -17,5 +17,6 @@ namespace Capstone4.Models
         public virtual ServiceRequest ServiceRequest { get; set; }
         [Display(Name = "Acceptance Date")]
         public DateTime AcceptanceDate { get; set; }
+        public string AcceptanceAmbigTime { get; set; }
     }
 }

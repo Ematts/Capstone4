@@ -52,6 +52,7 @@ namespace Capstone4.Models
         public bool ContractorPaid { get; set; }
         public int? PayPalListenerModelID { get; set; }
         public string AmbigTime { get; set; }
+        public string CompletionAmbigTime { get; set; }
         public virtual PayPalListenerModel PayPalListenerModel { get; set; }
         public bool Inactive { get; set; }
         public string Timezone { get; set; }

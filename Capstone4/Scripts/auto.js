@@ -55,6 +55,9 @@ function fillInAddress() {
             if ($("#UTCDate").val() != "") {
                 document.getElementById("UTCDate").value = "";
             }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
             var value = $("#CompletionDeadline").val();
             if (value != "") {
                 change();

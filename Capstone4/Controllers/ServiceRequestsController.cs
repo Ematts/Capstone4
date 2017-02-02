@@ -197,7 +197,7 @@ namespace Capstone4.Controllers
             bool inactive = form["Inactive"].Contains("true");
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
-            //serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+            
             List<Contractor> emailList;
             if (identity == null)
             {
@@ -221,11 +221,6 @@ namespace Capstone4.Controllers
 
                 }
             }
-
-            //if (serviceRequest.CompletionDeadline < DateTime.Now)
-            //{
-            //    return RedirectToAction("Date_Issue", "ServiceRequests");
-            //}
 
             DateTime timeUtc = DateTime.UtcNow;
             TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
@@ -1119,6 +1114,33 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
+        public ActionResult Expired (int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (!this.User.IsInRole("Contractor"))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if(serviceRequest.ContractorID != null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if (serviceRequest.Expired != true)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(serviceRequest);
+        }
+
         public ActionResult AcceptView(int? id)
         {
             if (id == null)
@@ -1141,6 +1163,11 @@ namespace Capstone4.Controllers
             if (!this.User.IsInRole("Contractor"))
             {
                 return RedirectToAction("Must_be_logged_in_to_accept_request");
+            }
+
+            if(serviceRequest.Expired == true)
+            {
+                return RedirectToAction("Expired", "ServiceRequests", new { id = serviceRequest.ID });
             }
 
             foreach (var acceptance in serviceRequest.ContractorAcceptances)
@@ -1209,7 +1236,41 @@ namespace Capstone4.Controllers
                     DateTime timeUtc = DateTime.UtcNow;
                     TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(acceptance.ServiceRequest.Timezone);
                     DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
-                    acceptance.AcceptanceDate = Time;
+                    DateTime? deadline;
+                    bool? utc;
+                    if(acceptance.ServiceRequest.UTCDate == null)
+                    {
+                        deadline = acceptance.ServiceRequest.CompletionDeadline;
+                        utc = false;
+                    }
+                    else
+                    {
+                        deadline = acceptance.ServiceRequest.UTCDate;
+                        Time = DateTime.UtcNow;
+                        utc = true;
+                    }
+                    if (Time > deadline)
+                    {
+                        return RedirectToAction("Expired", "ServiceRequests", new { id = acceptance.ServiceRequest.ID });
+                    }
+                    if (utc == false)
+                    {
+                        acceptance.AcceptanceDate = Time;
+                    }
+                    if(utc == true)
+                    {
+                        acceptance.AcceptanceDate = TimeZoneInfo.ConvertTimeFromUtc(Time, Zone);
+                    }
+                    bool ambig = Zone.IsAmbiguousTime(acceptance.AcceptanceDate);
+
+                    if (ambig == true)
+                    {
+                        bool dst = acceptance.AcceptanceDate.IsDaylightSavingTime();
+                        if(dst == true)
+                        {
+                            acceptance.AcceptanceAmbigTime = "DST";
+                        }
+                    }
                     db.ContractorAcceptances.Add(acceptance);
                     db.SaveChanges();
                     NotifyAcceptance(acceptance);
@@ -1478,7 +1539,11 @@ namespace Capstone4.Controllers
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
-            if((serviceRequest.PaymentAttempted != true) || (serviceRequest.PayPalListenerModelID != null && serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status == "Completed"))
+            //if((serviceRequest.PaymentAttempted != true) || (serviceRequest.PayPalListenerModelID != null && serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status == "Completed"))
+            //{
+            //    return RedirectToAction("Unauthorized_Access", "Home");
+            //}
+            if(serviceRequest.PaymentError != true)
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
@@ -2020,6 +2085,7 @@ namespace Capstone4.Controllers
                     return Json("The completion deadline must be later than the current time now.", JsonRequestBehavior.AllowGet);
                 }
                 Response.AddHeader("X-ID", checker.Timezone);
+                Response.AddHeader("Continue", "OK");
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
 
@@ -2032,6 +2098,7 @@ namespace Capstone4.Controllers
             if (checker.OK == true)
             {
                 Response.AddHeader("X-ID", checker.Timezone);
+                Response.AddHeader("Continue", "OK");
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
 
