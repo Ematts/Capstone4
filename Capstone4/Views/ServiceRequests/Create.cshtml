@@ -391,7 +391,7 @@
                             var day = document.getElementById("DaylightSavingsTime");
                             if (day.checked == true) {
                                 document.getElementById("UTCDate").value = DSTID;
-                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is effect for this service request)";
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is in effect for this service request)";
                                 $('#CompletionDeadline').removeData('previousValue');
                                 $('#CompletionDeadline').valid();
 
@@ -399,7 +399,7 @@
 
                             if (stand.checked == true) {
                                 document.getElementById("UTCDate").value = StandardId;
-                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is NOT effect for this service request)";
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is NOT in effect for this service request)";
                                 $('#CompletionDeadline').removeData('previousValue');
                                 $('#CompletionDeadline').valid();
                             }

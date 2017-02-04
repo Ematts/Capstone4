@@ -225,8 +225,22 @@ namespace Capstone4.Controllers
             DateTime timeUtc = DateTime.UtcNow;
             TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
             DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            DateTime? deadline;
+            //bool? utcExists;
 
-            if (serviceRequest.CompletionDeadline < Time)
+            if (serviceRequest.UTCDate == null)
+            {
+                deadline = serviceRequest.CompletionDeadline;
+                //utcExists = false;
+            }
+            else
+            {
+                deadline = serviceRequest.UTCDate;
+                Time = DateTime.UtcNow;
+                //utcExists = true;
+            }
+
+            if (deadline < Time)
             {
                 return Json(new { success = true, LateDate = true },
                 JsonRequestBehavior.AllowGet); 
@@ -277,19 +291,28 @@ namespace Capstone4.Controllers
                 Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
                 serviceRequest.Posted = false;
                 serviceRequest.NeedsManualValidation = false;
-                //TempData["address"] = addressToCheck;
                 db.SaveChanges();
-                //return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
                 return Json(new { success = true, noService = true, id = serviceRequest.ID },
                     JsonRequestBehavior.AllowGet);
             }
             serviceRequest.Posted = true;
-            //Timezone zone = new Timezone();
-            //serviceRequest.PostedDate = zone.GetDateTime(serviceRequest);
-            //DateTime timeUtc = DateTime.UtcNow;
-            //TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
-            //DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
-            serviceRequest.PostedDate = Time;
+
+            DateTime timeUtcPosted = DateTime.UtcNow;
+            serviceRequest.PostedDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPosted, Zone);
+            DateTime myDt = DateTime.SpecifyKind(timeUtcPosted, DateTimeKind.Utc);
+            bool dst = Zone.IsDaylightSavingTime(myDt);
+
+
+            if(dst == true)
+            {
+                serviceRequest.PostedAmbigTime = "DST";
+            }
+
+            if (dst == false)
+            {
+                serviceRequest.PostedAmbigTime = "STD";
+            }
+
             serviceRequest.NeedsManualValidation = false;
             db.SaveChanges();
             postServiceRequest(serviceRequest, emailList);
