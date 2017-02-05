@@ -353,6 +353,26 @@
     <Compile Include="Migrations\201702022042256_posted.Designer.cs">
       <DependentUpon>201702022042256_posted.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702041946521_d5.cs" />
+    <Compile Include="Migrations\201702041946521_d5.Designer.cs">
+      <DependentUpon>201702041946521_d5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702042103401_d6.cs" />
+    <Compile Include="Migrations\201702042103401_d6.Designer.cs">
+      <DependentUpon>201702042103401_d6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702042148291_s2.cs" />
+    <Compile Include="Migrations\201702042148291_s2.Designer.cs">
+      <DependentUpon>201702042148291_s2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702051954244_dd2.cs" />
+    <Compile Include="Migrations\201702051954244_dd2.Designer.cs">
+      <DependentUpon>201702051954244_dd2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702052027540_d7.cs" />
+    <Compile Include="Migrations\201702052027540_d7.Designer.cs">
+      <DependentUpon>201702052027540_d7.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -677,6 +697,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702022042256_posted.resx">
       <DependentUpon>201702022042256_posted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702041946521_d5.resx">
+      <DependentUpon>201702041946521_d5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702042103401_d6.resx">
+      <DependentUpon>201702042103401_d6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702042148291_s2.resx">
+      <DependentUpon>201702042148291_s2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702051954244_dd2.resx">
+      <DependentUpon>201702051954244_dd2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702052027540_d7.resx">
+      <DependentUpon>201702052027540_d7.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

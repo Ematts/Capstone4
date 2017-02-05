@@ -226,18 +226,17 @@ namespace Capstone4.Controllers
             TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
             DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
             DateTime? deadline;
-            //bool? utcExists;
+            
 
             if (serviceRequest.UTCDate == null)
             {
                 deadline = serviceRequest.CompletionDeadline;
-                //utcExists = false;
+                
             }
             else
             {
                 deadline = serviceRequest.UTCDate;
                 Time = DateTime.UtcNow;
-                //utcExists = true;
             }
 
             if (deadline < Time)
@@ -759,18 +758,6 @@ namespace Capstone4.Controllers
                 }
                 db.SaveChanges();
             }
-            //foreach (var file in files)
-            //{
-
-            //    if (file != null && file.ContentLength > 0)
-            //    {
-
-            //        var photo = new ServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
-            //        file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
-            //        serviceRequest.ServiceRequestFilePaths.Add(photo);
-            //    }
-
-            //}
             serviceRequest.Description = description;
             serviceRequest.NeedsManualValidation = false;
             serviceRequest.Price = price;
@@ -1242,11 +1229,12 @@ namespace Capstone4.Controllers
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             var contractors = db.Contractors.ToList();
             var serviceRequests = db.ServiceRequests.ToList();
+            ContractorAcceptance acceptance = new ContractorAcceptance();
             foreach (var con in contractors)
             {
                 if (con.UserId == identity)
                 {
-                    ContractorAcceptance acceptance = new ContractorAcceptance();
+                    
                     foreach (var request in serviceRequests)
                     {
                         if(request.ID == id)
@@ -1260,40 +1248,57 @@ namespace Capstone4.Controllers
                     TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(acceptance.ServiceRequest.Timezone);
                     DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
                     DateTime? deadline;
-                    bool? utc;
+                    //bool? utc;
                     if(acceptance.ServiceRequest.UTCDate == null)
                     {
                         deadline = acceptance.ServiceRequest.CompletionDeadline;
-                        utc = false;
+                        //utc = false;
                     }
                     else
                     {
                         deadline = acceptance.ServiceRequest.UTCDate;
                         Time = DateTime.UtcNow;
-                        utc = true;
+                        //utc = true;
                     }
                     if (Time > deadline)
                     {
                         return RedirectToAction("Expired", "ServiceRequests", new { id = acceptance.ServiceRequest.ID });
                     }
-                    if (utc == false)
-                    {
-                        acceptance.AcceptanceDate = Time;
-                    }
-                    if(utc == true)
-                    {
-                        acceptance.AcceptanceDate = TimeZoneInfo.ConvertTimeFromUtc(Time, Zone);
-                    }
-                    bool ambig = Zone.IsAmbiguousTime(acceptance.AcceptanceDate);
 
-                    if (ambig == true)
+                    DateTime timeUtcAccepted = DateTime.UtcNow;
+                    acceptance.AcceptanceDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcAccepted, Zone);
+                    DateTime myDt = DateTime.SpecifyKind(timeUtcAccepted, DateTimeKind.Utc);
+                    bool dst = Zone.IsDaylightSavingTime(myDt);
+
+                    if (dst == true)
                     {
-                        bool dst = acceptance.AcceptanceDate.IsDaylightSavingTime();
-                        if(dst == true)
-                        {
-                            acceptance.AcceptanceAmbigTime = "DST";
-                        }
+                        acceptance.AcceptanceAmbigTime = "DST";
                     }
+
+                    if (dst == false)
+                    {
+                        acceptance.AcceptanceAmbigTime = "STD";
+                    }
+
+
+                    //if (utc == false)
+                    //{
+                    //    acceptance.AcceptanceDate = Time;
+                    //}
+                    //if(utc == true)
+                    //{
+                    //    acceptance.AcceptanceDate = TimeZoneInfo.ConvertTimeFromUtc(Time, Zone);
+                    //}
+                    //bool ambig = Zone.IsAmbiguousTime(acceptance.AcceptanceDate);
+
+                    //if (ambig == true)
+                    //{
+                    //    bool dst = acceptance.AcceptanceDate.IsDaylightSavingTime();
+                    //    if(dst == true)
+                    //    {
+                    //        acceptance.AcceptanceAmbigTime = "DST";
+                    //    }
+                    //}
                     db.ContractorAcceptances.Add(acceptance);
                     db.SaveChanges();
                     NotifyAcceptance(acceptance);
@@ -1301,7 +1306,7 @@ namespace Capstone4.Controllers
                 }
             }
             db.SaveChanges();
-            return RedirectToAction("Index", "ContractorAcceptances");
+            return RedirectToAction("Details", "ContractorAcceptances", new { id = acceptance.ID });
         }
 
         public ActionResult ConfirmCompletionView(int? id)
@@ -1860,27 +1865,7 @@ namespace Capstone4.Controllers
 
             return View(serviceRequest);
         }
-        //public ActionResult AddContractorPhotos(int? ID, IEnumerable<HttpPostedFileBase> files)
-        //{
-        //    ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
-        //    serviceRequest.CompletedServiceRequestFilePaths = new List<CompletedServiceRequestFilePath>();
-        //    foreach (var file in files)
-        //    {
 
-        //        if (file != null && file.ContentLength > 0)
-        //        {
-
-
-        //            var photo = new CompletedServiceRequestFilePath() { FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName) };
-        //            file.SaveAs(Path.Combine(Server.MapPath("~/images"), photo.FileName));
-        //            serviceRequest.CompletedServiceRequestFilePaths.Add(photo);
-        //        }
-
-        //    }
-        //    db.SaveChanges();
-        //    return RedirectToAction("ConfirmCompletionView", "ServiceRequests", new { id = serviceRequest.ID }); 
-
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddContractorPhotos()
@@ -2032,15 +2017,6 @@ namespace Capstone4.Controllers
             transportWeb.DeliverAsync(myMessage);
 
         }
-        //[AllowAnonymous]
-        //public JsonResult DateCheck(DateTime? CompletionDeadline)
-        //{
-        //    if (CompletionDeadline > DateTime.Now)
-        //    {
-        //        return Json(true, JsonRequestBehavior.AllowGet);
-        //    }
-        //    return Json("The completion deadline must be later than the current time.", JsonRequestBehavior.AllowGet);
-        //}
 
         [AllowAnonymous]
         public JsonResult DateCheck(DateTime? CompletionDeadline, string checkStreet, string checkCity, string checkState, DateTime? UTCDate)

@@ -74,14 +74,14 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ServiceRequest.PostedDate)
+            @Html.DisplayFor(model => model.ServiceRequest.PostedDate) @Html.DisplayFor(model => model.ServiceRequest.Timezone) @Html.DisplayFor(model => model.ServiceRequest.PostedAmbigTime)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.ServiceRequest.CompletionDeadline)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ServiceRequest.CompletionDeadline)
+            @Html.DisplayFor(model => model.ServiceRequest.CompletionDeadline) @Html.DisplayFor(model => model.ServiceRequest.Timezone) @Html.DisplayFor(model => model.ServiceRequest.AmbigTime)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.ServiceRequest.Service_Number)
@@ -127,10 +127,7 @@
     </div>
 </div>
 }
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

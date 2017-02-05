@@ -148,7 +148,16 @@ namespace Capstone4.Controllers
                 if(displayList.Contains(i.ID))
                 {
                     SeeOpenRequestsViewModel model = new SeeOpenRequestsViewModel() { Homeowner = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline, ID = i.ID };
+
                     models.Add(model);
+
+                    foreach(var x in i.ContractorAcceptances)
+                    {
+                        if(x.Contractor.UserId == identity)
+                        {
+                            models.Remove(model);
+                        }
+                    }
                 }
             }
 
@@ -171,11 +180,43 @@ namespace Capstone4.Controllers
 
             Contractor contractor = db.Contractors.Where(x => x.UserId == identity).SingleOrDefault();
 
-            foreach(var i in db.ServiceRequests.ToList())
+            foreach (var i in db.ServiceRequests.ToList())
             {
-                if((i.ContractorID == contractor.ID) && ((i.PayPalListenerModelID == null) || (i.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")))
+                if ((i.ContractorID == contractor.ID) && ((i.PayPalListenerModelID == null) || (i.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")))
                 {
-                    GetContractorActiveRequestsViewModel model = new GetContractorActiveRequestsViewModel() { Homeowner = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline, ID = i.ID, CompletionDate = i.CompletionDate };
+                    GetContractorActiveRequestsViewModel model = new GetContractorActiveRequestsViewModel() { Invoice = i.Service_Number, Homeowner = i.Homeowner.Username, Street = i.Address.Street, City = i.Address.City, State = i.Address.State, Zip = i.Address.Zip, Description = i.Description, Price = i.Price, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline, ID = i.ID, CompletionDate = i.CompletionDate };
+                    if ((i.Expired == true) && (i.CompletionDate == null))
+                    {
+                        model.Expired = "True";
+                    }
+
+                    DateTime date1 = DateTime.UtcNow;
+                    DateTime date2 = DateTime.UtcNow;
+
+                    if (i.UTCDate == null)
+                    {
+                        TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(i.Timezone);
+                        date2 = TimeZoneInfo.ConvertTimeToUtc(i.CompletionDeadline, Zone);
+                    }
+
+                    if(i.UTCDate != null)
+                    {
+                        date2 = i.UTCDate.Value;
+                    };
+
+                    System.TimeSpan diff = date2 - date1;
+
+                    if(i.CompletionDate == null)
+                    {
+                        model.TimeLeft = diff.Days.ToString() + " day(s), " + diff.Hours.ToString() + " hour(s), and " + diff.Minutes.ToString() + " minute(s)";
+                    }
+
+                    if(i.CompletionDate != null)
+                    {
+                        model.TimeLeft = "Job Complete";
+                    }
+
+
                     models.Add(model);
                 }
             }
