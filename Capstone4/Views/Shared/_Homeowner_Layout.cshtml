@@ -79,9 +79,9 @@
             var link = childNode.href;
             var x = $("#nav-main").hasClass('collapse');
             if (x == false) {
-                $("#nav-main").collapse('hide');
+                $("#myDropdown").dropdown("toggle");
+                $("#nav-main").collapse('hide');  
              }
-             $("#myDropdown").dropdown("toggle");
              window.location = link;
 
         });

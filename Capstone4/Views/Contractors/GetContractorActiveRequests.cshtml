@@ -7,7 +7,7 @@
 <h2>My Active Requests</h2>
 
 <div>
-    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Service Number</a> - <a class="toggle-vis" data-column="1">Homeowner</a> - <a class="toggle-vis" data-column="2">Full Address</a> - <a class="toggle-vis" data-column="3">Description</a> - <a class="toggle-vis" data-column="4">Price</a> - <a class="toggle-vis" data-column="5">Posted Date</a> - <a class="toggle-vis" data-column="6">Completion Deadline</a> - <a class="toggle-vis" data-column="7">Completion Date</a>  
+    <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Service Number</a> - <a class="toggle-vis" data-column="1">Homeowner</a> - <a class="toggle-vis" data-column="2">Full Address</a> - <a class="toggle-vis" data-column="3">Description</a> - <a class="toggle-vis" data-column="4">Price</a> - <a class="toggle-vis" data-column="5">Completion Deadline</a> - <a class="toggle-vis" data-column="6">Completion Date</a> - <a class="toggle-vis" data-column="7">Time Remaining</a>  
 </div>
 <br />
 <div><button id="cutSelectedButton">Cut selected row</button><button id="cropSelectedButton">Crop selected row</button><button id="refresh">Refresh</button></div>
@@ -195,8 +195,11 @@
                 table.rows('.selected').remove().draw();
             });
             $('#cropSelectedButton').click(function () {
-                table.$('tr').toggleClass('selected');
-                table.rows('.selected').remove().draw();
+                
+                if ($(".selected").length > 0) {
+                    table.$('tr').toggleClass('selected');
+                    table.rows('.selected').remove().draw();
+                }
             });
 
             $('#refresh').click(function () {

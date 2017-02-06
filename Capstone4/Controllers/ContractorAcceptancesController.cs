@@ -238,6 +238,7 @@ namespace Capstone4.Controllers
             var homeowners = db.Homeowners.ToList();
             var serviceRequests = db.ServiceRequests.ToList();
             var acceptances = db.ContractorAcceptances.ToList();
+            int redirect = 0;
             foreach (var h in homeowners)
             {
                 if (h.UserId == identity)
@@ -257,12 +258,13 @@ namespace Capstone4.Controllers
                             }
                             a.ServiceRequest.Contractor = a.Contractor;
                             SendContractor(a);
+                            redirect = a.ServiceRequest.ID;
                         }
                     }
                 }
             }
             db.SaveChanges();
-            return RedirectToAction("Index", "ServiceRequests");
+            return RedirectToAction("Details", "ServiceRequests", new { id = redirect });
         }
 
         public void SendContractor(ContractorAcceptance contractorAcceptance)

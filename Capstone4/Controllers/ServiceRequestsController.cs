@@ -1248,17 +1248,17 @@ namespace Capstone4.Controllers
                     TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(acceptance.ServiceRequest.Timezone);
                     DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
                     DateTime? deadline;
-                    //bool? utc;
+              
                     if(acceptance.ServiceRequest.UTCDate == null)
                     {
                         deadline = acceptance.ServiceRequest.CompletionDeadline;
-                        //utc = false;
+                        
                     }
                     else
                     {
                         deadline = acceptance.ServiceRequest.UTCDate;
                         Time = DateTime.UtcNow;
-                        //utc = true;
+                        
                     }
                     if (Time > deadline)
                     {
@@ -1280,25 +1280,6 @@ namespace Capstone4.Controllers
                         acceptance.AcceptanceAmbigTime = "STD";
                     }
 
-
-                    //if (utc == false)
-                    //{
-                    //    acceptance.AcceptanceDate = Time;
-                    //}
-                    //if(utc == true)
-                    //{
-                    //    acceptance.AcceptanceDate = TimeZoneInfo.ConvertTimeFromUtc(Time, Zone);
-                    //}
-                    //bool ambig = Zone.IsAmbiguousTime(acceptance.AcceptanceDate);
-
-                    //if (ambig == true)
-                    //{
-                    //    bool dst = acceptance.AcceptanceDate.IsDaylightSavingTime();
-                    //    if(dst == true)
-                    //    {
-                    //        acceptance.AcceptanceAmbigTime = "DST";
-                    //    }
-                    //}
                     db.ContractorAcceptances.Add(acceptance);
                     db.SaveChanges();
                     NotifyAcceptance(acceptance);

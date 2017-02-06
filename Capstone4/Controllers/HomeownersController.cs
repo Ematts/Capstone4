@@ -146,7 +146,7 @@ namespace Capstone4.Controllers
             foreach (var i in db.ServiceRequests.ToList())
             {
 
-                if (((i.HomeownerID == homeowner.ID) && (i.ContractorID != null) && (i.PayPalListenerModelID == null)) || ((i.Homeowner.ID == homeowner.ID) && (i.PostedDate != null) && (i.Expired != true)))
+                if (((i.HomeownerID == homeowner.ID) && (i.ContractorID != null) && (i.PayPalListenerModelID == null)) || ((i.Homeowner.ID == homeowner.ID) && (i.PostedDate != null) && (i.Expired != true) && (i.ContractorID == null)))
                 {
                     GetHomeownerActiveRequestsViewModel model = new GetHomeownerActiveRequestsViewModel() { Invoice = i.Service_Number, Address = i.Address.FullAddress, Description = i.Description, Price = i.Price, ServiceID = i.ID, PostedDate = i.PostedDate, CompletionDeadline = i.CompletionDeadline };
                     List<ContractorAcceptance> AcceptList = new List<ContractorAcceptance>();
