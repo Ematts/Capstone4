@@ -1370,10 +1370,22 @@ namespace Capstone4.Controllers
             {
                 return HttpNotFound();
             }
-            DateTime timeUtc = DateTime.UtcNow;
+            DateTime timeUtcCompleted = DateTime.UtcNow;
             TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
-            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
-            serviceRequest.CompletionDate = Time;
+            //DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            serviceRequest.CompletionDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcCompleted, Zone);
+            DateTime myDt = DateTime.SpecifyKind(timeUtcCompleted, DateTimeKind.Utc);
+            bool dst = Zone.IsDaylightSavingTime(myDt);
+
+            if (dst == true)
+            {
+                serviceRequest.CompletionAmbigTime = "DST";
+            }
+
+            if (dst == false)
+            {
+                serviceRequest.CompletionAmbigTime = "STD";
+            }
             serviceRequest.AmountDue = serviceRequest.Price * .9m;
             db.SaveChanges();
             Notify_Homeowner_of_Completion(serviceRequest);

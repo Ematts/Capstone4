@@ -102,7 +102,6 @@
     <link href="~/Content/ResponsiveDatatables.css" media="all" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/DataTables.js" type="text/javascript"></script>
     <script src="~/Scripts/ResponiveDataTables.js" type="text/javascript"></script>
-    
     <script>
 
         $(document).ready(function () {
@@ -225,7 +224,6 @@
                 lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 order: [[0, "desc"]]
 
-
             });
 
             $('a.toggle-vis').on('click', function (e) {
@@ -249,7 +247,27 @@
                 location.reload(true);
             });
 
-        });
+            $('#homeTable').on('page.dt', function () {
+                $(".dataTables_scrollBody").scrollTop(0);       
+            });
+
+            window.addEventListener("pagehide", function(e) {
+                $( "tr" ).each(function() {
+                    var tr = $(this).closest('tr');
+                    var row = table.row(tr);
+                    if (row.child.isShown()) {
+                        row.child.hide();
+                        tr.removeClass('parent');
+                     
+                    };
+                    if (tr.hasClass('selected')) {
+                        tr.removeClass('selected');
+                    };
+                })
+                $(".dataTables_scrollBody").scrollTop(0);
+            })
+      })
 
 </script>
+
 }

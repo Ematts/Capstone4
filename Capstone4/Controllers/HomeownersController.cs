@@ -60,6 +60,45 @@ namespace Capstone4.Controllers
             }
             return View(models);
         }
+        public ActionResult GetHomeownerReviewsAjax()
+        {
+            List<GetHomeownerReviewsViewModel> models = new List<GetHomeownerReviewsViewModel>();
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (!this.User.IsInRole("Homeowner"))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Homeowner homeowner = db.Homeowners.Where(x => x.UserId == identity).SingleOrDefault();
+            foreach (var i in db.ServiceRequests.ToList())
+            {
+                if ((i.HomeownerID == homeowner.ID) && (i.ContractorReviewID != null))
+                {
+                    GetHomeownerReviewsViewModel model = new GetHomeownerReviewsViewModel() { Invoice = i.Service_Number, Contractor = i.Contractor.Username, Rating = i.ContractorReview.Rating, ReviewDate = i.ContractorReview.ReviewDate };
+
+                    if (i.ContractorReview.ReviewResponseID != null)
+                    {
+                        model.Response = i.ContractorReview.ReviewResponse.Response;
+                        model.ResponseDate = i.ContractorReview.ReviewResponse.ResponseDate;
+                    }
+                    models.Add(model);
+                }
+            }
+            //var _sEcho = request.QueryString["sEcho"];
+            return Json(new
+            {
+                //_sEcho,
+                iTotalRecords = models.Count(),
+                iTotalDisplayRecords = models.Count(),
+                aaData = models },
+                    JsonRequestBehavior.AllowGet);
+            //return View(models);
+        }
         public ActionResult HomeownerReviewDetails(int? id)
         {
             if (id == null)

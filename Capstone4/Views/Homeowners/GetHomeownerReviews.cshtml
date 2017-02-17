@@ -5,6 +5,7 @@
 }
 
 <h2>My Reviews</h2>
+<input id="refresher" name="refresh" type="hidden" value="" />
 <div>
     <strong>Toggle column: </strong><a class="toggle-vis" data-column="0">Service Number</a> - <a class="toggle-vis" data-column="1">Contractor</a> - <a class="toggle-vis" data-column="2">Rating</a> - <a class="toggle-vis" data-column="3">Review Date</a> - <a class="toggle-vis" data-column="4">Response</a> - <a class="toggle-vis" data-column="5">Remove</a>
 </div>
@@ -106,19 +107,18 @@
             ]
         });
 
-
+        deletedrows = [];
 
         $(function () {
             var isMouseDown = false,
               isSelected;
-            $("#homeTable tr")
-              .mousedown(function () {
+            $("#homeTable tbody").on('mousedown', 'tr', function () {
                   isMouseDown = true;
                   $(this).toggleClass("selected");
                   isSelected = $(this).hasClass("selected");
                   return false; // prevent text selection
               })
-              .mouseover(function () {
+            $("#homeTable tbody").on('mouseover', 'tr', function () {
                   if (isMouseDown) {
                       $(this).toggleClass("selected", isSelected);
                   }
@@ -196,27 +196,64 @@
         $(document).on("click", ".removeRow", function () {
             var table = $('#homeTable').DataTable();
             var row;
+            //var offsetTop;
             console.log($(this).closest('table'));
             if ($(this).closest('table').hasClass("collapsed") && ($(".dtr-data").length > 0)) {
                 var child = $(this).parents("tr.child");
                 row = $(child).siblings(".parent");
             } else {
                 row = $(this).parents('tr');
+                //offsetTop = row.offset().top;
             }
-
+            var savedRow = row;
+            var data = $('#homeTable').dataTable().fnGetData(row);
+            var savedValue = row.data()[5];
+            deletedrows.push(data);
             table.row(row).remove().draw();
+            //var index = table.Rows.IndexOf(row);
+            //$('.dataTables_scrollBody').scrollTop(offsetTop);
 
         });
 
         $(document).ready(function () {
             var table = $('#homeTable').DataTable({
                 scrollY: "500px",
-                //scrollX: true,
+                //serverSide: true,
+
+                //ajax: {
+                //    url: 'GetHomeownerReviewsAjax'
+                //},
+                //processing: true,
+                //columns: [
+                //     {
+                //         'data': "Invoice"
+                //     },
+                //    {
+                //        'data': "Contractor"
+                //    },
+                //    {
+                //        'data': "Rating"
+                //    },
+                //    {
+                //        'data': "ReviewDate"
+                //    },
+                //    {
+                //        'data': "Response",
+                //        'data': "ResponseDate"
+                //    },
+                //    {
+                //        'data': null,
+                //        'defaultContent': "<button>Click</button"
+                //    },
+                //    {
+                //        'data': "Rating"
+                //    }
+                //],
                 responsive: true,
                 scrollCollapse: true,
+                //retrieve: true,
                 paging: true,
                 lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
-
 
             });
 
@@ -241,6 +278,61 @@
                 location.reload(true);
             });
 
+            window.addEventListener('pagehide', function (e){
+                document.getElementById("refresher").value = "go";
+                //console.log($("#refresher").val());
+            })
+
+            window.addEventListener("pageshow", function (e) {
+   
+                var doRefresh = $('#refresher').val();
+                if (doRefresh == "go")
+                {
+                    document.getElementById("refresher").value = "";
+                    location.reload(true);
+                }
+                //document.getElementById("refresh").value = "";
+                //alert(doRefresh);
+                //$("#homeTable").destroy();
+                //table.ajax.reload(null, false);
+                //    for (i = 0; i < deletedrows.length; i++) {
+                //        var id = deletedrows[i][0];
+                //        var con = deletedrows[i][1];
+                //        var rater = deletedrows[i][2];
+                //        var Dater = deletedrows[i][3];
+                //        var res = deletedrows[i][4];
+                //        var rmv = deletedrows[i][5];
+                //        var rateScore = deletedrows[i][6];
+                //        table.row.add([
+                //            id,
+                //            con,
+                //            rater,
+                //            Dater,
+                //            res,
+                //            rmv,
+                //            rateScore
+
+                //        ]);
+                //    }
+                //    deletedrows = [];
+                //    table.draw();
+
+                //    $("tr").each(function () {
+                //        var tr = $(this).closest('tr');
+                //        var row = table.row(tr);
+                //        if (row.child.isShown()) {
+                //            row.child.hide();
+                //            tr.removeClass('parent');
+
+                //        };
+                //        if (tr.hasClass('selected')) {
+                //            tr.removeClass('selected');
+                //        };
+                //    })
+                //    table.rows.add(deletedrows);
+                //    $(".dataTables_scrollBody").scrollTop(0);
+                //})
+            })
         });
 
 

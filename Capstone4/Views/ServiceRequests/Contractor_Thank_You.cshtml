@@ -8,8 +8,9 @@
 
 @{string name = Model.Contractor.FirstName; }
 @{decimal amount = Model.AmountDue; }
-
+@{DateTime? Date = Model.CompletionDate; }
+@{string DST = Model.CompletionAmbigTime; }
 <strong>
     Hello, @name
     <br /><br />
-    Thank you for confirming completion!  Your paypal account will be credited $@amount once homeowner pays.</strong>
+    Thank you for confirming completion on @Date @DST! Your paypal account will be credited $@amount once homeowner pays.</strong>
