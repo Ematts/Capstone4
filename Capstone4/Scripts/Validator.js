@@ -222,14 +222,51 @@ if (!Array.prototype.includes) {
     }
     $.ajaxSetup({ cache: false });
     $('#submitRequest').click(function (e) {
-        if (($("#Proceed").val() == "OK") && ($("#requestForm").valid())) {
+
+        e.preventDefault();
+        $("#requestForm :input").prop("readonly", true);
+
+        var intervalId = null;
+
+        function pendingValidationComplete() {
+
+            var $ValidationForm = $("#requestForm");
+            var c = $ValidationForm.data("validator").pendingRequest
+            console.log(c);
+            if ($ValidationForm.data("validator").pendingRequest === 0) {
+
+                clearInterval(intervalId);
+                $("#requestForm :input").prop("readonly", false);
+
+                if ($ValidationForm.valid()) {
+
+                    popups();
+                }
+
+            }
+
+        };
+
+        function trigger() {
+
+            $("#CompletionDeadline").removeData("previousValue");
+
+            $("#requestForm").valid();
+
+            intervalId = setInterval(pendingValidationComplete, 00050);
+        };
+
+        trigger();
+
+        function popups() {
+            //if (($("#Proceed").val() == "OK") && ($("#requestForm").valid())) {
             $("#vac").hide();
             $("#valid").hide();
             $("#inactive").hide();
             $("#Address_vacant").prop("checked", false);
             $("#Address_validated").prop("checked", false);
             $("#Inactive").prop("checked", false);
-            e.preventDefault();
+            //e.preventDefault();
             $("#divProcessing").show();
             $.ajax({
                 type: "GET",
@@ -259,6 +296,7 @@ if (!Array.prototype.includes) {
                                 function () {
                                     if ($("#requestForm").valid()) {
                                         $(this).dialog('close');
+                                        $("#divProcessing").show();
                                         $("#Inactive").prop("checked", false);
                                         var formdata = new FormData();
                                         var pics = storedFiles;
@@ -379,6 +417,7 @@ if (!Array.prototype.includes) {
                                                                     function () {
                                                                         if ($("#requestForm").valid()) {
                                                                             $(this).dialog('close');
+                                                                            $("#divProcessing").show();
                                                                             $("#Inactive").prop("checked", false);
                                                                             var formdata = new FormData();
                                                                             var pics = storedFiles;
@@ -718,4 +757,5 @@ if (!Array.prototype.includes) {
                 }
             });
         }
+       
     });

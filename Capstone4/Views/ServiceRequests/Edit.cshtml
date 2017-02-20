@@ -38,6 +38,13 @@
         @Html.HiddenFor(model => model.PayPalListenerModelID)
         @Html.HiddenFor(model => model.Address.ManualValidated)
         @Html.HiddenFor(model => model.NeedsManualValidation)
+        @Html.HiddenFor(model => model.Timezone)
+        <input id="checkStreet" name="checkStreet" type="hidden" value="" />
+        <input id="checkCity" name="checkCity" type="hidden" value="" />
+        <input id="checkState" name="checkState" type="hidden" value="" />
+        <input id="UTCDate" name="UTCDate" type="hidden" value="" />
+        <input id="AmbigTime" name="AmbigTime" type="hidden" value="" />
+        <input id="Proceed" name="checkState" type="hidden" value="" />
         
         <br />
 
@@ -247,7 +254,11 @@
 
     </script>
     <script>
-            $(document).ready(function () {
+        $(document).ready(function () {
+                document.getElementById("checkStreet").value = document.getElementById("Address_Street").value;
+                document.getElementById("checkCity").value = document.getElementById("Address_City").value;
+                document.getElementById("checkState").value = document.getElementById("Address_State").value;
+
                 $("#divProcessing").hide();
                 $("#vac").hide();
                 $("#valid").hide();
@@ -293,10 +304,238 @@
 
      })
     </script>
+    
+    <script>
+
+    $("#Address_Street").change(function () {
+        document.getElementById("checkStreet").value = document.getElementById("Address_Street").value;
+    });
+    $("#Address_City").change(function () {
+        document.getElementById("checkCity").value = document.getElementById("Address_City").value;
+    });
+    $("#Address_State").change(function () {
+        document.getElementById("checkState").value = document.getElementById("Address_State").value;
+    });
+    </script>
+    
+    
+    <script>
+    $(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+        fluidDialog();
+        standardTime = document.getElementById("standardTime");
+        DaylightTime = document.getElementById("DaylightSavingsTime");
+        if (standardTime != null) {
+            standardTime.addEventListener("change", switchTimeStand, false);
+        }
+        if (DaylightTime != null) {
+            DaylightTime.addEventListener("change", switchTimeDay, false);
+        }
+    });
+
+    function switchTimeStand() {
+        var stand = document.getElementById("standardTime");
+        var day = document.getElementById("DaylightSavingsTime");
+
+        if (stand.checked == true) {
+            $("#DaylightSavingsTime").prop("checked", false);
+        }
+        if (stand.checked == false) {
+            $("#DaylightSavingsTime").prop("checked", true);
+        }
+    }
+
+    function switchTimeDay() {
+        var stand = document.getElementById("standardTime");
+        var day = document.getElementById("DaylightSavingsTime");
+        if (day.checked == true) {
+            $("#standardTime").prop("checked", false);
+        }
+        if (day.checked == false) {
+            $("#standardTime").prop("checked", true);
+        }
+
+    }
+
+
+    function fluidDialog() {
+        var $visible = $(".ui-dialog:visible");
+        // each open dialog
+        $visible.each(function () {
+            var $this = $(this);
+            var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+            // if fluid option == true
+            if (dialog.options.fluid) {
+                var wWidth = $(window).width();
+                // check window width against dialog width
+                if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                    // keep dialog from filling entire screen
+                    $this.css("max-width", "90%");
+                } else {
+                    // fix maxWidth bug
+                    $this.css("max-width", dialog.options.maxWidth + "px");
+                }
+                //reposition dialog
+                dialog.option("position", dialog.options.position);
+            }
+        });
+
+    }
+    $(function () {
+        $('#CompletionDeadline').rules().remote.complete = function (xhr) {
+            if (xhr.status == 200 && xhr.responseText === 'true') {
+                var id = xhr.getResponseHeader('X-ID');
+                var proceed = xhr.getResponseHeader('Continue');
+                document.getElementById("Timezone").value = id;
+                document.getElementById("Proceed").value = proceed;
+
+            }
+            if (xhr.status == 200 && xhr.responseText !== 'true') {
+                var id = xhr.getResponseHeader('Z-ID');
+                var StandardId = xhr.getResponseHeader('Standard-ID');
+                var DSTID = xhr.getResponseHeader('DST-ID');
+                if (id == "ambigError") {
+                    var titleMsg = "You have entered an ambiguous time.";
+                    var div = $('<div></div>');
+                    var outputMsg = "Please select time";
+                    div.html(outputMsg + '<form id="myform" action=""><input type="checkbox"   id="standardTime" name="standardTime" checked="checked" />Standard Time<br /><input type="checkbox" id="DaylightSavingsTime" name="DaylightSavingsTime" value=""/>Daylight Savings Time</form>').dialog({
+                        title: titleMsg,
+                        height: 'auto',
+                        width: 'auto',
+                        maxWidth: 600,
+                        fluid: true,
+                        autoOpen: true,
+                        resizable: true,
+                        close: function (event, ui) {
+                            var stand = document.getElementById("standardTime");
+                            var day = document.getElementById("DaylightSavingsTime");
+                            if (day.checked == true) {
+                                document.getElementById("UTCDate").value = DSTID;
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is in effect for this service request)";
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+
+                            };
+
+                            if (stand.checked == true) {
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is NOT in effect for this service request)";
+                                document.getElementById("UTCDate").value = StandardId;
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+                            }
+
+                            $(this).dialog('destroy');
+                        },
+                        modal: true,
+                        buttons: {
+                            "CLOSE":
+                        function () {
+                            var stand = document.getElementById("standardTime");
+                            var day = document.getElementById("DaylightSavingsTime");
+                            if (day.checked == true) {
+                                document.getElementById("UTCDate").value = DSTID;
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is in effect for this service request)";
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+
+                            };
+
+                            if (stand.checked == true) {
+                                document.getElementById("UTCDate").value = StandardId;
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is NOT in effect for this service request)";
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+                            }
+                            $(this).dialog('destroy');
+                        }
+                        }
+                    })
+
+                }
+            }
+        };
+    });
+
+</script>
+<script>
+        $("#Address_Street").change(function () {
+            if ($("#UTCDate").val() != "") {
+                document.getElementById("UTCDate").value = "";
+            }
+            if ($("#AmbigTime").val() != "") {
+                document.getElementById("AmbigTime").value = "";
+            }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
+            if ($("#CompletionDeadline").val() != "") {
+                $('#CompletionDeadline').removeData('previousValue');
+                $('#CompletionDeadline').valid();
+            }
+        });
+        $("#Address_City").change(function () {
+            if ($("#UTCDate").val() != "") {
+                document.getElementById("UTCDate").value = "";
+            }
+            if ($("#AmbigTime").val() != "") {
+                document.getElementById("AmbigTime").value = "";
+            }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
+            if ($("#CompletionDeadline").val() != "") {
+                $('#CompletionDeadline').removeData('previousValue');
+                $('#CompletionDeadline').valid();
+            }
+        });
+        $("#Address_State").change(function () {
+            if ($("#UTCDate").val() != "") {
+                document.getElementById("UTCDate").value = "";
+            }
+            if ($("#AmbigTime").val() != "") {
+                document.getElementById("AmbigTime").value = "";
+            }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
+            if ($("#CompletionDeadline").val() != "") {
+                $('#CompletionDeadline').removeData('previousValue');
+                $('#CompletionDeadline').valid();
+            }
+        });
+        $("#CompletionDeadline").change(function () {
+            if ($("#AmbigTime").val() != "") {
+                document.getElementById("AmbigTime").value = "";
+            }
+            if ($("#UTCDate").val() != "") {
+                document.getElementById("UTCDate").value = "";
+            }
+            if ($("#Proceed").val() != "") {
+                document.getElementById("Proceed").value = "";
+            }
+        });
+</script>
+
+<script>
+        (function ($) {
+            $.validator.setDefaults({
+                onkeyup: function (element, event) {
+                    if ($(element).attr('data-val-remote-url')) {
+                        return false;
+                    }
+                    if (event.which === 9 && this.elementValue(element) === "") {
+                        return;
+                    } else if (element.name in this.submitted || element === this.lastElement) {
+                        this.element(element);
+                    }
+
+                }
+            })
+        }(jQuery));
+</script>
+    
     <script src="~/Scripts/EditServiceRequestAuto.js"></script>
     @{string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\auto.txt");}
     <script src="@source"
-            async defer></script>
-    
+            async defer></script>  
 
 }

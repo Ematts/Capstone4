@@ -211,164 +211,114 @@ function removeFile(e) {
 
 $.ajaxSetup({ cache: false });
 $('#submitRequest').click(function (e) {
-    $("#vac").hide();
-    $("#valid").hide();
-    $("#inactive").hide();
+
     e.preventDefault();
-    $("#divProcessing").show();
-    $.ajax({
-        type: "GET",
-        url: "/AddressValidator/getAddValStatus",
-        contentType: "application/json; charset=utf-8",
-        data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
-        dataType: "json",
-        success: function (response, textStatus, jqXHR) {
-            $("#divProcessing").hide();
-            if (response.validated == true) {
-                $("#Address_validated").prop("checked", true);
-                var titleMsg = "Your address has been validated!"
-                var div = $('<div></div>');
-                var outputMsg = "Are you ready to submit your service request?";
-                div.html(outputMsg).dialog({
-                    title: titleMsg,
-                    height: 'auto',
-                    width: 'auto',
-                    maxWidth: 600,
-                    fluid: true,
-                    autoOpen: true,
-                    resizable: true,
-                    modal: true,
-                    buttons: {
-                        "YES":
-                            function () {
-                                if ($("#requestForm").valid()) {
-                                    $(this).dialog('close');
-                                    $("#Inactive").prop("checked", false);
-                                    var formdata = new FormData();
-                                    var pics = storedFiles;
-                                    var fileInput = document.getElementById('fileInput');
-                                    for (var i = 0, len = pics.length; i < len; i++) {
-                                        formdata.append('files', pics[i]);
-                                    }
-                                    var other_data = $('#requestForm').serializeArray();
-                                    $.each(other_data, function (key, input) {
-                                        formdata.append(input.name, input.value);
-                                    });
-                                    var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
-                                    var token = tokenadr;
-                                    var headers = {};
-                                    var headersadr = {};
-                                    headers['__RequestVerificationToken'] = token;
-                                    headersadr['__RequestVerificationToken'] = tokenadr;
-                                    $.ajax({
-                                        type: 'POST',
-                                        dataType: 'json',
-                                        headers: headersadr,
-                                        cache: false,
-                                        url: "/ServiceRequests/EditRequest",
-                                        processData: false,
-                                        contentType: false,
-                                        data: formdata,
-                                        success: function (response, textStatus, jqXHR) {
-                                            if (response.tooManyPics == true) {
-                                                var titleMsg = "Too Many Photo.";
-                                                var div = $('<div></div>');
-                                                var outputMsg = "A service request can only contain a maximum of 4 photos.";
-                                                div.html(outputMsg).dialog({
-                                                    title: titleMsg,
-                                                    height: 'auto',
-                                                    width: 'auto',
-                                                    maxWidth: 600,
-                                                    fluid: true,
-                                                    autoOpen: true,
-                                                    resizable: true,
-                                                    modal: true,
-                                                    buttons: {
-                                                        "CLOSE":
-                                                    function () {
-                                                        $(this).dialog('close');
-                                                    }
-                                                    }
-                                                })
+    $("#requestForm :input").prop("readonly", true);
 
-                                            }
-                                            else if (response.noService == true) {
-                                                window.location = "/ServiceRequests/noService/" + response.id;
-                                            }
+    var intervalId = null;
 
-                                            else {
-                                                window.location = "/ServiceRequests/Details/" + response.id;
-                                            }
-                                        },
+    function pendingValidationComplete() {
 
-                                        error: function (jqXHR, textStatus, errorThrown) {
-                                            alert('Error - ' + errorThrown);
-                                        },
+        var $ValidationForm = $("#requestForm");
+        var c = $ValidationForm.data("validator").pendingRequest
+        console.log(c);
+        if ($ValidationForm.data("validator").pendingRequest === 0) {
 
-                                    })
-                                }
-                                else {
-                                    $(this).dialog('close');
-                                }
-                            },
-                        "NO":
-                        function () {
-                            $(this).dialog("close");
-                        }
-                    }
-                });
+            clearInterval(intervalId);
+            $("#requestForm :input").prop("readonly", false);
+
+            if ($ValidationForm.valid()) {
+
+                popups();
             }
-            else {
-                var outputMsg = "Do any of the following apply? <br> <br> 1) This property is a vacant house. <br><br> 2) This property is a vacant lot. <br><br> 3) This property does not receive door mail delivery, i.e., PO Box service only."
-                var div = $('<div></div>');
-                var titleMsg = "A few questions while we validate your address";
-                div.html(outputMsg).dialog({
-                    title: titleMsg,
-                    height: 'auto',
-                    width: 'auto',
-                    maxWidth: 600,
-                    fluid: true,
-                    autoOpen: true,
-                    resizable: true,
-                    modal: true,
-                    buttons: {
-                        "YES": function () {
-                            $("#divProcessing").show();
-                            $("#Address_vacant").prop("checked", true);
-                            $(this).dialog("close");
-                            $.ajax({
-                                type: "GET",
-                                url: "/AddressValidator/RunStreetLevelValidation",
-                                contentType: "application/json; charset=utf-8",
-                                data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
-                                dataType: "json",
-                                success: function (response, textStatus, jqXHR) {
-                                    $("#divProcessing").hide();
-                                    if (response.validated == true) {
-                                        var listOfAddresses = [];
-                                        for (var i = 0; i < response.results.length; i++) {
-                                            listOfAddresses.push([i + 1] + ")" + " " + response.results[i].AddressLine1 + "<br><br>")
-                                        };
-                                        var titleMsg = "Please confirm";
-                                        var div = $('<div></div>');
-                                        var outputMsg = "Is this address in the vicinity of one of the following address ranges?" + "<br><br>" + (listOfAddresses.join('\r\n'));
-                                        div.html(outputMsg).dialog({
-                                            title: titleMsg,
-                                            height: 'auto',
-                                            width: 'auto',
-                                            maxWidth: 600,
-                                            fluid: true,
-                                            autoOpen: true,
-                                            resizable: true,
-                                            modal: true,
-                                            buttons: {
-                                                "YES":
-                                                function () {
-                                                    $("#Address_validated").prop("checked", true);
-                                                    $(this).dialog('close');
-                                                    var titleMsg = "Your address has been validated!"
+
+        }
+
+    };
+
+    function trigger() {
+
+        $("#CompletionDeadline").removeData("previousValue");
+
+        $("#requestForm").valid();
+
+        intervalId = setInterval(pendingValidationComplete, 00050);
+    };
+
+    trigger();
+
+
+    function popups(){
+        $("#vac").hide();
+        $("#valid").hide();
+        $("#inactive").hide();
+        $("#divProcessing").show();
+        $.ajax({
+            type: "GET",
+            url: "/AddressValidator/getAddValStatus",
+            contentType: "application/json; charset=utf-8",
+            data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
+            dataType: "json",
+            success: function (response, textStatus, jqXHR) {
+                $("#divProcessing").hide();
+                if (response.validated == true) {
+                    $("#Address_validated").prop("checked", true);
+                    var titleMsg = "Your address has been validated!"
+                    var div = $('<div></div>');
+                    var outputMsg = "Are you ready to submit your service request?";
+                    div.html(outputMsg).dialog({
+                        title: titleMsg,
+                        height: 'auto',
+                        width: 'auto',
+                        maxWidth: 600,
+                        fluid: true,
+                        autoOpen: true,
+                        resizable: true,
+                        modal: true,
+                        buttons: {
+                            "YES":
+                                function () {
+                                    if ($("#requestForm").valid()) {
+                                        $(this).dialog('close');
+                                        $("#divProcessing").show();
+                                        $("#Inactive").prop("checked", false);
+                                        var formdata = new FormData();
+                                        var pics = storedFiles;
+                                        var fileInput = document.getElementById('fileInput');
+                                        for (var i = 0, len = pics.length; i < len; i++) {
+                                            formdata.append('files', pics[i]);
+                                        }
+                                        var other_data = $('#requestForm').serializeArray();
+                                        $.each(other_data, function (key, input) {
+                                            formdata.append(input.name, input.value);
+                                        });
+                                        var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
+                                        var token = tokenadr;
+                                        var headers = {};
+                                        var headersadr = {};
+                                        headers['__RequestVerificationToken'] = token;
+                                        headersadr['__RequestVerificationToken'] = tokenadr;
+                                        $.ajax({
+                                            type: 'POST',
+                                            dataType: 'json',
+                                            headers: headersadr,
+                                            cache: false,
+                                            url: "/ServiceRequests/EditRequest",
+                                            processData: false,
+                                            contentType: false,
+                                            data: formdata,
+                                            success: function (response, textStatus, jqXHR) {
+                                                if (response.Already == true) {
+                                                    window.location = "/ServiceRequests/NoEdit/" + response.id;
+                                                }
+                                                else if (response.LateDate == true) {
+                                                    window.location = "/ServiceRequests/Date_Issue/";
+                                                }
+                                                else if (response.tooManyPics == true) {
+                                                    $("#divProcessing").hide();
+                                                    var titleMsg = "Too Many Photos.";
                                                     var div = $('<div></div>');
-                                                    var outputMsg = "Are you ready to submit your service request?";
+                                                    var outputMsg = "A service request can contain a maximum of 4 photos.";
                                                     div.html(outputMsg).dialog({
                                                         title: titleMsg,
                                                         height: 'auto',
@@ -379,15 +329,215 @@ $('#submitRequest').click(function (e) {
                                                         resizable: true,
                                                         modal: true,
                                                         buttons: {
-                                                            "YES":
+                                                            "CLOSE":
+                                                        function () {
+                                                            $(this).dialog('close');
+                                                        }
+                                                        }
+                                                    })
+
+                                                }
+                                                else if (response.noService == true) {
+                                                    window.location = "/ServiceRequests/noService/" + response.id;
+                                                }
+
+                                                else {
+                                                    window.location = "/ServiceRequests/Details/" + response.id;
+                                                }
+                                            },
+
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                alert('Error - ' + errorThrown);
+                                            },
+
+                                        })
+                                    }
+                                    else {
+                                        $(this).dialog('close');
+                                    }
+                                },
+                            "NO":
+                            function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                }
+                else {
+                    var outputMsg = "Do any of the following apply? <br> <br> 1) This property is a vacant house. <br><br> 2) This property is a vacant lot. <br><br> 3) This property does not receive door mail delivery, i.e., PO Box service only."
+                    var div = $('<div></div>');
+                    var titleMsg = "A few questions while we validate your address";
+                    div.html(outputMsg).dialog({
+                        title: titleMsg,
+                        height: 'auto',
+                        width: 'auto',
+                        maxWidth: 600,
+                        fluid: true,
+                        autoOpen: true,
+                        resizable: true,
+                        modal: true,
+                        buttons: {
+                            "YES": function () {
+                                $("#divProcessing").show();
+                                $("#Address_vacant").prop("checked", true);
+                                $(this).dialog("close");
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/AddressValidator/RunStreetLevelValidation",
+                                    contentType: "application/json; charset=utf-8",
+                                    data: { street: '' + $('#Address_Street').val() + '', City: '' + $('#Address_City').val() + '', state: '' + $('#Address_State').val() + '', zip: '' + $('#Address_Zip').val() + '' },
+                                    dataType: "json",
+                                    success: function (response, textStatus, jqXHR) {
+                                        $("#divProcessing").hide();
+                                        if (response.validated == true) {
+                                            var listOfAddresses = [];
+                                            for (var i = 0; i < response.results.length; i++) {
+                                                listOfAddresses.push([i + 1] + ")" + " " + response.results[i].AddressLine1 + "<br><br>")
+                                            };
+                                            var titleMsg = "Please confirm";
+                                            var div = $('<div></div>');
+                                            var outputMsg = "Is this address in the vicinity of one of the following address ranges?" + "<br><br>" + (listOfAddresses.join('\r\n'));
+                                            div.html(outputMsg).dialog({
+                                                title: titleMsg,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                maxWidth: 600,
+                                                fluid: true,
+                                                autoOpen: true,
+                                                resizable: true,
+                                                modal: true,
+                                                buttons: {
+                                                    "YES":
+                                                    function () {
+                                                        $("#Address_validated").prop("checked", true);
+                                                        $(this).dialog('close');
+                                                        var titleMsg = "Your address has been validated!"
+                                                        var div = $('<div></div>');
+                                                        var outputMsg = "Are you ready to submit your service request?";
+                                                        div.html(outputMsg).dialog({
+                                                            title: titleMsg,
+                                                            height: 'auto',
+                                                            width: 'auto',
+                                                            maxWidth: 600,
+                                                            fluid: true,
+                                                            autoOpen: true,
+                                                            resizable: true,
+                                                            modal: true,
+                                                            buttons: {
+                                                                "YES":
+                                                                    function () {
+                                                                        if ($("#requestForm").valid()) {
+                                                                            $(this).dialog('close');
+                                                                            $("#Inactive").prop("checked", false);
+                                                                            var formdata = new FormData();
+                                                                            var pics = storedFiles;
+                                                                            var fileInput = document.getElementById('fileInput');
+                                                                            for (var i = 0, len = pics.length; i < len; i++) {
+                                                                                formdata.append('files', pics[i]);
+                                                                            }
+                                                                            var other_data = $('#requestForm').serializeArray();
+                                                                            $.each(other_data, function (key, input) {
+                                                                                formdata.append(input.name, input.value);
+                                                                            });
+                                                                            var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
+                                                                            var token = tokenadr;
+                                                                            var headers = {};
+                                                                            var headersadr = {};
+                                                                            headers['__RequestVerificationToken'] = token;
+                                                                            headersadr['__RequestVerificationToken'] = tokenadr;
+                                                                            $.ajax({
+                                                                                type: 'POST',
+                                                                                dataType: 'json',
+                                                                                headers: headersadr,
+                                                                                cache: false,
+                                                                                url: "/ServiceRequests/EditRequest",
+                                                                                processData: false,
+                                                                                contentType: false,
+                                                                                data: formdata,
+                                                                                success: function (response, textStatus, jqXHR) {
+                                                                                    if (response.Already == true) {
+                                                                                        window.location = "/ServiceRequests/NoEdit/" + response.id;
+                                                                                    }
+                                                                                    else if (response.LateDate == true) {
+                                                                                        window.location = "/ServiceRequests/Date_Issue/";
+                                                                                    }
+                                                                                    else if (response.tooManyPics == true) {
+                                                                                        var titleMsg = "Too Many Photo.";
+                                                                                        var div = $('<div></div>');
+                                                                                        var outputMsg = "A service request can only contain a maximum of 4 photos.";
+                                                                                        div.html(outputMsg).dialog({
+                                                                                            title: titleMsg,
+                                                                                            height: 'auto',
+                                                                                            width: 'auto',
+                                                                                            maxWidth: 600,
+                                                                                            fluid: true,
+                                                                                            autoOpen: true,
+                                                                                            resizable: true,
+                                                                                            modal: true,
+                                                                                            buttons: {
+                                                                                                "CLOSE":
+                                                                                            function () {
+                                                                                                $(this).dialog('close');
+                                                                                            }
+                                                                                            }
+                                                                                        })
+
+                                                                                    }
+                                                                                    else if (response.noService == true) {
+                                                                                        window.location = "/ServiceRequests/noService/" + response.id;
+                                                                                    }
+
+                                                                                    else {
+                                                                                        window.location = "/ServiceRequests/Details/" + response.id;
+                                                                                    }
+                                                                                },
+
+                                                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                                                    alert('Error - ' + errorThrown);
+                                                                                },
+
+                                                                            })
+                                                                        }
+                                                                        else {
+                                                                            $(this).dialog('close');
+                                                                        }
+
+                                                                    },
+                                                                "NO":
+                                                                function () {
+                                                                    $(this).dialog("close");
+                                                                }
+                                                            }
+                                                        });
+
+
+                                                    },
+                                                    "NO":
+                                                    function () {
+                                                        $("#Address_validated").prop("checked", false);
+                                                        $(this).dialog("close");
+                                                        var titleMsg = "We're sorry, but we were unable to validate your address.";
+                                                        var div = $('<div></div>');
+                                                        var outputMsg = "Would you like to request manual address validation?";
+                                                        div.html(outputMsg).dialog({
+                                                            title: titleMsg,
+                                                            height: 'auto',
+                                                            width: 'auto',
+                                                            maxWidth: 600,
+                                                            fluid: true,
+                                                            autoOpen: true,
+                                                            resizable: true,
+                                                            modal: true,
+                                                            buttons: {
+                                                                "YES":
                                                                 function () {
                                                                     if ($("#requestForm").valid()) {
                                                                         $(this).dialog('close');
-                                                                        $("#Inactive").prop("checked", false);
+                                                                        $("#Inactive").prop("checked", true);
                                                                         var formdata = new FormData();
                                                                         var pics = storedFiles;
                                                                         var fileInput = document.getElementById('fileInput');
-                                                                        for (var i = 0, len = pics.length; i < len; i++) {
+                                                                        for (i = 0; i < pics.length; i++) {
                                                                             formdata.append('files', pics[i]);
                                                                         }
                                                                         var other_data = $('#requestForm').serializeArray();
@@ -405,12 +555,18 @@ $('#submitRequest').click(function (e) {
                                                                             dataType: 'json',
                                                                             headers: headersadr,
                                                                             cache: false,
-                                                                            url: "/ServiceRequests/EditRequest",
+                                                                            url: "/AddressValidator/ManualValidationEdit",
                                                                             processData: false,
                                                                             contentType: false,
                                                                             data: formdata,
                                                                             success: function (response, textStatus, jqXHR) {
-                                                                                if (response.tooManyPics == true) {
+                                                                                if (response.Already == true) {
+                                                                                    window.location = "/ServiceRequests/NoEdit/" + response.id;
+                                                                                }
+                                                                                else if (response.LateDate == true) {
+                                                                                    window.location = "/ServiceRequests/Date_Issue/";
+                                                                                }
+                                                                                else if (response.tooManyPics == true) {
                                                                                     var titleMsg = "Too Many Photo.";
                                                                                     var div = $('<div></div>');
                                                                                     var outputMsg = "A service request can only contain a maximum of 4 photos.";
@@ -432,393 +588,309 @@ $('#submitRequest').click(function (e) {
                                                                                     })
 
                                                                                 }
-                                                                                else if (response.noService == true) {
-                                                                                    window.location = "/ServiceRequests/noService/" + response.id;
-                                                                                }
-                                                                                
                                                                                 else {
-                                                                                    window.location = "/ServiceRequests/Details/" + response.id;
+                                                                                    var titleMsg = "Request sent.";
+                                                                                    var div = $('<div></div>');
+                                                                                    var outputMsg = "Your request has been submitted. We will get back to you shortly.";
+                                                                                    div.html(outputMsg).dialog({
+                                                                                        title: titleMsg,
+                                                                                        height: 'auto',
+                                                                                        width: 'auto',
+                                                                                        maxWidth: 600,
+                                                                                        fluid: true,
+                                                                                        autoOpen: true,
+                                                                                        resizable: true,
+                                                                                        modal: true,
+                                                                                        buttons: {
+                                                                                            "CLOSE":
+                                                                                        function () {
+                                                                                            $(this).dialog('close');
+                                                                                            $("#divProcessing").show();
+                                                                                            window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                                        }
+                                                                                        }
+                                                                                    })
                                                                                 }
-                                                                            },
 
+                                                                            },
                                                                             error: function (jqXHR, textStatus, errorThrown) {
                                                                                 alert('Error - ' + errorThrown);
                                                                             },
-
                                                                         })
+
                                                                     }
                                                                     else {
                                                                         $(this).dialog('close');
                                                                     }
-
                                                                 },
-                                                            "NO":
-                                                            function () {
-                                                                $(this).dialog("close");
-                                                            }
-                                                        }
-                                                    });
-                                                                    
-
-                                                },
-                                                "NO":
-                                                function () {
-                                                    $("#Address_validated").prop("checked", false);
-                                                    $(this).dialog("close");
-                                                    var titleMsg = "We're sorry, but we were unable to validate your address.";
-                                                    var div = $('<div></div>');
-                                                    var outputMsg = "Would you like to request manual address validation?";
-                                                    div.html(outputMsg).dialog({
-                                                        title: titleMsg,
-                                                        height: 'auto',
-                                                        width: 'auto',
-                                                        maxWidth: 600,
-                                                        fluid: true,
-                                                        autoOpen: true,
-                                                        resizable: true,
-                                                        modal: true,
-                                                        buttons: {
-                                                            "YES":
-                                                            function () {
-                                                                if ($("#requestForm").valid()) {
-                                                                    $(this).dialog('close');
-                                                                    $("#Inactive").prop("checked", true);
-                                                                    var formdata = new FormData();
-                                                                    var pics = storedFiles;
-                                                                    var fileInput = document.getElementById('fileInput');
-                                                                    for (i = 0; i < pics.length; i++) {
-                                                                        formdata.append('files', pics[i]);
-                                                                    }
-                                                                    var other_data = $('#requestForm').serializeArray();
-                                                                    $.each(other_data, function (key, input) {
-                                                                        formdata.append(input.name, input.value);
-                                                                    });
-                                                                    var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
-                                                                    var token = tokenadr;
-                                                                    var headers = {};
-                                                                    var headersadr = {};
-                                                                    headers['__RequestVerificationToken'] = token;
-                                                                    headersadr['__RequestVerificationToken'] = tokenadr;
-                                                                    $.ajax({
-                                                                        type: 'POST',
-                                                                        dataType: 'json',
-                                                                        headers: headersadr,
-                                                                        cache: false,
-                                                                        url: "/AddressValidator/ManualValidationEdit",
-                                                                        processData: false,
-                                                                        contentType: false,
-                                                                        data: formdata,
-                                                                        success: function (response, textStatus, jqXHR) {
-                                                                            if (response.tooManyPics == true) {
-                                                                                var titleMsg = "Too Many Photo.";
-                                                                                var div = $('<div></div>');
-                                                                                var outputMsg = "A service request can only contain a maximum of 4 photos.";
-                                                                                div.html(outputMsg).dialog({
-                                                                                    title: titleMsg,
-                                                                                    height: 'auto',
-                                                                                    width: 'auto',
-                                                                                    maxWidth: 600,
-                                                                                    fluid: true,
-                                                                                    autoOpen: true,
-                                                                                    resizable: true,
-                                                                                    modal: true,
-                                                                                    buttons: {
-                                                                                        "CLOSE":
-                                                                                    function () {
-                                                                                        $(this).dialog('close');
-                                                                                    }
-                                                                                    }
-                                                                                 })
-                                                                                
-                                                                            }
-                                                                            else {
-                                                                                var titleMsg = "Request sent.";
-                                                                                var div = $('<div></div>');
-                                                                                var outputMsg = "Your request has been submitted. We will get back to you shortly.";
-                                                                                div.html(outputMsg).dialog({
-                                                                                    title: titleMsg,
-                                                                                    height: 'auto',
-                                                                                    width: 'auto',
-                                                                                    maxWidth: 600,
-                                                                                    fluid: true,
-                                                                                    autoOpen: true,
-                                                                                    resizable: true,
-                                                                                    modal: true,
-                                                                                    buttons: {
-                                                                                        "CLOSE":
-                                                                                    function () {
-                                                                                        $(this).dialog('close');
-                                                                                        $("#divProcessing").show();
-                                                                                        window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
-                                                                                    }
-                                                                                    }
-                                                                                })
-                                                                            }
-                                                                        
-                                                                        },
-                                                                        error: function (jqXHR, textStatus, errorThrown) {
-                                                                            alert('Error - ' + errorThrown);
-                                                                        },
-                                                                    })
-
+                                                                "NO":
+                                                                function () {
+                                                                    $(this).dialog("close");
                                                                 }
-                                                                else {
-                                                                    $(this).dialog('close');
-                                                                }
-                                                            },
-                                                            "NO":
-                                                            function () {
-                                                                $(this).dialog("close");
                                                             }
-                                                        }
-                                                    });
-
-                                                }
-                                            }
-                                        });
-                                    }
-                                    else {
-                                        $("#Address_validated").prop("checked", false);
-                                        var titleMsg = "We're sorry, but we were unable to validate your address.";
-                                        var div = $('<div></div>');
-                                        var outputMsg = "Would you like to request manual address validation?";
-                                        div.html(outputMsg).dialog({
-                                            title: titleMsg,
-                                            height: 'auto',
-                                            width: 'auto',
-                                            maxWidth: 600,
-                                            fluid: true,
-                                            autoOpen: true,
-                                            resizable: true,
-                                            modal: true,
-                                            buttons: {
-                                                "YES":
-                                                function () {
-                                                    if ($("#requestForm").valid()) {
-                                                        $(this).dialog('close');
-                                                        $("#Inactive").prop("checked", true);
-                                                        var formdata = new FormData();
-                                                        var pics = storedFiles;
-                                                        var fileInput = document.getElementById('fileInput');
-                                                        for (i = 0; i < pics.length; i++) {
-                                                            formdata.append('files', pics[i]);
-                                                        }
-                                                        var other_data = $('#requestForm').serializeArray();
-                                                        $.each(other_data, function (key, input) {
-                                                            formdata.append(input.name, input.value);
                                                         });
-                                                        var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
-                                                        var token = tokenadr;
-                                                        var headers = {};
-                                                        var headersadr = {};
-                                                        headers['__RequestVerificationToken'] = token;
-                                                        headersadr['__RequestVerificationToken'] = tokenadr;
-                                                        $.ajax({
-                                                            type: 'POST',
-                                                            dataType: 'json',
-                                                            headers: headersadr,
-                                                            cache: false,
-                                                            url: "/AddressValidator/ManualValidationEdit",
-                                                            processData: false,
-                                                            contentType: false,
-                                                            data: formdata,
-                                                            success: function (response, textStatus, jqXHR) {
-                                                                if (response.tooManyPics == true) {
-                                                                    var titleMsg = "Too Many Photo.";
-                                                                    var div = $('<div></div>');
-                                                                    var outputMsg = "A service request can only contain a maximum of 4 photos.";
-                                                                    div.html(outputMsg).dialog({
-                                                                        title: titleMsg,
-                                                                        height: 'auto',
-                                                                        width: 'auto',
-                                                                        maxWidth: 600,
-                                                                        fluid: true,
-                                                                        autoOpen: true,
-                                                                        resizable: true,
-                                                                        modal: true,
-                                                                        buttons: {
-                                                                            "CLOSE":
-                                                                        function () {
-                                                                            $(this).dialog('close');
-                                                                        }
-                                                                        }
-                                                                    })
-
-                                                                }
-                                                                else {
-                                                                    var titleMsg = "Request sent.";
-                                                                    var div = $('<div></div>');
-                                                                    var outputMsg = "Your request has been submitted. We will get back to you shortly.";
-                                                                    div.html(outputMsg).dialog({
-                                                                        title: titleMsg,
-                                                                        height: 'auto',
-                                                                        width: 'auto',
-                                                                        maxWidth: 600,
-                                                                        fluid: true,
-                                                                        autoOpen: true,
-                                                                        resizable: true,
-                                                                        modal: true,
-                                                                        buttons: {
-                                                                            "CLOSE":
-                                                                        function () {
-                                                                            $(this).dialog('close');
-                                                                            $("#divProcessing").show();
-                                                                            window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
-                                                                        }
-                                                                        }
-                                                                    })
-                                                                }
-                                                            },
-                                                            error: function (jqXHR, textStatus, errorThrown) {
-                                                                alert('Error - ' + errorThrown);
-                                                            },
-                                                        })
 
                                                     }
-                                                    else {
-                                                        $(this).dialog('close');
-                                                    }
-                                                },
-                                                "NO":
-                                                function () {
-                                                    $(this).dialog("close");
                                                 }
-                                            }
-                                        });
-
-                                    }
-                                },
-                                failure: function (jqXHR, textStatus, errorThrown) {
-                                    alert('Error - ' + errorThrown);
-                                }
-                            });
-                        },
-                        "NO": function () {
-                            $("#Address_validated").prop("checked", false);
-                            $("#Address_vacant").prop("checked", false);
-                            $(this).dialog("close");
-                            var titleMsg = "We're sorry, but we were unable to validate your address.";
-                            var div = $('<div></div>');
-                            var listOfErrors = [];
-                            for (var i = 0; i < response.errors.length; i++) {
-                                listOfErrors.push([i + 1] + ")" + " " + response.errors[i].message + "<br><br>")
-
-                            }
-                            var outputMsg = "Address validation failed for the following reason(s):" + "<br><br>" + (listOfErrors.join('\r\n')) + "<br><br>" + "Would you like to request manual validation?";
-                            div.html(outputMsg).dialog({
-                                title: titleMsg,
-                                height: 'auto',
-                                width: 'auto',
-                                maxWidth: 600,
-                                fluid: true,
-                                autoOpen: true,
-                                resizable: true,
-                                modal: true,
-                                buttons: {
-                                    "YES":
-                                    function () {
-                                        if ($("#requestForm").valid()) {
-                                            $(this).dialog('close');
-                                            $("#Inactive").prop("checked", true);
-                                            var formdata = new FormData();
-                                            var pics = storedFiles;
-                                            var fileInput = document.getElementById('fileInput');
-                                            for (i = 0; i < pics.length; i++) {
-                                                formdata.append('files', pics[i]);
-                                            }
-                                            var other_data = $('#requestForm').serializeArray();
-                                            $.each(other_data, function (key, input) {
-                                                formdata.append(input.name, input.value);
                                             });
-                                            var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
-                                            var token = tokenadr;
-                                            var headers = {};
-                                            var headersadr = {};
-                                            headers['__RequestVerificationToken'] = token;
-                                            headersadr['__RequestVerificationToken'] = tokenadr;
-                                            $.ajax({
-                                                type: 'POST',
-                                                dataType: 'json',
-                                                headers: headersadr,
-                                                cache: false,
-                                                url: "/AddressValidator/ManualValidationEdit",
-                                                processData: false,
-                                                contentType: false,
-                                                data: formdata,
-                                                success: function (response, textStatus, jqXHR) {
-                                                    if (response.tooManyPics == true) {
-                                                        var titleMsg = "Too Many Photo.";
-                                                        var div = $('<div></div>');
-                                                        var outputMsg = "A service request can only contain a maximum of 4 photos.";
-                                                        div.html(outputMsg).dialog({
-                                                            title: titleMsg,
-                                                            height: 'auto',
-                                                            width: 'auto',
-                                                            maxWidth: 600,
-                                                            fluid: true,
-                                                            autoOpen: true,
-                                                            resizable: true,
-                                                            modal: true,
-                                                            buttons: {
-                                                                "CLOSE":
-                                                            function () {
-                                                                $(this).dialog('close');
-                                                            }
-                                                            }
-                                                        })
-
-                                                    }
-                                                    else {
-                                                        var titleMsg = "Request sent.";
-                                                        var div = $('<div></div>');
-                                                        var outputMsg = "Your request has been submitted. We will get back to you shortly.";
-                                                        div.html(outputMsg).dialog({
-                                                            title: titleMsg,
-                                                            height: 'auto',
-                                                            width: 'auto',
-                                                            maxWidth: 600,
-                                                            fluid: true,
-                                                            autoOpen: true,
-                                                            resizable: true,
-                                                            modal: true,
-                                                            buttons: {
-                                                                "CLOSE":
-                                                            function () {
-                                                                $(this).dialog('close');
-                                                                $("#divProcessing").show();
-                                                                window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
-                                                            }
-                                                            }
-                                                        })
-                                                    }
-                                                },
-                                                error: function (jqXHR, textStatus, errorThrown) {
-                                                    alert('Error - ' + errorThrown);
-                                                },
-                                            })
-
                                         }
                                         else {
-                                            $(this).dialog('close');
+                                            $("#Address_validated").prop("checked", false);
+                                            var titleMsg = "We're sorry, but we were unable to validate your address.";
+                                            var div = $('<div></div>');
+                                            var outputMsg = "Would you like to request manual address validation?";
+                                            div.html(outputMsg).dialog({
+                                                title: titleMsg,
+                                                height: 'auto',
+                                                width: 'auto',
+                                                maxWidth: 600,
+                                                fluid: true,
+                                                autoOpen: true,
+                                                resizable: true,
+                                                modal: true,
+                                                buttons: {
+                                                    "YES":
+                                                    function () {
+                                                        if ($("#requestForm").valid()) {
+                                                            $(this).dialog('close');
+                                                            $("#Inactive").prop("checked", true);
+                                                            var formdata = new FormData();
+                                                            var pics = storedFiles;
+                                                            var fileInput = document.getElementById('fileInput');
+                                                            for (i = 0; i < pics.length; i++) {
+                                                                formdata.append('files', pics[i]);
+                                                            }
+                                                            var other_data = $('#requestForm').serializeArray();
+                                                            $.each(other_data, function (key, input) {
+                                                                formdata.append(input.name, input.value);
+                                                            });
+                                                            var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
+                                                            var token = tokenadr;
+                                                            var headers = {};
+                                                            var headersadr = {};
+                                                            headers['__RequestVerificationToken'] = token;
+                                                            headersadr['__RequestVerificationToken'] = tokenadr;
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                dataType: 'json',
+                                                                headers: headersadr,
+                                                                cache: false,
+                                                                url: "/AddressValidator/ManualValidationEdit",
+                                                                processData: false,
+                                                                contentType: false,
+                                                                data: formdata,
+                                                                success: function (response, textStatus, jqXHR) {
+                                                                    if (response.Already == true) {
+                                                                        window.location = "/ServiceRequests/NoEdit/" + response.id;
+                                                                    }
+                                                                    else if (response.LateDate == true) {
+                                                                        window.location = "/ServiceRequests/Date_Issue/";
+                                                                    }
+                                                                    else if (response.tooManyPics == true) {
+                                                                        var titleMsg = "Too Many Photo.";
+                                                                        var div = $('<div></div>');
+                                                                        var outputMsg = "A service request can only contain a maximum of 4 photos.";
+                                                                        div.html(outputMsg).dialog({
+                                                                            title: titleMsg,
+                                                                            height: 'auto',
+                                                                            width: 'auto',
+                                                                            maxWidth: 600,
+                                                                            fluid: true,
+                                                                            autoOpen: true,
+                                                                            resizable: true,
+                                                                            modal: true,
+                                                                            buttons: {
+                                                                                "CLOSE":
+                                                                            function () {
+                                                                                $(this).dialog('close');
+                                                                            }
+                                                                            }
+                                                                        })
+
+                                                                    }
+                                                                    else {
+                                                                        var titleMsg = "Request sent.";
+                                                                        var div = $('<div></div>');
+                                                                        var outputMsg = "Your request has been submitted. We will get back to you shortly.";
+                                                                        div.html(outputMsg).dialog({
+                                                                            title: titleMsg,
+                                                                            height: 'auto',
+                                                                            width: 'auto',
+                                                                            maxWidth: 600,
+                                                                            fluid: true,
+                                                                            autoOpen: true,
+                                                                            resizable: true,
+                                                                            modal: true,
+                                                                            buttons: {
+                                                                                "CLOSE":
+                                                                            function () {
+                                                                                $(this).dialog('close');
+                                                                                $("#divProcessing").show();
+                                                                                window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                            }
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                },
+                                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                                    alert('Error - ' + errorThrown);
+                                                                },
+                                                            })
+
+                                                        }
+                                                        else {
+                                                            $(this).dialog('close');
+                                                        }
+                                                    },
+                                                    "NO":
+                                                    function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            });
+
                                         }
                                     },
-                                    "NO":
-                                    function () {
-                                        $(this).dialog("close");
+                                    failure: function (jqXHR, textStatus, errorThrown) {
+                                        alert('Error - ' + errorThrown);
                                     }
+                                });
+                            },
+                            "NO": function () {
+                                $("#Address_validated").prop("checked", false);
+                                $("#Address_vacant").prop("checked", false);
+                                $(this).dialog("close");
+                                var titleMsg = "We're sorry, but we were unable to validate your address.";
+                                var div = $('<div></div>');
+                                var listOfErrors = [];
+                                for (var i = 0; i < response.errors.length; i++) {
+                                    listOfErrors.push([i + 1] + ")" + " " + response.errors[i].message + "<br><br>")
+
                                 }
-                            });
-                        },
+                                var outputMsg = "Address validation failed for the following reason(s):" + "<br><br>" + (listOfErrors.join('\r\n')) + "<br><br>" + "Would you like to request manual validation?";
+                                div.html(outputMsg).dialog({
+                                    title: titleMsg,
+                                    height: 'auto',
+                                    width: 'auto',
+                                    maxWidth: 600,
+                                    fluid: true,
+                                    autoOpen: true,
+                                    resizable: true,
+                                    modal: true,
+                                    buttons: {
+                                        "YES":
+                                        function () {
+                                            if ($("#requestForm").valid()) {
+                                                $(this).dialog('close');
+                                                $("#Inactive").prop("checked", true);
+                                                var formdata = new FormData();
+                                                var pics = storedFiles;
+                                                var fileInput = document.getElementById('fileInput');
+                                                for (i = 0; i < pics.length; i++) {
+                                                    formdata.append('files', pics[i]);
+                                                }
+                                                var other_data = $('#requestForm').serializeArray();
+                                                $.each(other_data, function (key, input) {
+                                                    formdata.append(input.name, input.value);
+                                                });
+                                                var tokenadr = $('form[action="/ServiceRequests/EditRequest"] input[name="__RequestVerificationToken"]').val();
+                                                var token = tokenadr;
+                                                var headers = {};
+                                                var headersadr = {};
+                                                headers['__RequestVerificationToken'] = token;
+                                                headersadr['__RequestVerificationToken'] = tokenadr;
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    dataType: 'json',
+                                                    headers: headersadr,
+                                                    cache: false,
+                                                    url: "/AddressValidator/ManualValidationEdit",
+                                                    processData: false,
+                                                    contentType: false,
+                                                    data: formdata,
+                                                    success: function (response, textStatus, jqXHR) {
+                                                        if (response.Already == true) {
+                                                            window.location = "/ServiceRequests/NoEdit/" + response.id;
+                                                        }
+                                                        else if (response.LateDate == true) {
+                                                            window.location = "/ServiceRequests/Date_Issue/";
+                                                        }
+                                                        else if (response.tooManyPics == true) {
+                                                            var titleMsg = "Too Many Photo.";
+                                                            var div = $('<div></div>');
+                                                            var outputMsg = "A service request can only contain a maximum of 4 photos.";
+                                                            div.html(outputMsg).dialog({
+                                                                title: titleMsg,
+                                                                height: 'auto',
+                                                                width: 'auto',
+                                                                maxWidth: 600,
+                                                                fluid: true,
+                                                                autoOpen: true,
+                                                                resizable: true,
+                                                                modal: true,
+                                                                buttons: {
+                                                                    "CLOSE":
+                                                                function () {
+                                                                    $(this).dialog('close');
+                                                                }
+                                                                }
+                                                            })
+
+                                                        }
+                                                        else {
+                                                            var titleMsg = "Request sent.";
+                                                            var div = $('<div></div>');
+                                                            var outputMsg = "Your request has been submitted. We will get back to you shortly.";
+                                                            div.html(outputMsg).dialog({
+                                                                title: titleMsg,
+                                                                height: 'auto',
+                                                                width: 'auto',
+                                                                maxWidth: 600,
+                                                                fluid: true,
+                                                                autoOpen: true,
+                                                                resizable: true,
+                                                                modal: true,
+                                                                buttons: {
+                                                                    "CLOSE":
+                                                                function () {
+                                                                    $(this).dialog('close');
+                                                                    $("#divProcessing").show();
+                                                                    window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
+                                                                }
+                                                                }
+                                                            })
+                                                        }
+                                                    },
+                                                    error: function (jqXHR, textStatus, errorThrown) {
+                                                        alert('Error - ' + errorThrown);
+                                                    },
+                                                })
+
+                                            }
+                                            else {
+                                                $(this).dialog('close');
+                                            }
+                                        },
+                                        "NO":
+                                        function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            },
 
 
-                    }
+                        }
 
-                });
+                    });
 
+                }
+            },
+            failure: function (jqXHR, textStatus, errorThrown) {
+                alert('Error - ' + errorThrown);
             }
-        },
-        failure: function (jqXHR, textStatus, errorThrown) {
-            alert('Error - ' + errorThrown);
-        }
-    });
+        });
+     }
+        return false;
 });
+   

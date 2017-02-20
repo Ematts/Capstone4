@@ -6,6 +6,7 @@
 }
 
 <h2>Index</h2>
+<input id="refresher" name="refresh" type="hidden" value="" />
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -229,6 +230,21 @@
             $('#refresh').click(function () {
                 location.reload(true);
             });
+
+            window.addEventListener('pagehide', function (e){
+                document.getElementById("refresher").value = "go";
+                //console.log($("#refresher").val());
+            })
+
+            window.addEventListener("pageshow", function (e) {
+   
+                var doRefresh = $('#refresher').val();
+                if (doRefresh == "go")
+                {
+                    document.getElementById("refresher").value = "";
+                    location.reload(true);
+                }
+            })
 
 
         });

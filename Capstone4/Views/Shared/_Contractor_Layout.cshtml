@@ -184,6 +184,30 @@
 
 
     </script>
+    <script>
+        $(document).ready(function () {
+            window.addEventListener("pagehide", function(e) {
+
+                var x = $("#nav-main").hasClass('collapse');
+                if (x == false) {
+                    var opened = $('#myDropdown').is(':visible');
+                    if (opened == true) {
+                        $("#myDropdown").dropdown("toggle");
+                    }
+                    $("#nav-main").collapse('hide');
+                }
+                else {
+                    var opened = $('#myDropdown').is(':visible');
+                    if (opened == true) {
+                        $("#myDropdown").dropdown("toggle");
+                    }
+
+                }
+
+            })
+
+        })
+    </script>
 </body>
 </html>
 

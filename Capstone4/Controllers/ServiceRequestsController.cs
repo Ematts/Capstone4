@@ -323,6 +323,7 @@ namespace Capstone4.Controllers
         // GET: ServiceRequests/Edit/5
         public ActionResult Edit(int? id, string description, decimal? price, DateTime? completionDeadline, string city, string state, string zip, string street)
         {
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -333,7 +334,12 @@ namespace Capstone4.Controllers
                 return HttpNotFound();
             }
 
-            if(serviceRequest.Posted == true && (!this.User.IsInRole("Admin")))
+            if(serviceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if(serviceRequest.Posted == true)
             {
                 return RedirectToAction("NoEdit", "ServiceRequests", new { id = serviceRequest.ID });
             }
@@ -627,9 +633,21 @@ namespace Capstone4.Controllers
             string street = (form["Address.Street"]);
             string description = (form["Description"]);
             string priceString = (form["Price"]);
+            string tzone = (form["Timezone"]);
+            string Ambig = (form["AmbigTime"]);
             decimal price = Convert.ToDecimal(priceString);
             string dateString = (form["CompletionDeadline"]);
+            string utcString = (form["UTCDate"]);
             DateTime completionDeadline = Convert.ToDateTime(dateString);
+            DateTime? utc;
+            try
+            {
+                utc = Convert.ToDateTime(utcString);
+            }
+            catch
+            {
+                utc = null;
+            }
             bool vacant = form["Address.vacant"].Contains("true");
             bool validated = form["Address.validated"].Contains("true");
             bool inactive = form["Inactive"].Contains("true");
@@ -649,14 +667,49 @@ namespace Capstone4.Controllers
 
             Models.Address address = new Models.Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            serviceRequest.Timezone = tzone;
+            serviceRequest.AmbigTime = Ambig;
+            serviceRequest.UTCDate = utc;
+            serviceRequest.CompletionDeadline = completionDeadline;
             serviceRequest.Service_Number = serviceRequest.ID;
-            var addressToCheck = serviceRequest.Address;
-            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
-            bool addressAssigned = false;
+            serviceRequest.Price = price;
+            serviceRequest.Description = description;
+
 
             if (serviceRequest == null)
             {
                 return HttpNotFound();
+            }
+
+            if (serviceRequest.Posted == true)
+            {
+                return Json(new { success = true, Already = true, id = serviceRequest.ID },
+                JsonRequestBehavior.AllowGet);
+            }
+            var addressToCheck = serviceRequest.Address;
+            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+            bool addressAssigned = false;
+
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            DateTime? deadline;
+
+
+            if (serviceRequest.UTCDate == null)
+            {
+                deadline = serviceRequest.CompletionDeadline;
+            }
+            else
+            {
+                deadline = serviceRequest.UTCDate;
+                Time = DateTime.UtcNow;
+            }
+
+            if (deadline < Time)
+            {
+                return Json(new { success = true, LateDate = true },
+                JsonRequestBehavior.AllowGet);
             }
 
             foreach (var path in db.ServiceRequestFilePaths.ToList())
@@ -758,13 +811,17 @@ namespace Capstone4.Controllers
                 }
                 db.SaveChanges();
             }
-            serviceRequest.Description = description;
+            //serviceRequest.Description = description;
             serviceRequest.NeedsManualValidation = false;
-            serviceRequest.Price = price;
-            serviceRequest.CompletionDeadline = completionDeadline;
+            //serviceRequest.Price = price;
+            //serviceRequest.CompletionDeadline = completionDeadline;
             serviceRequest.Address.vacant = vacant;
             serviceRequest.Inactive = inactive;
             serviceRequest.Address.validated = validated;
+            //serviceRequest.Timezone = tzone;
+            //serviceRequest.AmbigTime = Ambig;
+            //serviceRequest.UTCDate = utc;
+
             db.SaveChanges();
             if (serviceRequest.Posted != true && serviceRequest.NeedsManualValidation == false && serviceRequest.Inactive != true && serviceRequest.Address.validated == true)
             {
@@ -772,14 +829,28 @@ namespace Capstone4.Controllers
                 if (emailList.Count == 0)
                 {
                     serviceRequest.Posted = false;
-                    //TempData["address"] = addressToCheck;
                     db.SaveChanges();
-                    //return RedirectToAction("noService", "ServiceRequests", new { address = TempData["address"] });
-                    return Json(new { success = true, noAddrss = true, id = serviceRequest.ID },
+                    return Json(new { success = true, noService = true, id = serviceRequest.ID },
                          JsonRequestBehavior.AllowGet);
                 }
+
                 serviceRequest.Posted = true;
-                serviceRequest.PostedDate = DateTime.Now;
+                DateTime timeUtcPosted = DateTime.UtcNow;
+                serviceRequest.PostedDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPosted, Zone);
+                DateTime myDt = DateTime.SpecifyKind(timeUtcPosted, DateTimeKind.Utc);
+                bool dst = Zone.IsDaylightSavingTime(myDt);
+
+
+                if (dst == true)
+                {
+                    serviceRequest.PostedAmbigTime = "DST";
+                }
+
+                if (dst == false)
+                {
+                    serviceRequest.PostedAmbigTime = "STD";
+                }
+
                 db.SaveChanges();
                 postServiceRequest(serviceRequest, emailList);
                 return Json(new { success = true, id = serviceRequest.ID },
