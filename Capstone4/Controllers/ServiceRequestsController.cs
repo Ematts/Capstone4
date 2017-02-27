@@ -1020,16 +1020,46 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if(serviceRequest.NeedsManualValidation == true)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if(serviceRequest.Posted == true)
+            {
+                return RedirectToAction("Duplicate_Post", "ServiceRequests");
+            }
+
             ServiceRequest serviceRequestPic = db.ServiceRequests.Include(i => i.ServiceRequestFilePaths).SingleOrDefault(i => i.ID == id);
             List<Contractor> emailList;
             if (serviceRequest == null)
             {
                 return HttpNotFound();
             }
-            if(serviceRequest.CompletionDeadline < DateTime.Now)
+
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            DateTime? deadline;
+
+
+            if (serviceRequest.UTCDate == null)
+            {
+                deadline = serviceRequest.CompletionDeadline;
+
+            }
+            else
+            {
+                deadline = serviceRequest.UTCDate;
+                Time = DateTime.UtcNow;
+            }
+
+            if (deadline < Time)
             {
                 return RedirectToAction("Date_Issue", "ServiceRequests");
             }
+
             serviceRequest.Inactive = false;
             
             emailList = GetDistance(serviceRequest);
@@ -1037,17 +1067,30 @@ namespace Capstone4.Controllers
             if (emailList.Count == 0)
             {
                 serviceRequest.Posted = false;
-                //List<Models.Address> ids = new List<Models.Address>();
-                //Models.Address addressToCheck = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
-                //TempData["address"] = addressToCheck;
                 db.SaveChanges();
                 return RedirectToAction("noService", "ServiceRequests", new { id = serviceRequest.ID });
             }
             serviceRequest.Posted = true;
-            serviceRequest.PostedDate = DateTime.Now;
+
+            DateTime timeUtcPosted = DateTime.UtcNow;
+            serviceRequest.PostedDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPosted, Zone);
+            DateTime myDt = DateTime.SpecifyKind(timeUtcPosted, DateTimeKind.Utc);
+            bool dst = Zone.IsDaylightSavingTime(myDt);
+
+
+            if (dst == true)
+            {
+                serviceRequest.PostedAmbigTime = "DST";
+            }
+
+            if (dst == false)
+            {
+                serviceRequest.PostedAmbigTime = "STD";
+            }
+
             db.SaveChanges();
             postServiceRequest(serviceRequest, emailList);
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "ServiceRequests", new { id = serviceRequest.ID });
 
         }
 
@@ -1092,58 +1135,111 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
-        public ActionResult EditManual(int? id)
+        public ActionResult EditTime(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            EditTimeViewModel model = new EditTimeViewModel() { ID = serviceRequest.ID, CompletionDeadline = serviceRequest.CompletionDeadline, Email = serviceRequest.Homeowner.ApplicationUser.Email, Username = serviceRequest.Homeowner.Username, Street = serviceRequest.Address.Street, City = serviceRequest.Address.City, State = serviceRequest.Address.State, Zip = serviceRequest.Address.Zip, Description = serviceRequest.Description, Price = serviceRequest.Price, Service_Number = serviceRequest.Service_Number, ServiceRequestFilePaths = serviceRequest.ServiceRequestFilePaths };
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
             if (serviceRequest == null)
             {
                 return HttpNotFound();
             }
 
-            return View(serviceRequest);
+            if(serviceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditManual([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated,NeedsManualValidation")] ServiceRequest serviceRequest)
+        public ActionResult EditTimeModify (int? id, DateTime? CompletionDeadline, DateTime? UTCDate, string AmbigTime)
         {
-            List<Contractor> emailList;
-            if (ModelState.IsValid)
-            {
-                
-                serviceRequest.Address = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
-                serviceRequest.Homeowner = db.Homeowners.Where(x => x.ID == serviceRequest.HomeownerID).SingleOrDefault();
-                serviceRequest.PostedDate = DateTime.Now;
-                db.Entry(serviceRequest).State = EntityState.Modified;
-                emailList = GetDistance(serviceRequest);
-                if (serviceRequest.PostedDate > serviceRequest.CompletionDeadline)
-                {
-                    return RedirectToAction("Date_Issue", "ServiceRequests");
-                }
-                if (emailList.Count == 0)
-                {
-                    serviceRequest.Posted = false;
-                    //TempData["address"] = addressToCheck;
-                    db.SaveChanges();
-                    return RedirectToAction("noService", "ServiceRequests", new { id = serviceRequest.ID });
-                }
-                if(serviceRequest.Posted == true)
-                {
-                    return RedirectToAction("Duplicate_Post");
-                }
-                serviceRequest.Posted = true;
-                serviceRequest.PostedDate = DateTime.Now;
-                postServiceRequest(serviceRequest, emailList);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            DateTime? deadline;
 
+            if (identity == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(serviceRequest);
+
+            if (serviceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if (UTCDate == null)
+            {
+                deadline = CompletionDeadline;
+            }
+            else
+            {
+                deadline = UTCDate;
+                Time = DateTime.UtcNow;
+            }
+
+            if (deadline < Time)
+            {
+                return RedirectToAction("Date_Issue", "ServiceRequests");
+            }
+
+            serviceRequest.CompletionDeadline = CompletionDeadline.Value;
+            serviceRequest.UTCDate = UTCDate;
+            serviceRequest.AmbigTime = AmbigTime;
+
+            db.SaveChanges();
+
+            return RedirectToAction("ActivateView", "ServiceRequests", new { id = serviceRequest.ID });
         }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult EditManual([Bind(Include = "ID,AddressID,ContractorID,HomeownerID,PostedDate,Price,CompletionDeadline,Description,Service_Number,Expired,ContractorReviewID,CompletionDate,AmountDue,ContractorPaid,Inactive,PayPalListenerModelID,ManualValidated,NeedsManualValidation")] ServiceRequest serviceRequest)
+        //{
+        //    List<Contractor> emailList;
+        //    if (ModelState.IsValid)
+        //    {
+
+        //        serviceRequest.Address = db.Addresses.Where(x => x.ID == serviceRequest.AddressID).SingleOrDefault();
+        //        serviceRequest.Homeowner = db.Homeowners.Where(x => x.ID == serviceRequest.HomeownerID).SingleOrDefault();
+        //        serviceRequest.PostedDate = DateTime.Now;
+        //        db.Entry(serviceRequest).State = EntityState.Modified;
+        //        emailList = GetDistance(serviceRequest);
+        //        if (serviceRequest.PostedDate > serviceRequest.CompletionDeadline)
+        //        {
+        //            return RedirectToAction("Date_Issue", "ServiceRequests");
+        //        }
+        //        if (emailList.Count == 0)
+        //        {
+        //            serviceRequest.Posted = false;
+        //            //TempData["address"] = addressToCheck;
+        //            db.SaveChanges();
+        //            return RedirectToAction("noService", "ServiceRequests", new { id = serviceRequest.ID });
+        //        }
+        //        if (serviceRequest.Posted == true)
+        //        {
+        //            return RedirectToAction("Duplicate_Post");
+        //        }
+        //        serviceRequest.Posted = true;
+        //        serviceRequest.PostedDate = DateTime.Now;
+        //        postServiceRequest(serviceRequest, emailList);
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+
+        //    }
+        //    return View(serviceRequest);
+        //}
 
         protected override void Dispose(bool disposing)
         {
@@ -1490,53 +1586,53 @@ namespace Capstone4.Controllers
 
         }
 
-        public ActionResult PaymentSuccess(int? ID)
-        {
+        //public ActionResult PaymentSuccess(int? ID)
+        //{
 
-            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+        //    string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
-            if (identity == null)
-            {
-                return RedirectToAction("Unauthorized_Access", "Home");
-            }
+        //    if (identity == null)
+        //    {
+        //        return RedirectToAction("Unauthorized_Access", "Home");
+        //    }
 
-            ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+        //    ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
 
-            if (serviceRequest == null)
-            {
-                return HttpNotFound();
-            }
+        //    if (serviceRequest == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
 
-            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
-            {
-                return RedirectToAction("Unauthorized_Access", "Home");
-            }
+        //    if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+        //    {
+        //        return RedirectToAction("Unauthorized_Access", "Home");
+        //    }
 
-            if(serviceRequest.PayPalListenerModelID == null || serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")
-            {
-                return RedirectToAction("Unauthorized_Access", "Home");
-            }
+        //    if(serviceRequest.PayPalListenerModelID == null || serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status != "Completed")
+        //    {
+        //        return RedirectToAction("Unauthorized_Access", "Home");
+        //    }
 
-            //serviceRequest.ContractorPaid = true;
-            db.SaveChanges();
+        //    //serviceRequest.ContractorPaid = true;
+        //    db.SaveChanges();
 
-            //var myMessage = new SendGrid.SendGridMessage();
-            //string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
-            //string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
-            //string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
-            //myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
-            //myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
-            //myMessage.Subject = "Payment Confirmed!!";
-            //String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>"  + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>"; 
-            //myMessage.Html = message;
-            //var credentials = new NetworkCredential(name, pass);
-            //var transportWeb = new SendGrid.Web(credentials);
-            //transportWeb.DeliverAsync(myMessage);
-            //Notify_Contractor_of_Payment(serviceRequest);
+        //    //var myMessage = new SendGrid.SendGridMessage();
+        //    //string name = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\name.txt");
+        //    //string pass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\password.txt");
+        //    //string url = "http://localhost:37234/ServiceRequests/AddReview/" + serviceRequest.ID;
+        //    //myMessage.AddTo(serviceRequest.Homeowner.ApplicationUser.Email);
+        //    //myMessage.From = new MailAddress("workwarriors@gmail.com", "Admin");
+        //    //myMessage.Subject = "Payment Confirmed!!";
+        //    //String message = "Hello " + serviceRequest.Homeowner.FirstName + "," + "<br>" + "<br>" + "Thank you for using Work Warriors!  You have completed payment for the following service request:" + "<br>" + "<br>" + "Job Location:" + "<br>" + "<br>" + serviceRequest.Address.Street + "<br>" + serviceRequest.Address.City + "<br>" + serviceRequest.Address.State + "<br>" + serviceRequest.Address.Zip + "<br>" + "<br>" + "Job Description: <br>" + serviceRequest.Description + "<br>" + "<br>" + "Bid price: <br>$" + serviceRequest.Price + "<br>" + "<br>" + "Service Number: <br>"  + serviceRequest.Service_Number + "<br>" + "<br>" + "To review " + serviceRequest.Contractor.Username + "'s service, click on link below: <br><a href =" + url + "> Click Here </a>"; 
+        //    //myMessage.Html = message;
+        //    //var credentials = new NetworkCredential(name, pass);
+        //    //var transportWeb = new SendGrid.Web(credentials);
+        //    //transportWeb.DeliverAsync(myMessage);
+        //    //Notify_Contractor_of_Payment(serviceRequest);
 
-            return View(serviceRequest);
+        //    return View(serviceRequest);
 
-        }
+        //}
 
         public ActionResult PayPalSuccess(int? ID)
         {
@@ -1556,6 +1652,11 @@ namespace Capstone4.Controllers
             }
 
             if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if (serviceRequest.PaymentError != false)
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
@@ -1667,6 +1768,10 @@ namespace Capstone4.Controllers
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
 
+            if(serviceRequest.ContractorReviewID != null)
+            {
+                return RedirectToAction("Already_Reviewed", new { id = serviceRequest.ID });
+            }
 
             return View(serviceRequest);
 
@@ -1677,9 +1782,18 @@ namespace Capstone4.Controllers
         public ActionResult AddReview([Bind(Include = "ID,Review,Rating")] ContractorReview contractorReview, int ID)
         {
             ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest.ContractorReviewID != null)
+            {
+                return RedirectToAction("Already_Reviewed", new { id = serviceRequest.ID });
+            }
+
             if (ModelState.IsValid)
             {
-                contractorReview.ReviewDate = DateTime.Now;
+                //contractorReview.ReviewDate = DateTime.Now;
+                DateTime timeUtcPosted = DateTime.UtcNow;
+                TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+                contractorReview.ReviewDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPosted, Zone);
                 contractorReview.ContractorID = serviceRequest.ContractorID;
                 db.ContractorReviews.Add(contractorReview);
                 db.SaveChanges();
@@ -1694,7 +1808,7 @@ namespace Capstone4.Controllers
                 }
                 db.SaveChanges();
                 Notify_Contractor_of_Review(contractorReview, serviceRequest);
-                return RedirectToAction("SeeContractorReviews", "Contractors", new { id = serviceRequest.ContractorID });
+                return RedirectToAction("HomeownerReviewDetails", "Homeowners", new { id = serviceRequest.ID });
             }
             return View(serviceRequest);
         }
@@ -1734,14 +1848,19 @@ namespace Capstone4.Controllers
                 return HttpNotFound();
             }
 
-            if(serviceRequest.ContractorReviewID == null)
+            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            if (serviceRequest.ContractorReviewID == null)
             {
                 return HttpNotFound();
             }
 
-            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            if (serviceRequest.ContractorReview.ReviewResponseID != null)
             {
-                return RedirectToAction("Unauthorized_Access", "Home");
+                return RedirectToAction("Already_Responded", new { id = serviceRequest.ID });
             }
 
             model.ContractorUsername = serviceRequest.Contractor.Username;
@@ -1761,10 +1880,21 @@ namespace Capstone4.Controllers
         public ActionResult AddResponse (AddResponseViewModel model, int ID)
         {
             ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+            if (serviceRequest.ContractorReview.ReviewResponseID != null)
+            {
+                return RedirectToAction("Already_Responded", new { id = serviceRequest.ID });
+            }
+
             ReviewResponse reviewResponse = new ReviewResponse();
+
             if (ModelState.IsValid)
             {
-                reviewResponse.ResponseDate = DateTime.Now;
+                //reviewResponse.ResponseDate = DateTime.Now;
+
+                DateTime timeUtcPosted = DateTime.UtcNow;
+                TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+                reviewResponse.ResponseDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPosted, Zone);
                 reviewResponse.ContractorID = serviceRequest.ContractorID;
                 reviewResponse.Response = model.Response;
                 db.ReviewResponses.Add(reviewResponse);
@@ -1814,7 +1944,12 @@ namespace Capstone4.Controllers
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
 
-            //if((identity == serviceRequest.Homeowner.UserId) && (serviceRequest.PayPalListenerModelID != null))
+            if (serviceRequest.PaymentError == false)
+            {
+                return RedirectToAction("Already_Paid", new { id = serviceRequest.ID });
+            }
+
+            //if ((identity == serviceRequest.Homeowner.UserId) && (serviceRequest.PayPalListenerModelID != null))
             //{
             //    return RedirectToAction("Already_Paid", new { id = serviceRequest.ID });
             //}
@@ -1923,6 +2058,50 @@ namespace Capstone4.Controllers
             }
 
             if (serviceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(serviceRequest);
+        }
+
+        public ActionResult Already_Reviewed(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (serviceRequest.Homeowner.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(serviceRequest);
+        }
+
+        public ActionResult Already_Responded(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if (serviceRequest == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (serviceRequest.Contractor.UserId != identity)
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
@@ -2080,6 +2259,67 @@ namespace Capstone4.Controllers
             var transportWeb = new SendGrid.Web(credentials);
             transportWeb.DeliverAsync(myMessage);
 
+        }
+
+        [AllowAnonymous]
+        public JsonResult DateCheckManual(DateTime? CompletionDeadline, int ID, DateTime? UTCDate)
+       {
+            if (CompletionDeadline.HasValue)
+            {
+                ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+
+                DateTime timeUtc = DateTime.UtcNow;
+                TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+                DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+                var timeToCheck = CompletionDeadline.Value;
+                DateTime deadline;
+
+                try
+                {
+                    deadline = TimeZoneInfo.ConvertTime(timeToCheck, Zone, Zone);
+
+                }
+                catch
+                {
+                    return Json("You have entered an invalid time.", JsonRequestBehavior.AllowGet);
+                }
+
+                bool ambig = Zone.IsAmbiguousTime(deadline);
+
+                if ((ambig == true) && (UTCDate == null))
+                {
+                    TimeSpan[] offsets;
+                    DateTime utcDateStandard;
+                    DateTime utcDateDST;
+                    offsets = Zone.GetAmbiguousTimeOffsets(deadline);
+                    utcDateStandard = DateTime.SpecifyKind(deadline - offsets[0], DateTimeKind.Utc);
+                    utcDateDST = DateTime.SpecifyKind(deadline - offsets[1], DateTimeKind.Utc);
+                    Response.AddHeader("Z-ID", "ambigError");
+                    Response.AddHeader("Standard-ID", utcDateStandard.ToString());
+                    Response.AddHeader("DST-ID", utcDateDST.ToString());
+                    return Json("You have entered an ambiguous time.", JsonRequestBehavior.AllowGet);
+                }
+                if ((ambig == true) && (UTCDate != null))
+                {
+                    if (DateTime.UtcNow > UTCDate)
+                    {
+                        return Json("The completion deadline must be later than the current time now.", JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+
+                if (deadline < Time)
+                {
+                    return Json("The completion deadline must be later than the current time now.", JsonRequestBehavior.AllowGet);
+                }
+
+                if (deadline > Time)
+                {
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+            }
+                return null;
+            
         }
 
         [AllowAnonymous]

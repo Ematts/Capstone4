@@ -170,8 +170,20 @@ namespace Capstone4.Controllers
             string description = (form["Description"]);
             string priceString = (form["Price"]);
             decimal price = Convert.ToDecimal(priceString);
+            string tzone = (form["Timezone"]);
+            string Ambig = (form["AmbigTime"]);
             string dateString = (form["CompletionDeadline"]);
+            string utcString = (form["UTCDate"]);
             DateTime completionDeadline = Convert.ToDateTime(dateString);
+            DateTime? utc;
+            try
+            {
+                utc = Convert.ToDateTime(utcString);
+            }
+            catch
+            {
+                utc = null;
+            }
             bool vacant = form["Address.vacant"].Contains("true");
             bool validated = form["Address.validated"].Contains("true");
             bool inactive = form["Inactive"].Contains("true");
@@ -183,13 +195,13 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            if (!this.User.IsInRole("Homeowner"))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
-            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Inactive = inactive };
+            ServiceRequest serviceRequest = new ServiceRequest() { Description = description, Price = price, CompletionDeadline = completionDeadline, Timezone = tzone, UTCDate = utc, AmbigTime = Ambig, Inactive = inactive };
             serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
 
             foreach (var i in db.Homeowners)
@@ -200,6 +212,28 @@ namespace Capstone4.Controllers
                     serviceRequest.HomeownerID = i.ID;
 
                 }
+            }
+            DateTime timeUtc = DateTime.UtcNow;
+            TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+            DateTime Time = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, Zone);
+            DateTime? deadline;
+
+
+            if (serviceRequest.UTCDate == null)
+            {
+                deadline = serviceRequest.CompletionDeadline;
+
+            }
+            else
+            {
+                deadline = serviceRequest.UTCDate;
+                Time = DateTime.UtcNow;
+            }
+
+            if (deadline < Time)
+            {
+                return Json(new { success = true, LateDate = true },
+                JsonRequestBehavior.AllowGet);
             }
 
             foreach (var i in db.Addresses.ToList())
@@ -233,6 +267,22 @@ namespace Capstone4.Controllers
             }
             serviceRequest.Posted = false;
             serviceRequest.NeedsManualValidation = true;
+            
+            //DateTime timeUtcPosted = DateTime.UtcNow;
+            //serviceRequest.PostedDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPosted, Zone);
+            //DateTime myDt = DateTime.SpecifyKind(timeUtcPosted, DateTimeKind.Utc);
+            //bool dst = Zone.IsDaylightSavingTime(myDt);
+
+            //if (dst == true)
+            //{
+            //    serviceRequest.PostedAmbigTime = "DST";
+            //}
+
+            //if (dst == false)
+            //{
+            //    serviceRequest.PostedAmbigTime = "STD";
+            //}
+
             db.ServiceRequests.Add(serviceRequest);
             db.SaveChanges();
             serviceRequest.Service_Number = serviceRequest.ID;
@@ -255,9 +305,21 @@ namespace Capstone4.Controllers
             string street = (form["Address.Street"]);
             string description = (form["Description"]);
             string priceString = (form["Price"]);
+            string tzone = (form["Timezone"]);
+            string Ambig = (form["AmbigTime"]);
             decimal price = Convert.ToDecimal(priceString);
             string dateString = (form["CompletionDeadline"]);
+            string utcString = (form["UTCDate"]);
             DateTime completionDeadline = Convert.ToDateTime(dateString);
+            DateTime? utc;
+            try
+            {
+                utc = Convert.ToDateTime(utcString);
+            }
+            catch
+            {
+                utc = null;
+            }
             bool vacant = form["Address.vacant"].Contains("true");
             bool validated = form["Address.validated"].Contains("true");
             bool inactive = form["Inactive"].Contains("true");
@@ -270,7 +332,7 @@ namespace Capstone4.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            if (!this.User.IsInRole("Admin") && (!this.User.IsInRole("Homeowner")))
+            if (!this.User.IsInRole("Homeowner"))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -278,15 +340,20 @@ namespace Capstone4.Controllers
             Address address = new Address() { Street = street, City = city, State = state, Zip = zip, vacant = vacant, validated = validated };
 
             ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
-            serviceRequest.Service_Number = serviceRequest.ID;
-            var addressToCheck = serviceRequest.Address;
-            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
-            bool addressAssigned = false;
-
             if (serviceRequest == null)
             {
                 return HttpNotFound();
             }
+            serviceRequest.Timezone = tzone;
+            serviceRequest.AmbigTime = Ambig;
+            serviceRequest.UTCDate = utc;
+            serviceRequest.CompletionDeadline = completionDeadline;
+            serviceRequest.Service_Number = serviceRequest.ID;
+            serviceRequest.Price = price;
+            serviceRequest.Description = description;
+            var addressToCheck = serviceRequest.Address;
+            serviceRequest.ServiceRequestFilePaths = new List<ServiceRequestFilePath>();
+            bool addressAssigned = false;
 
             foreach (var path in db.ServiceRequestFilePaths.ToList())
             {
@@ -389,12 +456,12 @@ namespace Capstone4.Controllers
 
             }
 
-            serviceRequest.Description = description;
+            //serviceRequest.Description = description;
             serviceRequest.Posted = false;
             serviceRequest.PostedDate = null;
             serviceRequest.NeedsManualValidation = true;
-            serviceRequest.Price = price;
-            serviceRequest.CompletionDeadline = completionDeadline;
+            //serviceRequest.Price = price;
+            //serviceRequest.CompletionDeadline = completionDeadline;
             serviceRequest.Address.vacant = vacant;
             serviceRequest.Inactive = inactive;
             serviceRequest.Address.validated = validated;

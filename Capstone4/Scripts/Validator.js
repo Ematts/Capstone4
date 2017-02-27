@@ -496,6 +496,7 @@ if (!Array.prototype.includes) {
                                                                     function () {
                                                                         if ($("#requestForm").valid()) {
                                                                             $(this).dialog('close');
+                                                                            $("#divProcessing").show();
                                                                             $("#Inactive").prop("checked", true);
                                                                             var formdata = new FormData();
                                                                             var pics = storedFiles;
@@ -523,6 +524,7 @@ if (!Array.prototype.includes) {
                                                                                 contentType: false,
                                                                                 data: formdata,
                                                                                 success: function (response, textStatus, jqXHR) {
+                                                                                    $("#divProcessing").hide();
                                                                                     var titleMsg = "Request sent.";
                                                                                     var div = $('<div></div>');
                                                                                     var outputMsg = "Your request has been submitted. We will get back to you shortly.";
@@ -539,6 +541,7 @@ if (!Array.prototype.includes) {
                                                                                             "CLOSE":
                                                                                         function () {
                                                                                             $(this).dialog('close');
+                                                                                            $("#divProcessing").show();
                                                                                             window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                                         }
                                                                                         }
@@ -583,6 +586,7 @@ if (!Array.prototype.includes) {
                                                         function () {
                                                             if ($("#requestForm").valid()) {
                                                                 $(this).dialog('close');
+                                                                $("#divProcessing").show();
                                                                 $("#Inactive").prop("checked", true);
                                                                 var formdata = new FormData();
                                                                 var pics = storedFiles;
@@ -610,6 +614,7 @@ if (!Array.prototype.includes) {
                                                                     contentType: false,
                                                                     data: formdata,
                                                                     success: function (response, textStatus, jqXHR) {
+                                                                        $("#divProcessing").hide();
                                                                         var titleMsg = "Request sent.";
                                                                         var div = $('<div></div>');
                                                                         var outputMsg = "Your request has been submitted. We will get back to you shortly.";
@@ -626,6 +631,7 @@ if (!Array.prototype.includes) {
                                                                                 "CLOSE":
                                                                             function () {
                                                                                 $(this).dialog('close');
+                                                                                $("#divProcessing").show();
                                                                                 window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                             }
                                                                             }
@@ -679,6 +685,7 @@ if (!Array.prototype.includes) {
                                             function () {
                                                 if ($("#requestForm").valid()) {
                                                     $(this).dialog('close');
+                                                    $("#divProcessing").show();
                                                     $("#Inactive").prop("checked", true);
                                                     var formdata = new FormData();
                                                     var pics = storedFiles;
@@ -706,6 +713,7 @@ if (!Array.prototype.includes) {
                                                         contentType: false,
                                                         data: formdata,
                                                         success: function (response, textStatus, jqXHR) {
+                                                            $("#divProcessing").hide();
                                                             var titleMsg = "Request sent.";
                                                             var div = $('<div></div>');
                                                             var outputMsg = "Your request has been submitted. We will get back to you shortly.";
@@ -722,6 +730,7 @@ if (!Array.prototype.includes) {
                                                                     "CLOSE":
                                                                 function () {
                                                                     $(this).dialog('close');
+                                                                    $("#divProcessing").show();
                                                                     window.location = "/ServiceRequests/Manual_Validate_Thank_You/" + response.id;
                                                                 }
                                                                 }

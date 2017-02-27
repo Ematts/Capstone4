@@ -1,0 +1,300 @@
+﻿@model Capstone4.Models.EditTimeViewModel
+
+@{
+    ViewBag.Title = "EditTime";
+}
+
+<h2>Edit Completion Deadline</h2>
+
+<dl class="dl-horizontal">
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Username)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Username)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Email)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Email)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Street)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Street)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.City)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.City)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.State)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.State)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Zip)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Zip)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Description)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Description)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Price)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Price)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Service_Number)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Service_Number)
+    </dd>
+
+</dl>
+
+<strong>Service Request Photos:</strong>
+<br> <br>
+<div class="photocontainer">
+    @foreach (var item in Model.ServiceRequestFilePaths)
+    {
+
+
+        <img class="img" data-url="~/images/@item.FileName" src="~/images/@item.FileName" alt="Service Request Photo" width="200" height="133" />
+
+
+
+    }
+ </div>
+
+
+@using (Html.BeginForm("EditTimeModify", "ServiceRequests", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "requestForm" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+        <input id="UTCDate" name="UTCDate" type="hidden" value="" />
+        <input id="AmbigTime" name="AmbigTime" type="hidden" value="" />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CompletionDeadline, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CompletionDeadline, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CompletionDeadline, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <script src="~/Scripts/jquerypic.js" type="text/javascript"></script>
+    <script src="~/Scripts/PhotoNumbering.js" type="text/javascript"></script>
+    <script>
+        $(".photocontainer").imageBox();
+    </script>
+
+<script>
+    $(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+        fluidDialog();
+        standardTime = document.getElementById("standardTime");
+        DaylightTime = document.getElementById("DaylightSavingsTime");
+        if (standardTime != null) {
+            standardTime.addEventListener("change", switchTimeStand, false);
+        }
+        if (DaylightTime != null) {
+            DaylightTime.addEventListener("change", switchTimeDay, false);
+        }
+    });
+
+    function switchTimeStand() {
+        var stand = document.getElementById("standardTime");
+        var day = document.getElementById("DaylightSavingsTime");
+
+        if (stand.checked == true) {
+            $("#DaylightSavingsTime").prop("checked", false);
+        }
+        if (stand.checked == false) {
+            $("#DaylightSavingsTime").prop("checked", true);
+        }
+    }
+
+    function switchTimeDay() {
+        var stand = document.getElementById("standardTime");
+        var day = document.getElementById("DaylightSavingsTime");
+        if (day.checked == true) {
+            $("#standardTime").prop("checked", false);
+        }
+        if (day.checked == false) {
+            $("#standardTime").prop("checked", true);
+        }
+
+    }
+
+
+    function fluidDialog() {
+        var $visible = $(".ui-dialog:visible");
+        // each open dialog
+        $visible.each(function () {
+            var $this = $(this);
+            var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+            // if fluid option == true
+            if (dialog.options.fluid) {
+                var wWidth = $(window).width();
+                // check window width against dialog width
+                if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                    // keep dialog from filling entire screen
+                    $this.css("max-width", "90%");
+                } else {
+                    // fix maxWidth bug
+                    $this.css("max-width", dialog.options.maxWidth + "px");
+                }
+                //reposition dialog
+                dialog.option("position", dialog.options.position);
+            }
+        });
+
+    }
+    $(function () {
+        $('#CompletionDeadline').rules().remote.complete = function (xhr) {
+
+            if (xhr.status == 200 && xhr.responseText !== 'true') {
+                var id = xhr.getResponseHeader('Z-ID');
+                var StandardId = xhr.getResponseHeader('Standard-ID');
+                var DSTID = xhr.getResponseHeader('DST-ID');
+                if (id == "ambigError") {
+                    var titleMsg = "You have entered an ambiguous time.";
+                    var div = $('<div></div>');
+                    var outputMsg = "Please select time";
+                    div.html(outputMsg + '<form id="myform" action=""><input type="checkbox"   id="standardTime" name="standardTime" checked="checked" />Standard Time<br /><input type="checkbox" id="DaylightSavingsTime" name="DaylightSavingsTime" value=""/>Daylight Savings Time</form>').dialog({
+                        title: titleMsg,
+                        height: 'auto',
+                        width: 'auto',
+                        maxWidth: 600,
+                        fluid: true,
+                        autoOpen: true,
+                        resizable: true,
+                        close: function (event, ui) {
+                            var stand = document.getElementById("standardTime");
+                            var day = document.getElementById("DaylightSavingsTime");
+                            if (day.checked == true) {
+                                document.getElementById("UTCDate").value = DSTID;
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is in effect for this service request)";
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+
+                            };
+
+                            if (stand.checked == true) {
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is NOT in effect for this service request)";
+                                document.getElementById("UTCDate").value = StandardId;
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+                            }
+
+                            $(this).dialog('destroy');
+                        },
+                        modal: true,
+                        buttons: {
+                            "CLOSE":
+                        function () {
+                            var stand = document.getElementById("standardTime");
+                            var day = document.getElementById("DaylightSavingsTime");
+                            if (day.checked == true) {
+                                document.getElementById("UTCDate").value = DSTID;
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is in effect for this service request)";
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+
+                            };
+
+                            if (stand.checked == true) {
+                                document.getElementById("UTCDate").value = StandardId;
+                                document.getElementById("AmbigTime").value = "--(Daylight Savings Time is NOT in effect for this service request)";
+                                $('#CompletionDeadline').removeData('previousValue');
+                                $('#CompletionDeadline').valid();
+                            }
+                            $(this).dialog('destroy');
+                        }
+                        }
+                    })
+
+                }
+            }
+        };
+    });
+
+</script>
+<script>
+    $("#CompletionDeadline").change(function () {
+        if ($("#AmbigTime").val() != "") {
+            document.getElementById("AmbigTime").value = "";
+        }
+        if ($("#UTCDate").val() != "") {
+            document.getElementById("UTCDate").value = "";
+        }
+        if ($("#Proceed").val() != "") {
+            document.getElementById("Proceed").value = "";
+        }
+        $('#CompletionDeadline').removeData('previousValue');
+        $('#CompletionDeadline').valid();
+    });
+
+</script>
+@*<script>
+        (function ($) {
+            $.validator.setDefaults({
+                onkeyup: function (element, event) {
+                    if ($(element).attr('data-val-remote-url')) {
+                        return false;
+                    }
+                    if (event.which === 9 && this.elementValue(element) === "") {
+                        return;
+                    } else if (element.name in this.submitted || element === this.lastElement) {
+                        this.element(element);
+                    }
+
+                }
+            })
+        }(jQuery));
+</script>*@
+
+
+}

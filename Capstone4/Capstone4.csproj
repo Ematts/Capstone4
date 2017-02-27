@@ -373,6 +373,38 @@
     <Compile Include="Migrations\201702052027540_d7.Designer.cs">
       <DependentUpon>201702052027540_d7.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702212021136_f5.cs" />
+    <Compile Include="Migrations\201702212021136_f5.Designer.cs">
+      <DependentUpon>201702212021136_f5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702212114224_d8.cs" />
+    <Compile Include="Migrations\201702212114224_d8.Designer.cs">
+      <DependentUpon>201702212114224_d8.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702212209166_d9.cs" />
+    <Compile Include="Migrations\201702212209166_d9.Designer.cs">
+      <DependentUpon>201702212209166_d9.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702241858131_ff1.cs" />
+    <Compile Include="Migrations\201702241858131_ff1.Designer.cs">
+      <DependentUpon>201702241858131_ff1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702251714319_d10.cs" />
+    <Compile Include="Migrations\201702251714319_d10.Designer.cs">
+      <DependentUpon>201702251714319_d10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702251716449_d11.cs" />
+    <Compile Include="Migrations\201702251716449_d11.Designer.cs">
+      <DependentUpon>201702251716449_d11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702251718369_d12.cs" />
+    <Compile Include="Migrations\201702251718369_d12.Designer.cs">
+      <DependentUpon>201702251718369_d12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702251734214_d13.cs" />
+    <Compile Include="Migrations\201702251734214_d13.Designer.cs">
+      <DependentUpon>201702251734214_d13.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -385,6 +417,7 @@
     <Compile Include="Models\ContractorReview.cs" />
     <Compile Include="Models\ContractorReviewsIndexViewModel.cs" />
     <Compile Include="Models\DistanceMatrix.cs" />
+    <Compile Include="Models\EditTimeViewModel.cs" />
     <Compile Include="Models\GetContractorActiveRequestsViewModel.cs" />
     <Compile Include="Models\GetContractorPaidRequestsViewModel.cs" />
     <Compile Include="Models\GetHomeownerActiveRequestsViewModel.cs" />
@@ -625,6 +658,9 @@
     <Content Include="Views\Homeowners\GetHomeownerReviews.cshtml" />
     <Content Include="Views\ServiceRequests\Expired.cshtml" />
     <Content Include="Views\Homeowners\HomeownerReviewDetails.cshtml" />
+    <Content Include="Views\ServiceRequests\EditTime.cshtml" />
+    <Content Include="Views\ServiceRequests\Already_Reviewed.cshtml" />
+    <Content Include="Views\ServiceRequests\Already_Responded.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -712,6 +748,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702052027540_d7.resx">
       <DependentUpon>201702052027540_d7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702212021136_f5.resx">
+      <DependentUpon>201702212021136_f5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702212114224_d8.resx">
+      <DependentUpon>201702212114224_d8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702212209166_d9.resx">
+      <DependentUpon>201702212209166_d9.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702241858131_ff1.resx">
+      <DependentUpon>201702241858131_ff1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702251714319_d10.resx">
+      <DependentUpon>201702251714319_d10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702251716449_d11.resx">
+      <DependentUpon>201702251716449_d11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702251718369_d12.resx">
+      <DependentUpon>201702251718369_d12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702251734214_d13.resx">
+      <DependentUpon>201702251734214_d13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

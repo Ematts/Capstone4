@@ -4,10 +4,9 @@
     ViewBag.Title = "PayPalSuccess";
 }
 
-<h2>PayPalSuccess</h2>
+<h2>Payment Success</h2>
 
 <div>
-    <h4>ServiceRequest</h4>
     <hr />
     @{string mail = Model.Homeowner.ApplicationUser.Email; }
     @{string status = Model.PayPalListenerModel._PayPalCheckoutInfo.payment_status;  }
@@ -45,6 +44,12 @@
 
         <dd>
             <input id="paystatus" value="@payID" style="border:none" readonly>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Service_Number)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Service_Number)
         </dd>
 
 
