@@ -9,8 +9,9 @@
 <div>
     <hr />
     @{string mail = Model.Homeowner.ApplicationUser.Email; }
-    @{string status = Model.PayPalListenerModel._PayPalCheckoutInfo.payment_status;  }
+    @*@{string status = Model.PayPalListenerModel._PayPalCheckoutInfo.payment_status;  }
     @{string payID = Model.PayPalListenerModel._PayPalCheckoutInfo.txn_id; }
+    @{DateTime? payDate = Model.PayPalListenerModel._PayPalCheckoutInfo.TrxnDate; }*@
     <div id="divProcessing">
         <p>Processing, please wait . . . <img src="../../Content/ajax-loader.gif"></p>
     </div>
@@ -36,14 +37,24 @@
         </dt>
 
         <dd>
-            <input id="paystatus" value="@status"  style="border:none" readonly>
+            @*<input id="paystatus" value="@status"  style="width:1000px; border:none" readonly>*@
+            <span id="payStatus">@Html.DisplayFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.payment_status)</span>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.txn_id)
         </dt>
 
         <dd>
-            <input id="paystatus" value="@payID" style="border:none" readonly>
+            @*<input id="payid" value="@payID" style="width:1000px; border:none" readonly>*@
+            <span id="payID">@Html.DisplayFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.txn_id)</span>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.TrxnDate)
+        </dt>
+
+        <dd>
+            @*<input id="paydate" value="@payDate" style="width:1000px; border:none" readonly>*@
+           <span id="payDate"> @Html.DisplayFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.TrxnDate)</span> <span id="payZone"> @Html.DisplayFor(model => model.PayPalListenerModel._PayPalCheckoutInfo.Timezone)</span>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Service_Number)
@@ -51,8 +62,6 @@
         <dd>
             @Html.DisplayFor(model => model.Service_Number)
         </dd>
-
-
     </dl>
    </div>
 </div
@@ -66,7 +75,13 @@
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 <script src="~/Scripts/PaypalSuccess.js" type="text/javascript"></script>
 
+@*<script>
+    $(document).ready(function () {
+        var x = document.getElementById("payDate").innerText;
+        document.getElementById("payDate").innerText = "8/1/1788"
 
+    })
+    </script>*@
 
 @*<script src="https://www.paypalobjects.com/js/external/dg.js"></script>*@
 

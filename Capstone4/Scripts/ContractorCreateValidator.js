@@ -34,45 +34,120 @@ function fluidDialog() {
 
 $.ajaxSetup({ cache: false });
 $('#submitRequest').click(function (e) {
-    $("#vac").hide();
-    $("#valid").hide();
-    $("#inactive").hide();
-    $("#vacant").prop("checked", false);
-    $("#validated").prop("checked", false);
-    $("#Inactive").prop("checked", false);
+
     e.preventDefault();
-    $("#divProcessing").show();
-    $.ajax({
-        type: "GET",
-        url: "/AddressValidator/VerifyPaypal",
-        contentType: "application/json; charset=utf-8",
-        data: { firstName: '' + $('#FirstName').val() + '', lastName: '' + $('#LastName').val() + '', email: '' + $('#Email').val() + '' },
-        dataType: "json",
-        success: function (response, textStatus, jqXHR) {
-            if (response.verified == false) {
-                $("#divProcessing").hide();
-                var titleMsg = "PayPal account not verified";
-                var div = $('<div></div>');
-                var outputMsg = "Your email address and name must match your PayPal account login credentials";
-                div.html(outputMsg).dialog({
-                    title: titleMsg,
-                    height: 'auto',
-                    width: 'auto',
-                    maxWidth: 600,
-                    fluid: true,
-                    autoOpen: true,
-                    resizable: true,
-                    modal: true,
-                    buttons: {
-                        "CLOSE":
-                        function () {
-                            $(this).dialog('close');
+    $("#requestForm :input").prop("readonly", true);
+
+    var intervalId = null;
+
+    function pendingValidationComplete() {
+
+        var $ValidationForm = $("#requestForm");
+        var c = $ValidationForm.data("validator").pendingRequest
+        console.log(c);
+        if ($ValidationForm.data("validator").pendingRequest === 0) {
+
+            clearInterval(intervalId);
+            $("#requestForm :input").prop("readonly", false);
+
+            if ($ValidationForm.valid()) {
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Account/CheckUserID",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response, textStatus, jqXHR) {
+                        if (response.exists == true) {
+                            var titleMsg = "Already Registered";
+                            var div = $('<div></div>');
+                            var outputMsg = "You already have a registered account";
+                            div.html(outputMsg).dialog({
+                                title: titleMsg,
+                                height: 'auto',
+                                width: 'auto',
+                                maxWidth: 600,
+                                fluid: true,
+                                autoOpen: true,
+                                resizable: true,
+                                modal: true,
+                                buttons: {
+                                    "CLOSE":
+                                    function () {
+                                        $(this).dialog('close');
+                                        window.location = "/home/"
+                                    }
+                                }
+                            });
+                        }
+
+                        if (response.exists == false){
+                            popups();
                         }
                     },
-                });
-            }
+                    failure: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+                })
 
-            if (response.verified == true) {
+
+            }
+        }
+
+    };
+
+    function trigger() {
+
+        $("#Screen_name").removeData("previousValue");
+
+        $("#requestForm").valid();
+
+        intervalId = setInterval(pendingValidationComplete, 00050);
+    };
+
+    trigger();
+
+    function popups() {
+
+        $("#vac").hide();
+        $("#valid").hide();
+        $("#inactive").hide();
+        $("#vacant").prop("checked", false);
+        $("#validated").prop("checked", false);
+        $("#Inactive").prop("checked", false);
+        e.preventDefault();
+        $("#divProcessing").show();
+        $.ajax({
+            type: "GET",
+            url: "/Contractors/VerifyPaypal",
+            contentType: "application/json; charset=utf-8",
+            data: { firstName: '' + $('#FirstName').val() + '', lastName: '' + $('#LastName').val() + '', email: '' + $('#Email').val() + '' },
+            dataType: "json",
+            success: function (response, textStatus, jqXHR) {
+                if (response.verified == false) {
+                    $("#divProcessing").hide();
+                    var titleMsg = "PayPal account not verified";
+                    var div = $('<div></div>');
+                    var outputMsg = "Your email address and name must match your PayPal account login credentials";
+                    div.html(outputMsg).dialog({
+                        title: titleMsg,
+                        height: 'auto',
+                        width: 'auto',
+                        maxWidth: 600,
+                        fluid: true,
+                        autoOpen: true,
+                        resizable: true,
+                        modal: true,
+                        buttons: {
+                            "CLOSE":
+                            function () {
+                                $(this).dialog('close');
+                            }
+                        },
+                    });
+                }
+
+                if (response.verified == true) {
                     $.ajax({
                         type: "GET",
                         url: "/AddressValidator/getAddValStatus",
@@ -99,14 +174,11 @@ $('#submitRequest').click(function (e) {
                                     buttons: {
                                         "YES":
                                         function () {
-
-
                                             $(this).dialog('close');
                                             $("#requestForm").submit();
                                             if ($("#requestForm").valid()) {
                                                 $("#divProcessing").show();
                                             }
-
 
                                         },
                                         "NO":
@@ -217,6 +289,7 @@ $('#submitRequest').click(function (e) {
                                                                             function () {
                                                                                 if ($("#requestForm").valid()) {
                                                                                     $(this).dialog('close');
+                                                                                    $("#divProcessing").show();
                                                                                     $("#Inactive").prop("checked", true);
                                                                                     var formdata = new FormData();
                                                                                     var other_data = $('#requestForm').serializeArray();
@@ -232,6 +305,7 @@ $('#submitRequest').click(function (e) {
                                                                                         contentType: false,
                                                                                         data: formdata,
                                                                                         success: function (response, textStatus, jqXHR) {
+                                                                                            $("#divProcessing").hide();
                                                                                             var titleMsg = "Request sent.";
                                                                                             var div = $('<div></div>');
                                                                                             var outputMsg = "Your request has been submitted. We will get back to you shortly.";
@@ -248,7 +322,8 @@ $('#submitRequest').click(function (e) {
                                                                                                     "CLOSE":
                                                                                                 function () {
                                                                                                     $(this).dialog('close');
-                                                                                                    window.location = "http://localhost:37234/Contractors/Manual_Validate_Thank_You/" + response.id;
+                                                                                                    $("#divProcessing").show();
+                                                                                                    window.location = "/Contractors/Manual_Validate_Thank_You/" + response.id;
                                                                                                 }
                                                                                                 }
                                                                                             })
@@ -292,6 +367,7 @@ $('#submitRequest').click(function (e) {
                                                                 function () {
                                                                     if ($("#requestForm").valid()) {
                                                                         $(this).dialog('close');
+                                                                        $("#divProcessing").show();
                                                                         $("#Inactive").prop("checked", true);
                                                                         var formdata = new FormData();
                                                                         var other_data = $('#requestForm').serializeArray();
@@ -307,6 +383,7 @@ $('#submitRequest').click(function (e) {
                                                                             contentType: false,
                                                                             data: formdata,
                                                                             success: function (response, textStatus, jqXHR) {
+                                                                                $("#divProcessing").hide();
                                                                                 var titleMsg = "Request sent.";
                                                                                 var div = $('<div></div>');
                                                                                 var outputMsg = "Your request has been submitted. We will get back to you shortly.";
@@ -323,7 +400,8 @@ $('#submitRequest').click(function (e) {
                                                                                         "CLOSE":
                                                                                     function () {
                                                                                         $(this).dialog('close');
-                                                                                        window.location = "http://localhost:37234/Contractors/Manual_Validate_Thank_You/" + response.id;
+                                                                                        $("#divProcessing").show();
+                                                                                        window.location = "/Contractors/Manual_Validate_Thank_You/" + response.id;
                                                                                     }
                                                                                     }
                                                                                 })
@@ -376,6 +454,7 @@ $('#submitRequest').click(function (e) {
                                                     function () {
                                                         if ($("#requestForm").valid()) {
                                                             $(this).dialog('close');
+                                                            $("#divProcessing").show();
                                                             $("#Inactive").prop("checked", true);
                                                             var formdata = new FormData();
                                                             var other_data = $('#requestForm').serializeArray();
@@ -391,6 +470,7 @@ $('#submitRequest').click(function (e) {
                                                                 contentType: false,
                                                                 data: formdata,
                                                                 success: function (response, textStatus, jqXHR) {
+                                                                    $("#divProcessing").hide();
                                                                     var titleMsg = "Request sent.";
                                                                     var div = $('<div></div>');
                                                                     var outputMsg = "Your request has been submitted. We will get back to you shortly.";
@@ -407,7 +487,8 @@ $('#submitRequest').click(function (e) {
                                                                             "CLOSE":
                                                                         function () {
                                                                             $(this).dialog('close');
-                                                                            window.location = "http://localhost:37234/Contractors/Manual_Validate_Thank_You/" + response.id;
+                                                                            $("#divProcessing").show();
+                                                                            window.location = "/Contractors/Manual_Validate_Thank_You/" + response.id;
                                                                         }
                                                                         }
                                                                     })
@@ -442,12 +523,13 @@ $('#submitRequest').click(function (e) {
                         }
                     });
 
+                }
+            },
+            failure: function (jqXHR, textStatus, errorThrown) {
+                alert('Error - ' + errorThrown);
             }
-        },
-        failure: function (jqXHR, textStatus, errorThrown) {
-             alert('Error - ' + errorThrown);
-        }
-    })
+        });
+    }
  })
    
 

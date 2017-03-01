@@ -28,7 +28,7 @@ namespace Capstone4.Models
                 if (_PayPalCheckoutInfo.payment_status.ToLower() == "completed")
                 {
 
-                    model._PayPalCheckoutInfo.TrxnDate = DateTime.Now;
+                    model._PayPalCheckoutInfo.TrxnDate = DateTime.UtcNow;
                     string memo = model._PayPalCheckoutInfo.memo;
                     string[] request = memo.Split(' ');
                     Array.Reverse(request);
@@ -41,6 +41,10 @@ namespace Capstone4.Models
                     if (!txnIds.Contains(model._PayPalCheckoutInfo.txn_id))
                     {
                         ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+                        DateTime timeUtcPaid = DateTime.UtcNow;
+                        TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
+                        model._PayPalCheckoutInfo.TrxnDate = TimeZoneInfo.ConvertTimeFromUtc(timeUtcPaid, Zone);
+                        model._PayPalCheckoutInfo.Timezone = serviceRequest.Timezone;
                         serviceRequest.ContractorPaid = true;
                         serviceRequest.PayPalListenerModelID = model.ID;
                         serviceRequest.PayPalListenerModel = model;

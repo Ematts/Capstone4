@@ -1336,10 +1336,16 @@ namespace Capstone4.Controllers
                 return HttpNotFound();
             }
             string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            Contractor contractor = db.Contractors.Where(x => x.UserId == identity).SingleOrDefault();
 
             if (!this.User.IsInRole("Contractor"))
             {
                 return RedirectToAction("Must_be_logged_in_to_accept_request");
+            }
+
+            if (contractor.Inactive == true)
+            {
+                return RedirectToAction("Account_Inactive", "Contractors", new { id = contractor.ID });
             }
 
             if(serviceRequest.Expired == true)
@@ -1401,7 +1407,11 @@ namespace Capstone4.Controllers
             {
                 if (con.UserId == identity)
                 {
-                    
+                    if (con.Inactive == true)
+                    {
+                        return RedirectToAction("Account_Inactive", "Contractors", new { id = con.ID });
+                    }
+
                     foreach (var request in serviceRequests)
                     {
                         if(request.ID == id)
@@ -1706,7 +1716,7 @@ namespace Capstone4.Controllers
 
             else
             {
-                return Json(new { success = true, found = true, status = serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status },
+                return Json(new { success = true, found = true, status = serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.payment_status, tx_id = serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.txn_id, date = serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.TrxnDate.ToString(), tZone = serviceRequest.PayPalListenerModel._PayPalCheckoutInfo.Timezone },
                 JsonRequestBehavior.AllowGet);
             }
 
@@ -1978,7 +1988,7 @@ namespace Capstone4.Controllers
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             PayRequest payRequest = new PayRequest(requestEnvelope, actionType, cancelUrl, currencyCode, receiverList, returnUrl);
             payRequest.ipnNotificationUrl = "http://replaceIpnUrl.com";
-            string memo = serviceRequest.Description + " Invoice = " + serviceRequest.Service_Number;
+            string memo = "Invoice = " + serviceRequest.Service_Number;
             payRequest.memo = memo;
             Dictionary<string, string> sdkConfig = new Dictionary<string, string>();
             sdkConfig.Add("mode", "sandbox");
@@ -2016,22 +2026,33 @@ namespace Capstone4.Controllers
             PaymentDetailsRequest paymentDetailsRequest = new PaymentDetailsRequest(requestEnvelope);
             paymentDetailsRequest.payKey = key;
             PaymentDetailsResponse paymentDetailsResponse = adaptivePaymentsService.PaymentDetails(paymentDetailsRequest);
-            if((paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "COMPLETED") || (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "PENDING") || (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "PROCESSING"))
-            {
-                ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
-                serviceRequest.PaymentError = false;
-                db.SaveChanges();
-                return Json(new { success = "go", id = id },
-                JsonRequestBehavior.AllowGet);
+            try {
+                if ((paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "COMPLETED") || (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "PENDING") || (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == "PROCESSING"))
+                {
+                    ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+                    serviceRequest.PaymentError = false;
+                    db.SaveChanges();
+                    return Json(new { success = "go", id = id },
+                    JsonRequestBehavior.AllowGet);
+                }
+
+                else if (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == null)
+                {
+                    return Json(new { success = "stay", id = id },
+                    JsonRequestBehavior.AllowGet);
+                }
+
+                else
+                {
+                    ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+                    serviceRequest.PaymentError = true;
+                    db.SaveChanges();
+                    return Json(new { success = "fail", id = id },
+                    JsonRequestBehavior.AllowGet);
+                }
             }
 
-            else if (paymentDetailsResponse.paymentInfoList.paymentInfo[0].transactionStatus == null)
-            {
-                return Json(new { success = "stay", id = id },
-                JsonRequestBehavior.AllowGet);
-            }
-
-            else
+            catch
             {
                 ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
                 serviceRequest.PaymentError = true;
@@ -2416,24 +2437,26 @@ namespace Capstone4.Controllers
             string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\distance.txt");
             foreach (var contractor in db.Contractors.ToList())
             {
-
-                string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + jobLocation + "&destinations=" + contractor.Address.FullAddress + "&key=" + source;
-                WebRequest request = WebRequest.Create(url);
-                request.Credentials = CredentialCache.DefaultCredentials;
-                WebResponse response = request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-                Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
-                reader.Close();
-                response.Close();
-                serviceRequest.Address.googleAddress = result.origin_addresses[0];
-                db.SaveChanges();
-                if (result.rows[0].elements[0].status == "OK")
+                if (contractor.Inactive == false)
                 {
-                    if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                    string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + jobLocation + "&destinations=" + contractor.Address.FullAddress + "&key=" + source;
+                    WebRequest request = WebRequest.Create(url);
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    WebResponse response = request.GetResponse();
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string responseFromServer = reader.ReadToEnd();
+                    Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
+                    reader.Close();
+                    response.Close();
+                    serviceRequest.Address.googleAddress = result.origin_addresses[0];
+                    db.SaveChanges();
+                    if (result.rows[0].elements[0].status == "OK")
                     {
-                        contractorsToMail.Add(contractor);
+                        if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                        {
+                            contractorsToMail.Add(contractor);
+                        }
                     }
                 }
 

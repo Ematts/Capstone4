@@ -405,6 +405,10 @@
     <Compile Include="Migrations\201702251734214_d13.Designer.cs">
       <DependentUpon>201702251734214_d13.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702282152573_zone.cs" />
+    <Compile Include="Migrations\201702282152573_zone.Designer.cs">
+      <DependentUpon>201702282152573_zone.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddResponseViewModel.cs" />
@@ -661,6 +665,7 @@
     <Content Include="Views\ServiceRequests\EditTime.cshtml" />
     <Content Include="Views\ServiceRequests\Already_Reviewed.cshtml" />
     <Content Include="Views\ServiceRequests\Already_Responded.cshtml" />
+    <Content Include="Views\Contractors\Account_Inactive.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -772,6 +777,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702251734214_d13.resx">
       <DependentUpon>201702251734214_d13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702282152573_zone.resx">
+      <DependentUpon>201702282152573_zone.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

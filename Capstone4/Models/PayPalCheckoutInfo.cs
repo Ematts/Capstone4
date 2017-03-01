@@ -136,6 +136,7 @@ namespace Capstone4.Models
         public string correlationID { get; set; }
         public string ack { get; set; }
         public string errmsg { get; set; }
+        public string Timezone { get; set; }
         public int? errcode { get; set; }
 
         /// should hold the clientid passed in from setexpresscheckout

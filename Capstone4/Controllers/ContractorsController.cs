@@ -10,6 +10,7 @@ using Capstone4.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
 using PayPal.AdaptiveAccounts.Model;
+using PayPal.AdaptiveAccounts;
 
 namespace Capstone4.Controllers
 {
@@ -626,7 +627,8 @@ namespace Capstone4.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult VerifyPaypal(string firstName, string lastName, string accountID)
+        [HttpGet]
+        public ActionResult VerifyPaypal(string firstName, string lastName, string email)
         {
             string payname = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\payname.txt");
             string paypass = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\paypass.txt");
@@ -638,11 +640,34 @@ namespace Capstone4.Controllers
             sdkConfig.Add("account1.apiPassword", paypass); //PayPal.Account.APIPassword
             sdkConfig.Add("account1.apiSignature", sig); //.APISignature
             sdkConfig.Add("account1.applicationId", appid); //.ApplicatonId
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             GetVerifiedStatusRequest request = new GetVerifiedStatusRequest();
             AccountIdentifierType accountIdentifierType = new AccountIdentifierType();
+            RequestEnvelope requestEnvelope = new RequestEnvelope();
+            requestEnvelope.errorLanguage = "en_US";
+            accountIdentifierType.emailAddress = email;
+            request.accountIdentifier = accountIdentifierType;
+            request.requestEnvelope = requestEnvelope;
+            request.matchCriteria = "NAME";
+            request.firstName = firstName;
+            request.lastName = lastName;
+            AdaptiveAccountsService aas = new AdaptiveAccountsService(sdkConfig);
+            GetVerifiedStatusResponse response = aas.GetVerifiedStatus(request);
+            string status = response.accountStatus;
+
+            if (status == "VERIFIED")
+            {
+                return Json(new { verified = true },
+                JsonRequestBehavior.AllowGet);
+            }
+
+            else
+            {
+                return Json(new { verified = false },
+                JsonRequestBehavior.AllowGet);
+            }
 
 
-            return null;
         }
 
         protected override void Dispose(bool disposing)
@@ -677,11 +702,41 @@ namespace Capstone4.Controllers
             }
 
             Contractor contractor = db.Contractors.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
 
             if (contractor == null)
             {
                 return HttpNotFound();
             }
+
+            if (contractor.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
+            return View(contractor);
+        }
+
+        public ActionResult Account_Inactive(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Contractor contractor = db.Contractors.Find(id);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (contractor == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (contractor.UserId != identity)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
+
             return View(contractor);
         }
 
@@ -722,25 +777,28 @@ namespace Capstone4.Controllers
             string source = System.IO.File.ReadAllText(@"C:\Users\erick\Desktop\Credentials\distance.txt");
             foreach (var contractor in db.Contractors.ToList())
             {
-
-                string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + autocomplete + "&destinations=" + contractor.Address.FullAddress + "&key=" + source;
-                WebRequest request = WebRequest.Create(url);
-                request.Credentials = CredentialCache.DefaultCredentials;
-                WebResponse response = request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-                Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
-                reader.Close();
-                response.Close();
-                db.SaveChanges();
-                if (result.rows[0].elements[0].status == "OK")
+                if (contractor.Inactive == false)
                 {
-                    if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
-                    {
-                        contractorsToDisplay.Add(contractor.ID);
-                    }
 
+                    string url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + autocomplete + "&destinations=" + contractor.Address.FullAddress + "&key=" + source;
+                    WebRequest request = WebRequest.Create(url);
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                    WebResponse response = request.GetResponse();
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string responseFromServer = reader.ReadToEnd();
+                    Parent result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<Parent>(responseFromServer);
+                    reader.Close();
+                    response.Close();
+                    db.SaveChanges();
+                    if (result.rows[0].elements[0].status == "OK")
+                    {
+                        if ((result.rows[0].elements[0].distance.value) * 0.000621371 <= contractor.travelDistance)
+                        {
+                            contractorsToDisplay.Add(contractor.ID);
+                        }
+
+                    }
                 }
             }
             return (contractorsToDisplay);

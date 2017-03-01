@@ -710,6 +710,24 @@ namespace Capstone4.Controllers
         //    return Json("Username \"" + Screen_name + "\" is already taken.", JsonRequestBehavior.AllowGet);
         //}
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult CheckUserID()
+        {
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            
+            if (identity != null)
+            {
+                return Json(new { success = true, exists = true },
+                JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = true, exists = false },
+                JsonRequestBehavior.AllowGet);
+            }
+        }
+
         internal class ChallengeResult : HttpUnauthorizedResult
         {
             public ChallengeResult(string provider, string redirectUri)

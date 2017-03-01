@@ -19,7 +19,11 @@
             success: function (response, textStatus, jqXHR) {
                 if(response.found == true){
                     $("#divProcessing").hide();
-                    $("#paystatus").val(response.status);
+                    //$("#paystatus").val(response.status);
+                    document.getElementById("payStatus").innerText = response.status;
+                    document.getElementById("payID").innerText = response.tx_id;
+                    document.getElementById("payDate").innerText = response.date;
+                    document.getElementById("payZone").innerText = response.tZone;
                     $("#details").show();
                 }
                 if(response.found == false){

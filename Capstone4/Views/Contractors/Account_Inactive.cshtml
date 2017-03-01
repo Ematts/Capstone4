@@ -1,0 +1,94 @@
+﻿@model Capstone4.Models.Contractor
+
+@{
+    ViewBag.Title = "Account_Inactive";
+}
+
+<h2>Account Inactive</h2>
+
+@{int id = Model.ID; }
+
+<strong>You cannot accept a service request until your account has been activated.</strong>
+<hr />
+<div>
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.Username)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Username)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.ApplicationUser.Email)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.FirstName)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.FirstName)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.LastName)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.LastName)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Address.Street)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Address.Street)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Address.City)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Address.City)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.Address.State)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Address.State)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Address.Zip)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Address.Zip)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.travelDistance)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.travelDistance)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Inactive)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Inactive)
+    </dd>
+
+</dl>
+</div>
