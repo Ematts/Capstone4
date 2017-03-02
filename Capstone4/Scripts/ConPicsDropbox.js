@@ -176,36 +176,17 @@ function removeFile(e) {
 }
 $('#submitPhotos').click(function (e) {
     e.preventDefault();
-    var formdata = new FormData();
-    var pics = storedFiles;
-    var fileInput = document.getElementById('fileInput');
-    for (var i = 0, len = pics.length; i < len; i++) {
-        formdata.append('files', pics[i]);
-    }
-    var other_data = $('#picForm').serializeArray();
-    $.each(other_data, function (key, input) {
-        formdata.append(input.name, input.value);
-    });
-    var tokenadr = $('form[action="/ServiceRequests/AddContractorPhotos"] input[name="__RequestVerificationToken"]').val();
-    var token = tokenadr;
-    var headers = {};
-    var headersadr = {};
-    headers['__RequestVerificationToken'] = token;
-    headersadr['__RequestVerificationToken'] = tokenadr;
     $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        headers: headersadr,
-        cache: false,
-        url: "/ServiceRequests/AddContractorPhotos",
-        processData: false,
-        contentType: false,
-        data: formdata,
+        type: "GET",
+        url: "/ServiceRequests/CheckCompletion",
+        contentType: "application/json; charset=utf-8",
+        data: { id: '' + $('#ID').val() + '' },
+        dataType: "json",
         success: function (response, textStatus, jqXHR) {
-            if (response.tooManyPics == true) {
-                var titleMsg = "Too Many Photo.";
+            if (response.complete == true) {
+                var titleMsg = "Already Confirmed Completion";
                 var div = $('<div></div>');
-                var outputMsg = "A service request can only contain a maximum of 4 photos.";
+                var outputMsg = "You have already confirmed completion.  New photos cannot be added.";
                 div.html(outputMsg).dialog({
                     title: titleMsg,
                     height: 'auto',
@@ -217,24 +198,84 @@ $('#submitPhotos').click(function (e) {
                     modal: true,
                     buttons: {
                         "CLOSE":
-                    function () {
-                        $(this).dialog('close');
+                        function () {
+                            $(this).dialog('close');
+                            window.location = "/ServiceRequests/Contractor_Thank_You/" + response.id;
+                        }
                     }
-                    }
-                })
-
+                });
             }
 
-            else {
-                window.location = "/ServiceRequests/ConfirmCompletionView/" + response.id;
+            if (response.complete == false) {
+                proceed();
             }
         },
-
-        error: function (jqXHR, textStatus, errorThrown) {
+        failure: function (jqXHR, textStatus, errorThrown) {
             alert('Error - ' + errorThrown);
-        },
-
+        }
     })
+
+    function proceed() {
+        var formdata = new FormData();
+        var pics = storedFiles;
+        var fileInput = document.getElementById('fileInput');
+        for (var i = 0, len = pics.length; i < len; i++) {
+            formdata.append('files', pics[i]);
+        }
+        var other_data = $('#picForm').serializeArray();
+        $.each(other_data, function (key, input) {
+            formdata.append(input.name, input.value);
+        });
+        var tokenadr = $('form[action="/ServiceRequests/AddContractorPhotos"] input[name="__RequestVerificationToken"]').val();
+        var token = tokenadr;
+        var headers = {};
+        var headersadr = {};
+        headers['__RequestVerificationToken'] = token;
+        headersadr['__RequestVerificationToken'] = tokenadr;
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            headers: headersadr,
+            cache: false,
+            url: "/ServiceRequests/AddContractorPhotos",
+            processData: false,
+            contentType: false,
+            data: formdata,
+            success: function (response, textStatus, jqXHR) {
+                if (response.tooManyPics == true) {
+                    var titleMsg = "Too Many Photo.";
+                    var div = $('<div></div>');
+                    var outputMsg = "A service request can only contain a maximum of 4 photos.";
+                    div.html(outputMsg).dialog({
+                        title: titleMsg,
+                        height: 'auto',
+                        width: 'auto',
+                        maxWidth: 600,
+                        fluid: true,
+                        autoOpen: true,
+                        resizable: true,
+                        modal: true,
+                        buttons: {
+                            "CLOSE":
+                        function () {
+                            $(this).dialog('close');
+                        }
+                        }
+                    })
+
+                }
+
+                else {
+                    window.location = "/ServiceRequests/ConfirmCompletionView/" + response.id;
+                }
+            },
+
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error - ' + errorThrown);
+            },
+
+        })
+    }
 })
 
 

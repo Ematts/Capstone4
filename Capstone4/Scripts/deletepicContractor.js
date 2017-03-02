@@ -111,7 +111,7 @@ function fluidDialog() {
         div.append('<div class="modal-dialog">' +
                       '<div class="modal-content">' +
                             '<div class="modal-header">' +
-                                '<button aria-hidden="true" data-dismiss="modal" class="close" type="button"><span>&times;</span></button>' +
+                                '<button aria-hidden="true" data-dismiss="modal" id="topCloser" class="close" type="button"><span>&times;</span></button>' +
                                 '<h4 class="modal-title"></h4>' +
                             '</div>' +
                             '<div style="min-height: 350px;max-height: 500px;" class="modal-body">' +
@@ -128,7 +128,7 @@ function fluidDialog() {
                                 '</div>' +
                             '</div>' +
                             '<div class="modal-footer">' +
-                                '<button data-dismiss="modal" class="btn btn-default" type="button">Close</button>' +
+                                '<button data-dismiss="modal" id="closer" class="btn btn-default" type="button">Close</button>' +
                             '</div>' +
                       '</div>' +
                     '</div>');
@@ -174,65 +174,138 @@ function fluidDialog() {
         switchImage(list_images, list_pairs);
 
     };
+
+    function checkOpen(e) {
+        var myDivOpen = $('#myDiv').is(':visible')
+        if(myDivOpen == true)
+        {
+            $("#myDiv").dialog("option", "modal", true);
+            $("#myDiv").dialog("close");
+            $("#myDiv").dialog("open");
+        }
+
+    }
+
     $.ajaxSetup({ cache: false });
     function deletePic(list_images, list_pairs) {
 
         $('.deletePic').click(function (e) {
             e.preventDefault();
-            var $modal = $('#unbind-pos');
-            var formdata = new FormData();
-            var fileInput = document.getElementById('fileInput');
-            var picToDelete = ($modal.find('#img-preview img').attr('src'));
-            for (i = 0; i < fileInput.files.length; i++) {
-                formdata.append(fileInput.files[i].name, fileInput.files[i]);
-            }
-            var other_data = $('#picForm').serializeArray();
-            $.each(other_data, function (key, input) {
-                formdata.append(input.name, input.value);
-            });
-            formdata.append("picName", picToDelete);
-            var outputMsg = "Do you really want to delete this file?";
-            var div = $('<div></div>');
-            var titleMsg = "Confirm deletion";
-            div.html(outputMsg).dialog({
-                title: titleMsg,
-                height: 'auto',
-                width: 'auto',
-                maxWidth: 600,
-                fluid: true,
-                autoOpen: true,
-                open: function (event, ui) {
-                    $('.ui-dialog').css('z-index',100000);
-                    $('.ui-widget-overlay').css('z-index', 99999);
-                },
-                resizable: true,
-                modal: true,
-                buttons: {
-                    "YES": function () {
-                        $.ajax({
-                            url: "/ServiceRequests/DeleteContractorPic",
-                            type: 'POST',
-                            processData: false,
-                            contentType: false,
-                            data: formdata,
-                        }).done(function (data) {
-                            if (data.Result == "OK") {
-                                location.reload();
+            closer = document.getElementById("closer");
+            closer.addEventListener("click", checkOpen, false);
+            topCloser = document.getElementById("topCloser");
+            topCloser.addEventListener("click", checkOpen, false);
+            $.ajax({
+                type: "GET",
+                url: "/ServiceRequests/CheckCompletion",
+                contentType: "application/json; charset=utf-8",
+                data: { id: '' + $('#ID').val() + '' },
+                dataType: "json",
+                success: function (response, textStatus, jqXHR) {
+                    if (response.complete == true) {
+                        var titleMsg = "Already Confirmed Completion";
+                        var div = $('<div id="myDiv"></div>');
+                        var outputMsg = "You have already confirmed completion.  Photos can no longer be deleted.";
+                        div.html(outputMsg).dialog({
+                            title: titleMsg,
+                            height: 'auto',
+                            width: 'auto',
+                            maxWidth: 600,
+                            fluid: true,
+                            autoOpen: true,
+                            open: function (event, ui) {
+                                $('.ui-dialog').css('z-index', 100000);
+                                $('.ui-widget-overlay').css('z-index', 99999);
+                            },
+                            resizable: true,
+                            buttons: {
+                                "CLOSE":
+                                function () {
+                                    $(this).dialog('destroy');
+                                    window.location = "/ServiceRequests/Contractor_Thank_You/" + response.id;
+                                }
                             }
-                            else if (data.Result.Message) {
-                                alert(data.Result.Message);
-                            }
-                        }).fail(function () {
-                            alert("There is something wrong. Please try again.");
-                        })
+                        });
+                        $('#myDiv').dialog("widget").find(".ui-dialog-titlebar-close").click(function () {
 
-                    },
-                    "NO":
-                        function () {
-                            $(this).dialog("close");
-                        }
-                }   
+                                $("#myDiv").dialog("destroy");
+
+                            });
+                    }
+
+                    if (response.complete == false){
+                        proceed();
+                    }
+                },
+                failure: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
             })
+            
+            function proceed() {
+                var $modal = $('#unbind-pos');
+                var formdata = new FormData();
+                var fileInput = document.getElementById('fileInput');
+                var picToDelete = ($modal.find('#img-preview img').attr('src'));
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                var other_data = $('#picForm').serializeArray();
+                $.each(other_data, function (key, input) {
+                    formdata.append(input.name, input.value);
+                });
+                formdata.append("picName", picToDelete);
+                var outputMsg = "Do you really want to delete this file?";
+                var div = $('<div id="myDiv"></div>');
+                var titleMsg = "Confirm deletion";
+                div.html(outputMsg).dialog({
+                    title: titleMsg,
+                    height: 'auto',
+                    width: 'auto',
+                    maxWidth: 600,
+                    fluid: true,
+                    autoOpen: true,
+                    open: function (event, ui) {
+                        $('.ui-dialog').css('z-index', 100000);
+                        $('.ui-widget-overlay').css('z-index', 99999);
+                    },
+                    resizable: true,
+                    buttons: {
+                        "YES": function () {
+                            $.ajax({
+                                url: "/ServiceRequests/DeleteContractorPic",
+                                type: 'POST',
+                                processData: false,
+                                contentType: false,
+                                data: formdata,
+                            }).done(function (data) {
+                                if (data.Result == "OK") {
+                                    $("#myDiv").dialog("destroy");
+                                    location.reload();
+                                }
+                                else if (data.Result.Message) {
+                                    $("#myDiv").dialog("destroy");
+                                    alert(data.Result.Message);
+                                }
+                            }).fail(function () {
+                                $("#myDiv").dialog("destroy");
+                                alert("There is something wrong. Please try again.");
+                            })
+
+                        },
+                        "NO":
+                            function () {
+                                $(this).dialog("destroy");
+                            }
+                    }
+                })
+                $('#myDiv').dialog("widget").find(".ui-dialog-titlebar-close").click(function () {
+
+                    $("#myDiv").dialog("destroy");
+
+                });
+            }
+
         });
 
     };

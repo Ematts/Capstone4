@@ -6,7 +6,7 @@
 
 <h2>Contractor Reviews</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("ReviewsIndex", "Contractors", FormMethod.Get))
 {
     
         @*Select Contractor: @Html.DropDownList("clientUsername", "All")

@@ -1543,9 +1543,19 @@ namespace Capstone4.Controllers
         {
 
             ServiceRequest serviceRequest = db.ServiceRequests.Find(ID);
+            string identity = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+            if (identity == null)
+            {
+                return RedirectToAction("Unauthorized_Access", "Home");
+            }
             if (serviceRequest == null)
             {
                 return HttpNotFound();
+            }
+            if ((identity == serviceRequest.Contractor.UserId) && (serviceRequest.CompletionDate != null))
+            {
+                return RedirectToAction("Already_Confirmed_Completion", new { id = serviceRequest.ID });
             }
             DateTime timeUtcCompleted = DateTime.UtcNow;
             TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(serviceRequest.Timezone);
@@ -2130,6 +2140,22 @@ namespace Capstone4.Controllers
             return View(serviceRequest);
         }
 
+        [HttpGet]
+        public ActionResult CheckCompletion(int id)
+        {
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if(serviceRequest.CompletionDate != null)
+            {
+                return Json(new { complete = true, id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { complete = false, id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddContractorPhotos()
@@ -2153,6 +2179,10 @@ namespace Capstone4.Controllers
             if (serviceRequest == null)
             {
                 return HttpNotFound();
+            }
+            if ((identity == serviceRequest.Contractor.UserId) && (serviceRequest.CompletionDate != null))
+            {
+                return RedirectToAction("Already_Confirmed_Completion", new { id = serviceRequest.ID });
             }
             foreach (var path in db.CompletedServiceRequestFilePaths.ToList())
             {
