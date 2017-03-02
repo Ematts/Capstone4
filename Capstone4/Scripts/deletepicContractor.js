@@ -1,4 +1,40 @@
-﻿if (!String.prototype.includes) {
+﻿(function ($) {
+    var defaults = {
+        callback: function () { },
+        runOnLoad: true,
+        frequency: 1,
+        previousVisibility: null
+    };
+
+    var methods = {};
+    methods.checkVisibility = function (element, options) {
+        if (jQuery.contains(document, element[0])) {
+            var previousVisibility = options.previousVisibility;
+            var isVisible = element.is(':visible');
+            options.previousVisibility = isVisible;
+            if (previousVisibility == null) {
+                if (options.runOnLoad) {
+                    options.callback(element, isVisible);
+                }
+            } else if (previousVisibility !== isVisible) {
+                options.callback(element, isVisible);
+            }
+
+            setTimeout(function () {
+                methods.checkVisibility(element, options);
+            }, options.frequency);
+        }
+    };
+
+    $.fn.visibilityChanged = function (options) {
+        var settings = $.extend({}, defaults, options);
+        return this.each(function () {
+            methods.checkVisibility($(this), settings);
+        });
+    };
+})(jQuery);
+
+if (!String.prototype.includes) {
     String.prototype.includes = function (search, start) {
         'use strict';
         if (typeof start !== 'number') {
@@ -109,7 +145,7 @@ function fluidDialog() {
     function initHtml(obj) {
         var div = $('<div id="unbind-pos" class="modal fade" style="display:none;" aria-hidden="true"></div>');
         div.append('<div class="modal-dialog">' +
-                      '<div class="modal-content">' +
+                      '<div class="modal-content" id="picDisplay">' +
                             '<div class="modal-header">' +
                                 '<button aria-hidden="true" data-dismiss="modal" id="topCloser" class="close" type="button"><span>&times;</span></button>' +
                                 '<h4 class="modal-title"></h4>' +
@@ -191,10 +227,21 @@ function fluidDialog() {
 
         $('.deletePic').click(function (e) {
             e.preventDefault();
-            closer = document.getElementById("closer");
-            closer.addEventListener("click", checkOpen, false);
-            topCloser = document.getElementById("topCloser");
-            topCloser.addEventListener("click", checkOpen, false);
+            //closer = document.getElementById("closer");
+            //closer.addEventListener("click", checkOpen, false);
+            //topCloser = document.getElementById("topCloser");
+            //topCloser.addEventListener("click", checkOpen, false);
+
+            $("#unbind-pos").visibilityChanged({
+                callback: function (element, visible) {
+                    if (visible == false) {
+                        checkOpen(e);
+                    }
+                },
+                runOnLoad: false,
+                frequency: 1
+            });
+
             $.ajax({
                 type: "GET",
                 url: "/ServiceRequests/CheckCompletion",
