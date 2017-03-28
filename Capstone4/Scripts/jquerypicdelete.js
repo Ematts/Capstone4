@@ -1,4 +1,40 @@
-﻿// on window resize run function
+﻿(function ($) {
+    var defaults = {
+        callback: function () { },
+        runOnLoad: true,
+        frequency: 1,
+        previousVisibility: null
+    };
+
+    var methods = {};
+    methods.checkVisibility = function (element, options) {
+        if (jQuery.contains(document, element[0])) {
+            var previousVisibility = options.previousVisibility;
+            var isVisible = element.is(':visible');
+            options.previousVisibility = isVisible;
+            if (previousVisibility == null) {
+                if (options.runOnLoad) {
+                    options.callback(element, isVisible);
+                }
+            } else if (previousVisibility !== isVisible) {
+                options.callback(element, isVisible);
+            }
+
+            setTimeout(function () {
+                methods.checkVisibility(element, options);
+            }, options.frequency);
+        }
+    };
+
+    $.fn.visibilityChanged = function (options) {
+        var settings = $.extend({}, defaults, options);
+        return this.each(function () {
+            methods.checkVisibility($(this), settings);
+        });
+    };
+})(jQuery);
+
+// on window resize run function
 $(window).resize(function () {
     fluidDialog();
 });
@@ -153,73 +189,150 @@ function fluidDialog() {
         switchImage(list_images, list_pairs);
 
     };
+
+
+    function checkOpen(e) {
+        var myDivOpen = $('#myDiv').is(':visible')
+        if (myDivOpen == true) {
+            $("#myDiv").dialog("option", "modal", true);
+            $("#myDiv").dialog("close");
+            $("#myDiv").dialog("open");
+        }
+
+    }
     $.ajaxSetup({ cache: false });
     function deletePic(list_images, list_pairs) {
 
         $('.deletePic').click(function (e) {
             e.preventDefault();
-            var $modal = $('#unbind-pos');
-            var formdata = new FormData();
-            var fileInput = document.getElementById('fileInput');
-            var picToDelete = ($modal.find('#img-preview img').attr('src'));
-            for (i = 0; i < fileInput.files.length; i++) {
-                formdata.append(fileInput.files[i].name, fileInput.files[i]);
-            }
-            var other_data = $('#requestForm').serializeArray();
-            $.each(other_data, function (key, input) {
-                formdata.append(input.name, input.value);
-            });
-            formdata.append("picName", picToDelete);
-            var outputMsg = "Do you really want to delete this file?";
-            var div = $('<div></div>');
-            var titleMsg = "Confirm deletion";
-            div.html(outputMsg).dialog({
-                title: titleMsg,
-                height: 'auto',
-                width: 'auto',
-                maxWidth: 600,
-                fluid: true,
-                autoOpen: true,
-                open: function (event, ui) {
-                    $('.ui-dialog').css('z-index',100000);
-                    $('.ui-widget-overlay').css('z-index', 99999);
-                },
-                resizable: true,
-                modal: true,
-                buttons: {
-                    "YES": function () {
-                        $.ajax({
-                            url: "/ServiceRequests/DeletePic",
-                            type: 'POST',
-                            processData: false,
-                            contentType: false,
-                            data: formdata,
-                        }).done(function (data) {
-                            if (data.Result == "OK") {
-                                var newUrl = "/ServiceRequests/Edit/";
-                                var description = data.description;
-                                var price = data.price;
-                                var completionDeadline = data.completionDeadline;
-                                var city = data.city;
-                                var state = data.state;
-                                var zip = data.zip;
-                                var street = data.street;
-                                window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline + "&city=" + city + "&state=" + state + "&zip=" + zip + "&street=" + street;
-                            }
-                            else if (data.Result.Message) {
-                                alert(data.Result.Message);
-                            }
-                        }).fail(function () {
-                            alert("There is something wrong. Please try again.");
-                        })
 
+            $("#unbind-pos").visibilityChanged({
+                callback: function (element, visible) {
+                    if (visible == false) {
+                        checkOpen(e);
+                    }
+                },
+                runOnLoad: false,
+                frequency: 1
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/ServiceRequests/CheckPosted",
+                contentType: "application/json; charset=utf-8",
+                data: { id: '' + $('#ID').val() + '' },
+                dataType: "json",
+                success: function (response, textStatus, jqXHR) {
+                    if (response.posted == true) {
+                        var titleMsg = "Already Posted";
+                        var div = $('<div id="myDiv"></div>');
+                        var outputMsg = "You have already posted this service request.  Editing has been disabled.";
+                        div.html(outputMsg).dialog({
+                            title: titleMsg,
+                            height: 'auto',
+                            width: 'auto',
+                            maxWidth: 600,
+                            fluid: true,
+                            autoOpen: true,
+                            open: function (event, ui) {
+                                $('.ui-dialog').css('z-index', 100000);
+                                $('.ui-widget-overlay').css('z-index', 99999);
+                            },
+                            resizable: true,
+                            buttons: {
+                                "CLOSE":
+                                function () {
+                                    $(this).dialog('destroy');
+                                    window.location = "/ServiceRequests/Contractor_Thank_You/" + response.id;
+                                }
+                            }
+                        });
+                        $('#myDiv').dialog("widget").find(".ui-dialog-titlebar-close").click(function () {
+
+                            $("#myDiv").dialog("destroy");
+
+                        });
+                    }
+
+                    if (response.posted == false) {
+                        proceed();
+                    }
+                },
+                failure: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+            })
+
+            function proceed() {
+                var $modal = $('#unbind-pos');
+                var formdata = new FormData();
+                var fileInput = document.getElementById('fileInput');
+                var picToDelete = ($modal.find('#img-preview img').attr('src'));
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+                var other_data = $('#requestForm').serializeArray();
+                $.each(other_data, function (key, input) {
+                    formdata.append(input.name, input.value);
+                });
+                formdata.append("picName", picToDelete);
+                var outputMsg = "Do you really want to delete this file?";
+                var div = $('<div id="myDiv"></div>');
+                var titleMsg = "Confirm deletion";
+                div.html(outputMsg).dialog({
+                    title: titleMsg,
+                    height: 'auto',
+                    width: 'auto',
+                    maxWidth: 600,
+                    fluid: true,
+                    autoOpen: true,
+                    open: function (event, ui) {
+                        $('.ui-dialog').css('z-index', 100000);
+                        $('.ui-widget-overlay').css('z-index', 99999);
                     },
-                    "NO":
+                    resizable: true,
+                    //modal: true,
+                    buttons: {
+                        "YES": function () {
+                            $.ajax({
+                                url: "/ServiceRequests/DeletePic",
+                                type: 'POST',
+                                processData: false,
+                                contentType: false,
+                                data: formdata,
+                            }).done(function (data) {
+                                if (data.Result == "OK") {
+                                    var newUrl = "/ServiceRequests/Edit/";
+                                    var description = data.description;
+                                    var price = data.price;
+                                    var completionDeadline = data.completionDeadline;
+                                    var city = data.city;
+                                    var state = data.state;
+                                    var zip = data.zip;
+                                    var street = data.street;
+                                    window.location.href = "?id=" + data.id + "&description=" + description + "&price=" + price + "&completionDeadline=" + completionDeadline + "&city=" + city + "&state=" + state + "&zip=" + zip + "&street=" + street;
+                                }
+                                else if (data.Result.Message) {
+                                    alert(data.Result.Message);
+                                }
+                            }).fail(function () {
+                                alert("There is something wrong. Please try again.");
+                            })
+
+                        },
+                        "NO":
                         function () {
-                            $(this).dialog("close");
+                            $(this).dialog("destroy");
                         }
-                    }   
+                    }
                 })
+                $('#myDiv').dialog("widget").find(".ui-dialog-titlebar-close").click(function () {
+
+                    $("#myDiv").dialog("destroy");
+
+                });
+
+              }   
             });
 
       };

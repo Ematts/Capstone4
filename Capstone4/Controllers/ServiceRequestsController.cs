@@ -1393,7 +1393,11 @@ namespace Capstone4.Controllers
         {
             return View();
         }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Accept(int id)
@@ -1596,7 +1600,7 @@ namespace Capstone4.Controllers
                 return HttpNotFound();
             }
 
-            if ((identity != serviceRequest.Contractor.UserId) && (!this.User.IsInRole("Admin")))
+            if ((identity != serviceRequest.Homeowner.UserId) && (!this.User.IsInRole("Admin")))
             {
                 return RedirectToAction("Unauthorized_Access", "Home");
             }
@@ -2153,6 +2157,23 @@ namespace Capstone4.Controllers
             else
             {
                 return Json(new { complete = false, id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult CheckPosted(int id)
+        {
+            ServiceRequest serviceRequest = db.ServiceRequests.Find(id);
+
+            if (serviceRequest.Posted == true)
+            {
+                return Json(new { posted = true, id = id },
+                JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { posted = false, id = id },
                 JsonRequestBehavior.AllowGet);
             }
         }
