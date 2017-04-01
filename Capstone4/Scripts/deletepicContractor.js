@@ -12,7 +12,7 @@
             var previousVisibility = options.previousVisibility;
             var isVisible = element.is(':visible');
             options.previousVisibility = isVisible;
-            if (previousVisibility == null) {
+            if (previousVisibility === null) {
                 if (options.runOnLoad) {
                     options.callback(element, isVisible);
                 }
@@ -69,7 +69,7 @@ function fluidDialog() {
         if (dialog.options.fluid) {
             var wWidth = $(window).width();
             // check window width against dialog width
-            if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+            if (wWidth < parseInt(dialog.options.maxWidth) + 50) {
                 // keep dialog from filling entire screen
                 $this.css("max-width", "90%");
             } else {
@@ -85,7 +85,7 @@ function fluidDialog() {
 
 (function ($) {
     $.fn.imageBox = function (options) {
-        var options = $.extend({
+            options = $.extend({
             objClicked: '.img',      // 点击的元素
             rotateDirection: 'right' // 图片旋转方向， 默认是right => 顺时针
         }, options);
@@ -99,7 +99,7 @@ function fluidDialog() {
 
             //var _url = $(this).data("url"), current = 0;
             var _url = $(this).attr("src"), current = 0;
-            var _alt = $(this).attr("alt"), current = 0;
+            var _alt = $(this).attr("alt");
             // 清空数组 list_images
             if (list_images.length > 0) {
                 list_images.length = 0;
@@ -113,18 +113,18 @@ function fluidDialog() {
                 //var source = _src;
                 //var title = _alt;
                 var _pair = { source: _src, title: _alt };
-                if (_url == _src) {
+                if (_url === _src) {
                     current = index + 1;
                 }
                 list_images.push(_src);
                 list_pairs.push(_pair);
             });
-            if (typeof (fileName) == 'undefined') {
+            if (typeof fileName === 'undefined') {
                 $('.modal-title').text(_alt);
             } else {
                 $('.modal-title').text($(fileName).text());
             }
-            $('#img-preview').html('<img src="' + _url + '" width="500px" height="350px" class="image-box" style="cursor: move;"></img>')
+            $('#img-preview').html('<img src="' + _url + '" width="500px" height="350px" class="image-box" style="cursor: move;"></img>');
             $('#img-preview').attr({ 'current': current });
             $(obj).find('#unbind-pos').modal('show');
             if (_alt.includes("Service")) {
@@ -139,9 +139,7 @@ function fluidDialog() {
     };
 
     var rotateDeg = 0;
-    /**
-    *初始化html
-    */
+
     function initHtml(obj) {
         var div = $('<div id="unbind-pos" class="modal fade" style="display:none;" aria-hidden="true"></div>');
         div.append('<div class="modal-dialog">' +
@@ -169,11 +167,8 @@ function fluidDialog() {
                       '</div>' +
                     '</div>');
         $(obj).append(div);
-    };
+    }
 
-    /**
-    * 初始化样式
-    */
     function initCss(obj) {
         $(obj).find('#img-preview').css({
             'height': '350px',
@@ -188,18 +183,15 @@ function fluidDialog() {
         $(obj).find('.modal .modal-content .btn').css('border-radius', '0');
         $(obj).find('.img-op .btn').css({
             'margin': '5px',
-            'width': '100px',
+            'width': '100px'
         });
         $(obj).find('.modal-footer .btn-default').css({
             'background-color': '#fff',
             'background-image': 'none',
-            'border': '1px solid #ccc',
+            'border': '1px solid #ccc'
         });
-    };
+    }
 
-    /**
-    * 按钮控制图片事件
-    */
     function btnCtrlImgEvent(options, list_images, list_pairs) {
 
         zoomIn();
@@ -209,11 +201,11 @@ function fluidDialog() {
         rotateImage(options);
         switchImage(list_images, list_pairs);
 
-    };
+    }
 
     function checkOpen(e) {
-        var myDivOpen = $('#myDiv').is(':visible')
-        if(myDivOpen == true)
+        var myDivOpen = $('#myDiv').is(':visible');
+        if(myDivOpen === true)
         {
             $("#myDiv").dialog("option", "modal", true);
             $("#myDiv").dialog("close");
@@ -234,7 +226,7 @@ function fluidDialog() {
 
             $("#unbind-pos").visibilityChanged({
                 callback: function (element, visible) {
-                    if (visible == false) {
+                    if (visible === false) {
                         checkOpen(e);
                     }
                 },
@@ -249,7 +241,7 @@ function fluidDialog() {
                 data: { id: '' + $('#ID').val() + '' },
                 dataType: "json",
                 success: function (response, textStatus, jqXHR) {
-                    if (response.complete == true) {
+                    if (response.complete === true) {
                         var titleMsg = "Already Confirmed Completion";
                         var div = $('<div id="myDiv"></div>');
                         var outputMsg = "You have already confirmed completion.  Photos can no longer be deleted.";
@@ -275,25 +267,25 @@ function fluidDialog() {
                         });
                         $('#myDiv').dialog("widget").find(".ui-dialog-titlebar-close").click(function () {
 
-                                $("#myDiv").dialog("destroy");
+                            $("#myDiv").dialog("destroy");
 
-                            });
+                        });
                     }
 
-                    if (response.complete == false){
+                    if (response.complete === false) {
                         proceed();
                     }
                 },
                 failure: function (jqXHR, textStatus, errorThrown) {
                     alert('Error - ' + errorThrown);
                 }
-            })
+            });
             
             function proceed() {
                 var $modal = $('#unbind-pos');
                 var formdata = new FormData();
                 var fileInput = document.getElementById('fileInput');
-                var picToDelete = ($modal.find('#img-preview img').attr('src'));
+                var picToDelete = $modal.find('#img-preview img').attr('src');
                 for (i = 0; i < fileInput.files.length; i++) {
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
@@ -324,9 +316,9 @@ function fluidDialog() {
                                 type: 'POST',
                                 processData: false,
                                 contentType: false,
-                                data: formdata,
+                                data: formdata
                             }).done(function (data) {
-                                if (data.Result == "OK") {
+                                if (data.Result === "OK") {
                                     $("#myDiv").dialog("destroy");
                                     location.reload();
                                 }
@@ -337,15 +329,15 @@ function fluidDialog() {
                             }).fail(function () {
                                 $("#myDiv").dialog("destroy");
                                 alert("There is something wrong. Please try again.");
-                            })
+                            });
 
                         },
                         "NO":
-                            function () {
-                                $(this).dialog("destroy");
-                            }
+                        function () {
+                            $(this).dialog("destroy");
+                        }
                     }
-                })
+                });
                 $('#myDiv').dialog("widget").find(".ui-dialog-titlebar-close").click(function () {
 
                     $("#myDiv").dialog("destroy");
@@ -355,7 +347,7 @@ function fluidDialog() {
 
         });
 
-    };
+    }
 
     //图片放大
     function zoomIn() {
@@ -367,7 +359,7 @@ function fluidDialog() {
                 width: '+=' + imageWidth * 0.1
             });
         });
-    };
+    }
 
     //图片缩小
     function zoomOut() {
@@ -379,7 +371,7 @@ function fluidDialog() {
                 width: '-=' + imageWidth * 0.1
             });
         });
-    };
+    }
 
     // 图片预览框中拖拽
     function dragImage() {
@@ -403,20 +395,20 @@ function fluidDialog() {
             });
             return false;
         });
-    };
+    }
 
     //图片旋转，默认方向是右旋转
     function rotateImage(options) {
         $('.rotate').click(function () {
-            if (options.rotateDirection == 'right') {
+            if (options.rotateDirection === 'right') {
                 rotateDeg += 90;
-                if (rotateDeg == 360) {
+                if (rotateDeg === 360) {
                     rotateDeg = 0;
                 }
             }
-            if (options.rotateDirection == 'left') {
+            if (options.rotateDirection === 'left') {
                 rotateDeg -= 90;
-                if (rotateDeg == -360) {
+                if (rotateDeg === -360) {
                     rotateDeg = 0;
                 }
             }
@@ -428,14 +420,14 @@ function fluidDialog() {
                 '-ms-transform': 'rotate(' + rotateDeg + 'deg)'
             });
         });
-    };
+    }
 
     //图片切换
     function switchImage(list_images, list_pairs) {
         var $modal = $('#unbind-pos');
         $('#unbind-pos').on('click', '.switch', function () {
             var _list_images = list_images, _self = this, _role = $(_self).attr('role');
-            var _list_pairs = list_pairs, _self = this, _role = $(_self).attr('role');
+            var _list_pairs = list_pairs;
             var $image_container = $modal.find('#img-preview');
             var _current = parseInt($image_container.attr('current'));
             var _image_count = _list_images.length;
@@ -461,7 +453,7 @@ function fluidDialog() {
             var x = $modal.find('#img-preview img').attr('src');
             var y = $modal.find('#img-preview img').attr('alt');
             for (i = 0; i < _list_pairs.length; i++) {
-                if (_list_pairs[i].source == x) {
+                if (_list_pairs[i].source === x) {
 
                     $('.modal-title').text(_list_pairs[i].title);
                     if(_list_pairs[i].title.includes("Service")){
@@ -474,6 +466,6 @@ function fluidDialog() {
                 }
             }
         });
-    };
+    }
 
 })(jQuery);

@@ -243,7 +243,7 @@ function fluidDialog() {
                                 "CLOSE":
                                 function () {
                                     $(this).dialog('destroy');
-                                    window.location = "/ServiceRequests/Contractor_Thank_You/" + response.id;
+                                    window.location = "/ServiceRequests/Details/" + response.id;
                                 }
                             }
                         });
