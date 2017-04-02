@@ -245,7 +245,6 @@ C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.csprojResolveAssemblyReference.cache
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d1.resources
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.s.resources
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.Migrations.d.resources
@@ -282,3 +281,4 @@ C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.csproj.GenerateResource.Cache
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.dll
 C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.pdb
+C:\Users\erick\Documents\Visual Studio 2017\Projects\Projects\Visual Studio 2017\Projects\Capstone4\Capstone4\obj\Debug\Capstone4.csprojResolveAssemblyReference.cache
